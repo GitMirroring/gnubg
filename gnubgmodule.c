@@ -3395,8 +3395,8 @@ static PyMethodDef gnubgMethods[] = {
      "    arguments: float luck per move\n" "    returns: int 0..5"}
     ,
     {"errorrating", (PyCFunction) PythonErrorRating, METH_VARARGS,
-     "convert an error per move amount to a rating 0 = awful..7=supernatural\n"
-     "    arguments: float error per move\n" "    returns: int\n"}
+     "convert an error per move amount to a rating 0..6 for beginner to super grandmaster\n"
+     "    arguments: float error per move\n" "    returns: int 0..6\n"}
     ,
     {"updateui", (PyCFunction) PythonUpdateUI, METH_VARARGS,
      "Allows the UI to update itself\n" "    arguments: none\n" "    returns: None"}

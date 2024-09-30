@@ -1,3 +1,8 @@
+2024-11-12  Philippe Michel  <philippe.michel7@free.fr>
+
+	* analysis.c, analysis.h: Use rating thresholds similar to those
+	of the BMAB (https://bgmastersab.com/about).
+
 2024-11-03  Isaac Keslassy <keslassy@gmail.com>
 
 	* backgammon.h, commands.inc, gnubg.c, gtkoptions.c, play.c:

@@ -1967,9 +1967,9 @@ To roll the dice the CL version type 'roll'.
             <listitem>
               <para>Checker play rating: <application>GNU
                 Backgammon</application> will assign a rating for your checker
-                play ranging from <emphasis>Awful!</emphasis> to
-                  <emphasis>Supernatural</emphasis>. See the description for the
-                overall rating below. </para>
+                play ranging from <emphasis>Beginner</emphasis> to
+                <emphasis>Super Grandmaster</emphasis>.
+		See the description for the overall rating below. </para>
             </listitem>
           </orderedlist>
         </sect4>
@@ -2135,9 +2135,9 @@ To roll the dice the CL version type 'roll'.
             <listitem>
               <para>Cube decision rating: <application>GNU
                 Backgammon</application> will assign a rating for your cube
-                decisions ranging from <emphasis>Awful!</emphasis> to
-                  <emphasis>Supernatural</emphasis>. See the description for the
-                overall rating below. </para>
+                decisions ranging from <emphasis>Beginner</emphasis> to
+                <emphasis>Super Grandmaster</emphasis>.
+		See the description for the overall rating below. </para>
             </listitem>
           </orderedlist>
         </sect4>
@@ -2172,9 +2172,9 @@ To roll the dice the CL version type 'roll'.
             <listitem>
               <para>Overall rating: Based on your normalized error rate per move
                 GNU Backgammon will assign you a rating ranging from
-                  <emphasis>Awful!</emphasis> to
-                <emphasis>Supernatural</emphasis>. See the table below for the
-                thresholds. </para>
+                  <emphasis>Beginner</emphasis> to
+                  <emphasis>Super Grandmaster</emphasis>.
+	          See the table below for the thresholds. </para>
             </listitem>
             <listitem>
               <para>Actual result: The actual result of the game or match. For
@@ -2214,6 +2214,14 @@ To roll the dice the CL version type 'roll'.
             </listitem>
           </orderedlist>
           <para>Threshold for ratings:</para>
+	  <para>These values are chosen to give similar ratings to
+	  those of the <ulink
+	  url="https://bgmastersab.com/about">Backgammon Masters
+	  Awarding Body (BMAB)</ulink>, although not necessarily
+	  identical since they are computed with different software
+	  and settings. Moreover, ratings for a single match will show
+	  higher variance than the BMAB numbers that are averaged on
+	  10 matches or more.</para>
           <informaltable frame="all">
             <tgroup cols="2">
               <colspec colname="c1" colnum="1" colwidth="1*"/>
@@ -2224,36 +2232,28 @@ To roll the dice the CL version type 'roll'.
                   <entry>Rating</entry>
                 </row>
                 <row>
-                  <entry>0.000 - 0.002</entry>
-                  <entry>Supernatural</entry>
-                </row>
-                <row>
-                  <entry>0.002 - 0.005</entry>
-                  <entry>World Class</entry>
+                  <entry>0.000 - 0.005</entry>
+                  <entry>Super Grandmaster</entry>
                 </row>
                 <row>
                   <entry>0.005 - 0.008</entry>
-                  <entry>Expert</entry>
+                  <entry>Grandmaster</entry>
                 </row>
                 <row>
-                  <entry>0.008 - 0.012</entry>
+                  <entry>0.008 - 0.013</entry>
+                  <entry>Master</entry>
+                </row>
+                <row>
+                  <entry>0.013 - 0.020</entry>
                   <entry>Advanced</entry>
                 </row>
                 <row>
-                  <entry>0.012 - 0.018</entry>
+                  <entry>0.020 - 0.032</entry>
                   <entry>Intermediate</entry>
                 </row>
                 <row>
-                  <entry>0.018 - 0.026</entry>
-                  <entry>Casual Player</entry>
-                </row>
-                <row>
-                  <entry>0.026 - 0.035</entry>
+                  <entry>&gt; 0.032</entry>
                   <entry>Beginner</entry>
-                </row>
-                <row>
-                  <entry>&gt; 0.035</entry>
-                  <entry>Awful!</entry>
                 </row>
               </tbody>
             </tgroup>
