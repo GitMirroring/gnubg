@@ -3143,7 +3143,10 @@ ExportPositionGammOnLine(FILE * pf)
 
     if (ms.nMatchTo > 1)
         fprintf(pf,
-                gettext("Match to %d points - %s %d, %s %d%s"),
+                /* ngettext for complex Plural-Forms language */
+                ngettext("Match to %d point - %s %d, %s %d%s",
+                         "Match to %d points - %s %d, %s %d%s",
+                         ms.nMatchTo),
                 ms.nMatchTo,
                 ap[0].szName, ms.anScore[0], ap[1].szName, ms.anScore[1],
                 ms.fCrawford ? _(", Crawford game") : (ms.fPostCrawford ? _(", post-Crawford play") : ""));

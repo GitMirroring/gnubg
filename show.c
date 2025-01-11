@@ -1006,7 +1006,7 @@ CommandShowScoreSheet(char *UNUSED(sz))
 
     outputf("%s - ", _("Score Sheet"));
     if (ms.nMatchTo > 0)
-        outputf(ms.nMatchTo == 1 ? _("Match to %d point") : _("Match to %d points"), ms.nMatchTo);
+        outputf(ngettext("Match to %d point", "Match to %d points", ms.nMatchTo),ms.nMatchTo);
     else
         output(_("Money Session"));
 
