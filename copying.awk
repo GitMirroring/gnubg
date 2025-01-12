@@ -11,38 +11,39 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#
-# $Id: $
-# 
-
 # Stolen from the copying.awk script included in gdb.
 
 BEGIN {
-  FS="\"";
-  print "/* Do not modify this file!  It is created automatically by";
-  print "   copying.awk.  Modify copying.awk instead. */";
-  print "";
+  FS="\""
+  print "/*"
+  print " * Do not modify this file!  It is created automatically by"
+  print " * copying.awk.  Modify copying.awk instead."
+  print " */"
+  print ""
   print "#include \"backgammon.h\""
   print "#include \"common.h\""
-  print "char *aszCopying[] = {";
+  print ""
+  print "char *aszCopying[] = {"
 }
 
 /^[ \t]*END OF TERMS AND CONDITIONS[ \t]*$/ {
-  print "  0\n};";
+  print "    0\n};"
   exit;
 }
 
 /^[ \t]*15. Disclaimer of Warranty.*$/ {
-  print "  0\n}, *aszWarranty[] = {";
+  print "    0\n};"
+  print ""
+  print "char *aszWarranty[] = {"
 }
 
 {
   if ($0 ~ /\f/) {
-    print "  \"\",";
+    print "    \"\","
   } else {
-    printf "  \"";
+    printf "    \""
     for (i = 1; i < NF; i++)
-      printf "%s\\\"", $i;
-    printf "%s\",\n", $NF;
+      printf "%s\\\"", $i
+    printf "%s\",\n", $NF
   }
 }

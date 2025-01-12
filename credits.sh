@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Copyright (C) 1998-2004 Gary Wong <gtw@gnu.org>
-# Copyright (C) 2004-2023 the AUTHORS
+# Copyright (C) 2004-2024 the AUTHORS
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,10 +15,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-#
-# $Id: credits.sh,v 1.168 2023/10/18 21:33:42 plm Exp $
-# 
 
 authors=/tmp/auth.$$
 contributors=/tmp/cont.$$
@@ -228,13 +224,13 @@ cat > credits.h <<EOF
 #include <glib/gi18n.h>
 
 typedef struct {
-	char* Name;
-	char* Type;
+    char *Name;
+    char *Type;
 } credEntry;
 
 typedef struct {
-	const char* Title;
-	credEntry *Entry;
+    const char *Title;
+    credEntry *Entry;
 } credits;
 
 extern credEntry ceAuthors[];
@@ -248,7 +244,6 @@ extern credits creditList[];
 extern const char aszAUTHORS[];
 
 extern const char aszCOPYRIGHT[];
-
 EOF
 cat > credits.c <<EOF
 /* Do not modify this file!  It is created automatically by credits.sh. */
@@ -280,10 +275,10 @@ EOF
 
 # Authors
 
-cat $authors | sed -e 's/.*/  {"&", 0},/g' >> credits.c
+cat $authors | sed -e 's/.*/    { "&", 0 },/g' >> credits.c
 
 cat >> credits.c <<EOF
-  {0, 0}
+    { 0, 0 }
 };
 EOF
 
@@ -294,10 +289,10 @@ cat >> credits.c <<EOF
 credEntry ceContrib[] = {
 EOF
 
-cat $contributors | sed -e 's/.*/  {"&", 0},/g' >> credits.c
+cat $contributors | sed -e 's/.*/    { "&", 0 },/g' >> credits.c
 
 cat >> credits.c <<EOF
-  {0, 0}
+    { 0, 0 }
 };
 EOF
 
@@ -308,10 +303,10 @@ cat >> credits.c <<EOF
 credEntry ceSupport[] = {
 EOF
 
-cat $support | sed -e 's/^\(.*\),\(.*\)$/  {"\1", N_\("\2\"\) },/g' >> credits.c
+cat $support | sed -e 's/^\(.*\),\(.*\)$/    { "\1", N_\("\2\"\) },/g' >> credits.c
 
 cat >> credits.c <<EOF
-  {0, 0}
+    { 0, 0 }
 };
 EOF
 
@@ -322,10 +317,10 @@ cat >> credits.c <<EOF
 credEntry ceTranslations[] = {
 EOF
 
-cat $translations | sed -e 's/^\(.*\),\(.*\)$/  {"\1", N_\("\2\"\) },/g' >> credits.c
+cat $translations | sed -e 's/^\(.*\),\(.*\)$/    { "\1", N_\("\2\"\) },/g' >> credits.c
 
 cat >> credits.c <<EOF
-  {0, 0}
+    { 0, 0 }
 };
 EOF
 
@@ -336,10 +331,10 @@ cat >> credits.c <<EOF
 credEntry ceCredits[] = {
 EOF
 
-cat $credit $extra | sort -f -k 2 | uniq | sed -e 's/.*/  {"&", 0},/g' >> credits.c
+cat $credit $extra | sort -f -k 2 | uniq | sed -e 's/.*/    { "&", 0 },/g' >> credits.c
 
 cat >> credits.c <<EOF
-  {0, 0}
+    { 0, 0 }
 };
 EOF
 
@@ -347,13 +342,12 @@ EOF
 
 cat >> credits.c <<EOF
 
-credits creditList[] =
-{
-	{N_("Authors"), ceAuthors},
-	{N_("Code Contributors"), ceContrib},
-	{N_("Translations"), ceTranslations},
-	{N_("Support"), ceSupport},
-	{0, 0}
+credits creditList[] = {
+    { N_("Authors"), ceAuthors },
+    { N_("Code Contributors"), ceContrib },
+    { N_("Translations"), ceTranslations },
+    { N_("Support"), ceSupport },
+    { 0, 0 }
 };
 
 EOF
@@ -445,7 +439,7 @@ cat >> credits.c <<EOF
 const char aszAUTHORS[] =
 EOF
 
-sed -e 's/"/\\"/g' AUTHORS | sed -e 's/.*/"&\\n"/g' >> credits.c
+sed -e 's/"/\\"/g' AUTHORS | sed -e 's/.*/    "&\\n"/g' >> credits.c
 
 cat >> credits.c <<EOF
 ;
