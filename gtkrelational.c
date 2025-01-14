@@ -1247,10 +1247,9 @@ CheckDatabase(const char *database)
                 valid = TRUE;
                 if (matchcount == 0)
                     dbString = _("This database contains no matches");
-                else if (matchcount == 1)
-                    dbString = _("This database contains 1 match");
                 else {
-                    buf2 = g_strdup_printf(_("This database contains %d matches\n"), matchcount);
+                    buf2 = g_strdup_printf(ngettext("This database contains %d match",
+                                                    "This database contains %d matches", matchcount), matchcount);
                     dbString = buf2;
                 }
             }
