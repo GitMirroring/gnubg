@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: commands.inc,v 1.69 2023/10/01 17:00:34 plm Exp $
  */
 
 /* All the commands are in this file */
@@ -23,17 +21,20 @@
 static command cER = {
     /* dummy command used for evaluation/rollout parameters */
     NULL, NULL, NULL, NULL, &cER
+}, cEndpoint = {
+    /* dummy command used for endpoint parameter */
+    NULL, NULL, NULL, NULL, &cEndpoint
 }, cFilename = {
-    /* dummy command used for filename parameters */
+    /* dummy command used for filename parameter */
     NULL, NULL, NULL, NULL, &cFilename
 }, cOnOff = {
-    /* dummy command used for on/off parameters */
+    /* dummy command used for on/off parameter */
     NULL, NULL, NULL, NULL, &cOnOff
 }, cPlayer = {
-    /* dummy command used for player parameters */
+    /* dummy command used for player parameter */
     NULL, NULL, NULL, NULL, &cPlayer
 }, cPlayerBoth = {
-    /* dummy command used for player parameters; "both" also permitted */
+    /* dummy command used for player parameter; "both" also permitted */
     NULL, NULL, NULL, NULL, &cPlayerBoth
 }, cExportParameters = {
     /* dummy command used for export parameters */
@@ -438,7 +439,7 @@ command acSetEvaluation[] = {
     { "cubedecision", CommandSetPlayerCubedecision, N_("Control cube decision "
       "parameters when GNUbg plays"), NULL, acSetEvalParam },
     { "external", CommandSetPlayerExternal, N_("Have another process make all "
-      "moves for a player"), szFILENAME, &cFilename },
+      "moves for a player"), szENDPOINT, &cEndpoint },
     { "gnubg", CommandSetPlayerGNU, 
       N_("Have GNUbg make all moves for a player"),
       NULL, NULL },
@@ -1504,7 +1505,7 @@ command acTop[] = {
     { "export", NULL, N_("Write data for use by other programs"), 
       NULL, acExport },
     { "external", CommandExternal, N_("Make moves for an external controller"),
-      szFILENAME, &cFilename },
+      szENDPOINT, &cEndpoint },
     { "first", NULL, N_("Goto first move or game"),
       NULL, acFirst },
     { "help", CommandHelp, N_("Describe commands"), szOPTCOMMAND, NULL },

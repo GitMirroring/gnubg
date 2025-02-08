@@ -527,6 +527,7 @@ char default_names[2][MAX_NAME_LEN] = { "gnubg", "user" };
 static char szDICE[] = N_("<die> <die>"),
     szCOMMAND[] = N_("<command>"),
     szCOMMENT[] = N_("<comment>"),
+    szENDPOINT[] = N_("<host>:<port>"),
     szER[] = "evaluation|rollout",
     szFILENAME[] = N_("<filename>"),
     szKEYVALUE[] = N_("[<key>=<value> ...]"),
