@@ -144,7 +144,6 @@ ExternalSocket(struct sockaddr **ppsa, socklen_t *pcb, char *sz)
 {
     int sock, f;
     struct sockaddr_in *psin;
-    struct hostent *phe;
     char *pch;
 
     if ((pch = strchr(sz, ':'))) {
@@ -176,13 +175,24 @@ ExternalSocket(struct sockaddr **ppsa, socklen_t *pcb, char *sz)
             /* no host specified */
             psin->sin_addr.s_addr = htonl(INADDR_ANY);
         else if (!inet_pton(psin->sin_family, sz, &psin->sin_addr)) {
-            if ((phe = gethostbyname(sz)) == 0) {
+            struct addrinfo hints = { .ai_family = AF_INET, .ai_socktype = SOCK_STREAM };
+            struct addrinfo *res;
+            int error;
+
+            error = getaddrinfo(sz, NULL, &hints, &res);
+            if (error) {
                 *pch = ':';
                 errno = EINVAL;
+                outputerr(gai_strerror(error));
                 g_free(psin);
                 return -1;
             }
-            memcpy(&(psin->sin_addr), phe->h_addr, (size_t) phe->h_length);
+
+            struct sockaddr_in addr;
+            memcpy(&addr, res->ai_addr, sizeof(struct sockaddr_in));
+            memcpy(&(psin->sin_addr), &addr.sin_addr, sizeof(struct in_addr));
+
+            freeaddrinfo(res);
         }
 
         *pch++ = ':';

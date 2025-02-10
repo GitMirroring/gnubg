@@ -246,7 +246,7 @@ dnl Checks for libraries.
 dnl
 
 AC_CHECK_LIB(m,sqrt)
-AC_SEARCH_LIBS(gethostbyname,nsl)
+AC_SEARCH_LIBS(getaddrinfo,nsl)
 AC_SEARCH_LIBS(inet_aton,resolv)
 if test "x$win32" = "xyes"; then
 AC_DEFINE(HAVE_SOCKETS,1,Define if the system supports sockets.)
