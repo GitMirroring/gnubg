@@ -1242,20 +1242,20 @@ extern void
 show_keith(TanBoard an, char *sz)
 {
     int pn[2];
-    float fL;
+    int L;
 
     KeithCount((ConstTanBoard) an, pn);
 
-    fL = (float) pn[1] * 8.0f / 7.0f;
+    L = pn[1] * 8 / 7;
     sprintf(sz, _("Keith Count Leader            : %d\n"), pn[1]);
-    sprintf(strchr(sz, 0), _("Keith Count Leader(+1/7)     L: %.1f\n"), fL);
+    sprintf(strchr(sz, 0), _("Keith Count Leader(+1/7)     L: %d\n"), L);
     sprintf(strchr(sz, 0), _("Keith Count Trailer          T: %d\n\n"), pn[0]);
 
-    if ((float) pn[0] >= (fL - 2.0f))
-        sprintf(strchr(sz, 0), _("Double, Drop (since L <= T+2)"));
-    else if ((float) pn[0] >= (fL - 3.0f))
+    if (pn[0] > (L - 2))
+        sprintf(strchr(sz, 0), _("Double, Drop (since L < T+2)"));
+    else if (pn[0] >= (L - 3))
         sprintf(strchr(sz, 0), _("Redouble, Take (since L <= T+3)"));
-    else if ((float) pn[0] >= (fL - 4.0f))
+    else if (pn[0] >= (L - 4))
         sprintf(strchr(sz, 0), _("Double, Take (since L <= T + 4)"));
     else
         sprintf(strchr(sz, 0), _("No Double, Take (since L > T + 4)"));
@@ -1282,7 +1282,7 @@ CommandShowKeith(char *sz)
     }
 #endif
     show_keith(an, out);
-    output(out);
+    outputl(out);
 }
 
 extern void
