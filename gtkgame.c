@@ -4861,18 +4861,7 @@ RunGTK(GtkWidget * pwSplash, char *commands, char *python_script, char *match)
         gdk_window_set_cursor(gtk_widget_get_window(pwStop),
                               gdk_cursor_new_for_display(gtk_widget_get_display(pwStop), GDK_LEFT_PTR));
 
-        /* Make sure toolbar looks correct */
-        {
-            int style = nToolbarStyle;
-            nToolbarStyle = 2;  /* Default style is fine */
-            SetToolbarStyle(style);
-#if !defined(USE_GTKITEMFACTORY)
-            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(gtk_ui_manager_get_widget(puim,
-                                                                                         "/MainMenu/ViewMenu/ToolBarMenu/Both")),
-                                           nToolbarStyle);
-#endif
-
-        }
+        SetToolbarStyle(nToolbarStyle);
 
 #if defined(USE_BOARD3D)
         {

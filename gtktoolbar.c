@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: gtktoolbar.c,v 1.87 2023/09/05 21:22:35 plm Exp $
  */
 
 #include "config.h"
@@ -665,11 +663,16 @@ SetToolbarStyle(int value)
         /* Resize handle box parent */
         gtk_widget_queue_resize(pwToolbar);
         nToolbarStyle = value;
-#if defined(USE_GTKITEMFACTORY)
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM
-                                       (gtk_item_factory_get_widget_by_action(pif, value + TOOLBAR_ACTION_OFFSET)),
-                                       TRUE);
-#endif
+
         UserCommand("save settings");
     }
+
+#if defined(USE_GTKITEMFACTORY)
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM
+                                   (gtk_item_factory_get_widget_by_action(pif, value + TOOLBAR_ACTION_OFFSET)), TRUE);
+#else
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(gtk_ui_manager_get_widget(puim, "/MainMenu/ViewMenu/ToolBarMenu/IconsOnly")), (value == 0));
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(gtk_ui_manager_get_widget(puim, "/MainMenu/ViewMenu/ToolBarMenu/TextOnly")), (value == 1));
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(gtk_ui_manager_get_widget(puim, "/MainMenu/ViewMenu/ToolBarMenu/Both")), (value == 2));
+#endif
 }
