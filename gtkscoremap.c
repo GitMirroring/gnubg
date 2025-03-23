@@ -352,9 +352,6 @@ static GtkWidget *pwDialog = NULL;
 static void 
 CubeValToggled(GtkWidget * pw, scoremap * psm);
 
-void
-BuildOptions(scoremap * psm);
-
 static int isAllowed (int i, int j, scoremap * psm) {
 /*"isAllowed()" helps set the unallowed quadrants in move scoremap. Reasons to forbid
  a quadrant:
@@ -2496,22 +2493,6 @@ TopleftToggled(GtkWidget* pw, scoremap* psm)
     }
 }
 
-/* We decided to not use the layout radio buttons, as they are defined in the Analysis>Settings menu */
-// static void
-// LayoutToggled(GtkWidget * pw, scoremap * psm) 
-// /* This is called by gtk when the user clicks on one of the "layout" radio buttons.
-// */
-// {
-//     int *pi = (int *) g_object_get_data(G_OBJECT(pw), "user_data");
-//     if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pw))) {
-//         psm->layout=(scoreMapLayout)(*pi);
-//         gtk_container_remove(GTK_CONTAINER(psm->pwLastContainer), psm->pwOptionsBox);
-//         psm->pwLastContainer = (psm->layout == VERTICAL) ? (psm->pwVContainer) : (psm->pwHContainer);
-//         BuildOptions(psm);
-//         UpdateScoreMapVisual(psm);
-//     }
-// }
-
 static void
 DisplayEvalToggled(GtkWidget * pw, scoremap * psm)
 /* This is called by gtk when the user clicks on one of the "display eval" radio buttons.
@@ -2788,7 +2769,7 @@ GTKShowCubeScoreMapInfo(GtkWidget* UNUSED(pw), GtkWidget* pwParent)
     GTKRunDialog(pwInfoDialog);
 }
 
-void
+static void
 BuildOptions(scoremap * psm) { 
 /* Build the options part of the scoremap window, i.e. the part that goes after the scoremap table (and the gauge if it exists)
 */
