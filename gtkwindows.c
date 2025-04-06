@@ -107,18 +107,21 @@ dialog_mapped(GtkWidget * window, gpointer UNUSED(data))
 
 #if GTK_CHECK_VERSION(3,22,0)
     GdkDisplay *display = gtk_widget_get_display(window);
-    if (!display || gdk_display_get_n_monitors(display) == 1) {
-        monitorrect.x = 0;
-        monitorrect.y = 0;
-        monitorrect.width = gdk_screen_width();
-        monitorrect.height = gdk_screen_height();
-    } else {
-        GdkMonitor *monitor = gdk_display_get_monitor_at_window(display,
-                                                                gtk_widget_get_window(window));
-        gdk_monitor_get_geometry(monitor, &monitorrect);
-    }
+    GdkMonitor *monitor;
+
+    if (!display)
+        monitor = gdk_display_get_primary_monitor(gdk_display_get_default());
+    else
+        if (gdk_display_get_n_monitors(display) == 1)
+            monitor = gdk_display_get_monitor(display, 0);
+        else
+            monitor = gdk_display_get_monitor_at_window(display, gtk_widget_get_window(window));
+
+    /* FIXME ? Should it be gdk_monitor_get_workarea() ? */
+    gdk_monitor_get_geometry(monitor, &monitorrect);
 #else
     GdkScreen *screen = gtk_widget_get_screen(window);
+
     if (!screen || gdk_screen_get_n_monitors(screen) == 1) {
         monitorrect.x = 0;
         monitorrect.y = 0;
