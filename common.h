@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: common.h,v 1.35 2019/12/02 10:56:00 plm Exp $
  */
 
 /*! \file common.h
@@ -37,11 +35,7 @@
 
 /*! \brief Safe error value
  */
-#if defined(HUGE_VALF)
-#define ERR_VAL (-HUGE_VALF)
-#else
 #define ERR_VAL (-FLT_MAX)
-#endif
 
 /*! \brief Macro to extract sign
  */
