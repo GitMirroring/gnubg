@@ -1,10 +1,7 @@
 #
-# gnubg.gtkrc
-# by
-# Gary Wong <gtw@gnu.org>, 2001
-# Joern Thyssen <jth@gnubg.org>, 2002
-# Jon Kinsey <jon_kinsey@hotmail.com, 2004
-#
+# Copyright (C) 2001 Gary Wong <gtw@gnu.org>
+# Copyright (C) 2002 Joern Thyssen <jth@gnubg.org>
+# Copyright (C) 2004 Jon Kinsey <jon_kinsey@hotmail.com
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,9 +14,8 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-# $Id: gnubg.gtkrc,v 1.26 2017/11/28 22:23:41 plm Exp $
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 #
 # style <name> [= <name>]
 # {
@@ -30,7 +26,6 @@
 # widget_class <widget_class_set> style <style_name>
 
 #module_path "C:/Program Files/gnubg/themes/engines"
-
 
 #
 # The default style used for all widgets in gnubg.
@@ -43,8 +38,9 @@
 
 style "default"
 {
-#uncomment to make default font smaller
-#font_name = "9"
+# Default size was fine initially but becomes a bit small
+# for today (2025) typical 1920x1080 screen.
+font_name = "12"
 
 # base, text, bg, fg are possible
 bg[SELECTED] = { 0.67, 0.67, 0.67 }
@@ -99,7 +95,6 @@ style "movelabel" = "default"
 }
    
 widget "*.gnubg-move-current" style "movelabel"
-
 
 #
 # Styles for showing the graphical overview of the market windows.
@@ -221,4 +216,3 @@ style "met-the-score" = "met-matching-score"
 
 widget "*.gnubg-met-matching-score" style "met-matching-score"
 widget "*.gnubg-met-the-score" style "met-the-score"
-
