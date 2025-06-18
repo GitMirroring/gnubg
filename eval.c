@@ -304,10 +304,10 @@ const char *aszSettings[NUM_SETTINGS] = {
     N_("setting|casual play"),
     N_("setting|intermediate"),
     N_("setting|advanced"),
-    N_("setting|expert"),
-    N_("setting|world class"),
-    N_("setting|supremo"),
-    N_("setting|grandmaster"),
+    N_("setting|0ply"),
+    N_("setting|1ply"),
+    N_("setting|2ply"),
+    N_("setting|3ply"),
     N_("setting|4ply")
 };
 
@@ -317,11 +317,11 @@ evalcontext aecSettings[NUM_SETTINGS] = {
     {.fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.050f},     /* casual player */
     {.fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.040f},     /* intermediate */
     {.fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.015f},     /* advanced */
-    {.fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f},       /* expert */
-    {.fCubeful = TRUE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f},        /* world class */
-    {.fCubeful = TRUE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f},        /* supremo */
-    {.fCubeful = TRUE, .nPlies = 3, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f},        /* grand master */
-    {.fCubeful = TRUE, .nPlies = 4, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f},        /* 4ply */
+    {.fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f},       /* 0 ply */
+    {.fCubeful = TRUE, .nPlies = 1, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f},       /* 1 ply */
+    {.fCubeful = TRUE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f},       /* 2 ply */
+    {.fCubeful = TRUE, .nPlies = 3, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f},       /* 3 ply */
+    {.fCubeful = TRUE, .nPlies = 4, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f}        /* 4 ply */
 };
 
 /* which move filter does the predefined settings use */
@@ -330,29 +330,23 @@ int aiSettingsMoveFilter[NUM_SETTINGS] = {
     -1,                         /* casual play: n/a */
     -1,                         /* intermediate: n/a */
     -1,                         /* advanced: n/a */
-    -1,                         /* expert: n/a */
-    2,                          /* wc: normal */
-    3,                          /* supremo: large */
-    3,                          /* grandmaster: large */
-    3,                          /* 4ply: large */
+    -1,                         /* 0 ply: n/a */
+    0,                          /* 1 ply: normal */
+    0,                          /* 2 ply: normal */
+    0,                          /* 3 ply: normal */
+    0                           /* 4 ply: normal */
 };
 
 /* the predefined move filters */
 
 const char *aszMoveFilterSettings[NUM_MOVEFILTER_SETTINGS] = {
-    N_("Tiny"),
-    N_("Narrow"),
     N_("Normal"),
-    N_("Large"),
-    N_("Huge")
+    N_("Large")
 };
 
 movefilter aaamfMoveFilterSettings[NUM_MOVEFILTER_SETTINGS][MAX_FILTER_PLIES][MAX_FILTER_PLIES] = {
-    MOVEFILTER_TINY,
-    MOVEFILTER_NARROW,
     MOVEFILTER_NORMAL,
-    MOVEFILTER_LARGE,
-    MOVEFILTER_HUGE
+    MOVEFILTER_LARGE
 };
 
 

@@ -1,3 +1,15 @@
+2025-06-18  Philippe Michel  <philippe.michel7@free.fr>
+
+	* eval.c, eval.h, gnubg.c, gtkgame.c, movefilters.inc:
+	Improve default movefilters to use every intermediate ply.
+	Provide only a default and a large filter, not the tiny and narrow
+        that were only useful when computers were much slower.
+	Replace older world class, supremo and grandmaster levels with:
+        - 2ply, similar in strength to world class and supremo and
+          20% faster than world class and 50% faster than supremo
+        - 3ply, similar in strength to grandmaster and 20% faster
+	In addition, 4ply is about 10% faster than before.
+
 2024-11-12  Philippe Michel  <philippe.michel7@free.fr>
 
 	* analysis.c, analysis.h: Use rating thresholds similar to those

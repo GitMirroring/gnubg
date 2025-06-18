@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2003 Gary Wong <gtw@gnu.org>
- * Copyright (C) 2001-2023 the AUTHORS
+ * Copyright (C) 2001-2025 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2602,16 +2602,14 @@ UpdateSummaryEvalMenuSetting(AnalysisDetails * pAnalDetails)
     int cubeDefault = EvalDefaultSetting(pAnalDetails->esCube, pAnalDetails->mfCube);
     int setting = NUM_SETTINGS;
 
-    if (chequerDefault == cubeDefault
-        /* Special case as cube_supremo==cube_worldclass */
-        || (chequerDefault == SETTINGS_SUPREMO && cubeDefault == SETTINGS_WORLDCLASS))
+    if (chequerDefault == cubeDefault)
         setting = chequerDefault;
 
-    setting -= (pAnalDetails->fWeakLevels ? 0 : SETTINGS_EXPERT);
+    setting -= (pAnalDetails->fWeakLevels ? 0 : SETTINGS_0PLY);
     if (setting < 0)
         /* This combo box doesn't accept weak levels
          * but one of them was selected through user defined */
-        setting = NUM_SETTINGS - (pAnalDetails->fWeakLevels ? 0 : SETTINGS_EXPERT);
+        setting = NUM_SETTINGS - (pAnalDetails->fWeakLevels ? 0 : SETTINGS_0PLY);
 
     gtk_combo_box_set_active(GTK_COMBO_BOX(pAnalDetails->pwOptionMenu), setting);
 }
@@ -2665,7 +2663,7 @@ ShowDetailedAnalysis(GtkWidget * button, AnalysisDetails * pDetails)
 static void
 SummaryMenuActivate(GtkComboBox * box, AnalysisDetails * pAnalDetails)
 {
-    int selected = gtk_combo_box_get_active(box) + (pAnalDetails->fWeakLevels ? 0 : SETTINGS_EXPERT);
+    int selected = gtk_combo_box_get_active(box) + (pAnalDetails->fWeakLevels ? 0 : SETTINGS_0PLY);
 
     if (selected == NUM_SETTINGS)
         return;                 /* user defined */
@@ -2718,7 +2716,7 @@ AddLevelSettings(GtkWidget * pwFrame, AnalysisDetails * pAnalDetails)
 
     pAnalDetails->pwOptionMenu = gtk_combo_box_text_new();
 
-    for (i = (pAnalDetails->fWeakLevels ? 0 : SETTINGS_EXPERT); i < NUM_SETTINGS; i++)
+    for (i = (pAnalDetails->fWeakLevels ? 0 : SETTINGS_0PLY); i < NUM_SETTINGS; i++)
         gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(pAnalDetails->pwOptionMenu), Q_(aszSettings[i]));
     gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(pAnalDetails->pwOptionMenu), _("user defined"));
     g_signal_connect(G_OBJECT(pAnalDetails->pwOptionMenu), "changed", G_CALLBACK(SummaryMenuActivate), pAnalDetails);

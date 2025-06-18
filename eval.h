@@ -237,11 +237,11 @@ extern const char *aszDoubleTypes[NUM_DOUBLE_TYPES];
  */
 
 #define NUM_SETTINGS            9
-#define SETTINGS_4PLY           8
-#define SETTINGS_GRANDMASTER    7
-#define SETTINGS_SUPREMO        6
-#define SETTINGS_WORLDCLASS     5
-#define SETTINGS_EXPERT         4
+#define SETTINGS_4PLY		8
+#define SETTINGS_3PLY		7
+#define SETTINGS_2PLY		6
+#define SETTINGS_1PLY		5
+#define SETTINGS_0PLY		4
 #define SETTINGS_ADVANCED       3
 #define SETTINGS_INTERMEDIATE   2
 #define SETTINGS_NOVICE         1
@@ -252,7 +252,7 @@ extern evalcontext ecBasic;
 extern int aiSettingsMoveFilter[NUM_SETTINGS];
 extern const char *aszSettings[NUM_SETTINGS];
 
-#define NUM_MOVEFILTER_SETTINGS 5
+#define NUM_MOVEFILTER_SETTINGS 2
 
 extern const char *aszMoveFilterSettings[NUM_MOVEFILTER_SETTINGS];
 extern movefilter aaamfMoveFilterSettings[NUM_MOVEFILTER_SETTINGS][MAX_FILTER_PLIES][MAX_FILTER_PLIES];

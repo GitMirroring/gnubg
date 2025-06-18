@@ -297,8 +297,8 @@ rolloutcontext rcRollout = {
     },
     {
      /* player 0/1 chequerplay */
-     { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f },
-     { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }
+     { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f },
+     { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f }
     },
     {
      /* player 0/1 late cube decision */
@@ -307,8 +307,8 @@ rolloutcontext rcRollout = {
     },
     {
      /* player 0/1 late chequerplay */
-     { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f },
-     { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }
+     { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f },
+     { .fCubeful = TRUE, .nPlies = 0, .fUsePrune = FALSE, .fDeterministic = TRUE, .rNoise = 0.0f }
     },
     /* truncation point cube and chequerplay */
     { .fCubeful = TRUE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f },
@@ -343,9 +343,9 @@ rolloutcontext rcRollout = {
     0,                          /* nSkip */
 };
 
-/* parameters for `eval' and `hint' */
+/* parameters for 'eval', 'hint' and 'analysis' */
 
-#define EVALSETUP_WORLDCLASS  { \
+#define EVALSETUP_2PLY  { \
   /* evaltype */ \
   EVAL_EVAL, \
   /* evalcontext */ \
@@ -389,77 +389,22 @@ rolloutcontext rcRollout = {
   RNG_MERSENNE, /* RNG */ \
   0,  /* seed */ \
   324,    /* minimum games  */ \
-  0.01f,  /* stop when std's are lower than 0.01 */ \
+  0.01f,  /* stop when STDs are lower than 0.01 */ \
   324,    /* minimum games  */ \
   2.33f,  /* stop when best has j.s.d. for 99% confidence */ \
   0, \
-  0.0, \
+  0.0f, \
   0 \
   } \
 }
 
-/* parameters for analysis */
-
-#define EVALSETUP_SUPREMO  { \
-  /* evaltype */ \
-  EVAL_EVAL, \
-  /* evalcontext */ \
-  { .fCubeful = TRUE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, \
-  /* rolloutcontext */ \
-  { \
-    { \
-      { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* player 0 cube decision */ \
-      { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f } /* player 1 cube decision */ \
-    }, \
-    { \
-      { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* player 0 chequerplay */ \
-      { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f } /* player 1 chequerplay */ \
-    }, \
-    { \
-      { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* p 0 late cube decision */ \
-      { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f } /* p 1 late cube decision */ \
-    }, \
-    { \
-      { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* p 0 late chequerplay */ \
-      { .fCubeful = FALSE, .nPlies = 0, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f } /* p 1 late chequerplay */ \
-    }, \
-    { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* truncate cube decision */ \
-    { .fCubeful = FALSE, .nPlies = 2, .fUsePrune = TRUE, .fDeterministic = TRUE, .rNoise = 0.0f }, /* truncate chequerplay */ \
-    { MOVEFILTER_NORMAL, MOVEFILTER_NORMAL }, \
-    { MOVEFILTER_NORMAL, MOVEFILTER_NORMAL }, \
-  FALSE, /* cubeful */ \
-  TRUE, /* variance reduction */ \
-  FALSE, /* initial position */ \
-  TRUE, /* rotate */ \
-  TRUE, /* truncate at BEAROFF2 for cubeless rollouts */ \
-  TRUE, /* truncate at BEAROFF2_OS for cubeless rollouts */ \
-  FALSE, /* late evaluations */ \
-  TRUE,  /* Truncation enabled */ \
-  FALSE,  /* no stop on STD */ \
-  FALSE,  /* no stop on JSD */ \
-  FALSE,  /* no move stop on JSD */ \
-  10, /* truncation */ \
-  1296, /* number of trials */ \
-  5,  /* late evals start here */ \
-  RNG_MERSENNE, /* RNG */ \
-  0,  /* seed */ \
-  324,    /* minimum games  */ \
-  0.01f,  /* stop when std's are lower than 0.01 */ \
-  324,    /* minimum games  */ \
-  2.33f,  /* stop when best has j.s.d. for 99% confidence */ \
-  0, \
-  0.0, \
-  0 \
-  } \
-}
-
-evalsetup esEvalChequer = EVALSETUP_WORLDCLASS;
-evalsetup esEvalCube = EVALSETUP_WORLDCLASS;
-evalsetup esAnalysisChequer = EVALSETUP_SUPREMO;
-evalsetup esAnalysisCube = EVALSETUP_SUPREMO;
+evalsetup esEvalChequer = EVALSETUP_2PLY;
+evalsetup esEvalCube = EVALSETUP_2PLY;
+evalsetup esAnalysisChequer = EVALSETUP_2PLY;
+evalsetup esAnalysisCube = EVALSETUP_2PLY;
 
 movefilter aamfEval[MAX_FILTER_PLIES][MAX_FILTER_PLIES] = MOVEFILTER_NORMAL;
-movefilter aamfAnalysis[MAX_FILTER_PLIES][MAX_FILTER_PLIES] = MOVEFILTER_LARGE;
+movefilter aamfAnalysis[MAX_FILTER_PLIES][MAX_FILTER_PLIES] = MOVEFILTER_NORMAL;
 
 extern evalsetup *
 GetEvalChequer(void)
@@ -515,9 +460,9 @@ exportsetup exsExport = {
 
 
 player ap[2] = {
-    {"gnubg", PLAYER_GNU, EVALSETUP_WORLDCLASS, EVALSETUP_WORLDCLASS, MOVEFILTER_NORMAL, 0, NULL}
+    {"gnubg", PLAYER_GNU, EVALSETUP_2PLY, EVALSETUP_2PLY, MOVEFILTER_NORMAL, 0, NULL}
     ,
-    {"user", PLAYER_HUMAN, EVALSETUP_WORLDCLASS, EVALSETUP_WORLDCLASS, MOVEFILTER_NORMAL, 0, NULL}
+    {"user", PLAYER_HUMAN, EVALSETUP_2PLY, EVALSETUP_2PLY, MOVEFILTER_NORMAL, 0, NULL}
 };
 
 char default_names[2][MAX_NAME_LEN] = { "gnubg", "user" };
