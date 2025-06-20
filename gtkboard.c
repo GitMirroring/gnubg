@@ -71,7 +71,11 @@ int fGUIGrayEdit = TRUE;
 unsigned int nGUIAnimSpeed = 4;
 int animate_player, *animate_move_list, animation_finished = TRUE;
 
+#if GTK_CHECK_VERSION(3,0,0)
+static GtkBoxClass *parent_class = NULL;
+#else
 static GtkVBoxClass *parent_class = NULL;
+#endif
 
 typedef struct {
     unsigned char *TTachDice[2], *TTachPip[2], *TTachGrayDice[1], *TTachGrayPip[1];
