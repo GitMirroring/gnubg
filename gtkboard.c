@@ -336,9 +336,6 @@ board_draw_area(cairo_t * cr, gint x, gint y, gint cx, gint cy, BoardData * bd)
                     cairo_restore(cr);
                 }
             }
-#if !GTK_CHECK_VERSION(3,0,0)
-            gtk_widget_queue_draw(bd->drawing_area);
-#endif
         }
 #if defined(USE_BOARD3D)
     }
@@ -347,13 +344,14 @@ board_draw_area(cairo_t * cr, gint x, gint y, gint cx, gint cy, BoardData * bd)
 
 #if GTK_CHECK_VERSION(3,0,0)
 static gboolean
-board_draw(GtkWidget * drawing_area, cairo_t * cr, BoardData * bd)
+board_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data)
 {
-    if (bd->rd->nSize == 0)
+    BoardData *bd = user_data;
+    if (!bd || !bd->rd || bd->rd->nSize == 0)
         return TRUE;
 
-    board_draw_area(cr, 0, 0, gtk_widget_get_allocated_width(drawing_area),
-                    gtk_widget_get_allocated_height(drawing_area), bd);
+    board_draw_area(cr, 0, 0, gtk_widget_get_allocated_width(widget),
+                    gtk_widget_get_allocated_height(widget), bd);
     return TRUE;
 }
 #else
@@ -2161,6 +2159,7 @@ board_motion_notify(GtkWidget * board, GdkEventMotion * event, BoardData * bd)
         if ((ap[bd->drag_colour == -1 ? 0 : 1].pt == PLAYER_HUMAN)      /* not for computer turn */
             &&gdk_event_get_time((GdkEvent *) event) - bd->click_time > HINT_TIME) {
             bd->DragTargetHelp = legal_dest_points(bd, bd->iTargetHelpPoints);
+            gtk_widget_queue_draw(bd->drawing_area);
         }
     }
 
