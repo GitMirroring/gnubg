@@ -850,7 +850,7 @@ ChequerPrefs(BoardData * bd, int f)
 
     if (f == 0) {
         GtkWidget *pwScale, *pwBox;
-        
+
         padjRound = GTK_ADJUSTMENT(gtk_adjustment_new(1.0f - bd->rd->rRound, 0, 1, 0.1, 0.1, 0));
         g_signal_connect(G_OBJECT(padjRound), "value-changed", G_CALLBACK(UpdatePreview), NULL);
 #if GTK_CHECK_VERSION(3,0,0)
@@ -2639,8 +2639,8 @@ ExportDesign(GtkWidget * UNUSED(pw), gpointer UNUSED(data))
     szFile = NextToken(&szFile);
 #endif
 
-    /* 
-     * Copy current design 
+    /*
+     * Copy current design
      */
 
     pbde = (boarddesign *) g_malloc(sizeof(boarddesign));
@@ -2909,8 +2909,8 @@ DesignPage(GList * plBoardDesigns, BoardData * UNUSED(bd))
 #endif
     gtk_box_pack_start(GTK_BOX(pwPage), pwhbox, FALSE, FALSE, 4);
 
-    /* 
-     * buttons 
+    /*
+     * buttons
      */
 
     /* add current design */
@@ -3248,6 +3248,9 @@ BoardPreferences(GtkWidget * pwBoard)
 
     gtk_box_pack_start(GTK_BOX(pwHbox), pwNotebook, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(pwHbox), pwPrevBoard, TRUE, TRUE, 0);
+
+    /* Min width for preview board */
+    gtk_widget_set_size_request(pwPrevBoard, 400, -1);
 
     gtk_notebook_append_page(GTK_NOTEBOOK(pwNotebook), GeneralPage(bd, pwBoard), gtk_label_new(_("General")));
 

@@ -98,11 +98,13 @@ G_DEFINE_TYPE(Board, board, GTK_TYPE_BOX)
 G_DEFINE_TYPE(Board, board, GTK_TYPE_VBOX)
 #endif
 
-static int inPreviewWindow;
+static gboolean inPreviewWindow = FALSE;
 
 extern GtkWidget *
-board_new(renderdata * prd, int inPreview)
+board_new(renderdata * prd, gboolean inPreview)
 {
+    inPreviewWindow = inPreview;
+
     /* Create widget */
     GtkWidget *board = g_object_new(TYPE_BOARD, NULL);
 
@@ -124,8 +126,6 @@ board_new(renderdata * prd, int inPreview)
 
     bd->x_dice[0] = bd->y_dice[0] = 0;
     bd->x_dice[1] = bd->y_dice[1] = 0;
-
-    inPreviewWindow = inPreview;
 
     InitialPos(bd);
 
@@ -3610,17 +3610,54 @@ chequer_key_new(int iPlayer, Board * board)
 }
 
 static void
-draw_game_info(Board *board, BoardData *bd)
+init_game_info(Board *board, BoardData *bd)
 {
     GtkWidget *pw;
     GtkWidget *pwFrame;
     GtkWidget *pwvbox;
-    
+
 #if GTK_CHECK_VERSION(3,0,0)
     bd->table = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 #else
     bd->table = gtk_hbox_new(FALSE, 0);
 #endif
+
+    /* Initialize board data */
+    bd->key0 = chequer_key_new(0, board);
+    bd->mname0 = gtk_multiview_new();
+    bd->name0 = gtk_entry_new();
+    bd->lname0 = gtk_label_new(NULL);
+    bd->mscore0 = gtk_multiview_new();
+    bd->ascore0 = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 32767, 1, 1, 0));
+    bd->score0 = gtk_spin_button_new(GTK_ADJUSTMENT(bd->ascore0), 1, 0);
+    bd->lscore0 = gtk_label_new(NULL);
+    bd->key1 = chequer_key_new(1, board);
+    bd->mname1 = gtk_multiview_new();
+    bd->name1 = gtk_entry_new();
+    bd->lname1 = gtk_label_new(NULL);
+    bd->mscore1 = gtk_multiview_new();
+    bd->ascore1 = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 32767, 1, 1, 0));
+    bd->score1 = gtk_spin_button_new(GTK_ADJUSTMENT(bd->ascore1), 1, 0);
+    bd->lscore1 = gtk_label_new(NULL);
+    bd->pipcountlabel0 = gtk_label_new(NULL);
+    bd->pipcount0 = gtk_label_new(NULL);
+    bd->pipcountlabel1 = gtk_label_new(NULL);
+    bd->pipcount1 = gtk_label_new(NULL);
+    bd->amatch = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, MAXSCORE, 1, 1, 0));
+    bd->match = gtk_spin_button_new(GTK_ADJUSTMENT(bd->amatch), 1, 0);
+    bd->wmove = gtk_label_new(NULL);
+    bd->mmatch = gtk_multiview_new();
+    bd->lmatch = gtk_label_new(NULL);
+    bd->crawford = gtk_check_button_new_with_label(_("Crawford game"));
+    bd->jacoby = gtk_check_button_new_with_label(_("Jacoby"));
+    bd->pwvboxcnt = gtk_event_box_new();
+
+    /* Skip rendering when necessary */
+    if (inPreviewWindow)
+        return;
+
+    /* Render game info section */
+
     gtk_box_pack_end(GTK_BOX(board), bd->table, FALSE, TRUE, 0);
 
     /* 
@@ -3647,18 +3684,13 @@ draw_game_info(Board *board, BoardData *bd)
     gtk_box_pack_start(GTK_BOX(pwvbox), pw, FALSE, FALSE, 0);
 
     /* picture of chequer */
-
-    bd->key0 = chequer_key_new(0, board);
     gtk_box_pack_start(GTK_BOX(pw), bd->key0, FALSE, FALSE, 4);
 
     /* name of player */
 
-    bd->mname0 = gtk_multiview_new();
     gtk_box_pack_start(GTK_BOX(pw), bd->mname0, FALSE, FALSE, 8);
-
-    bd->name0 = gtk_entry_new();
     gtk_entry_set_max_length(GTK_ENTRY(bd->name0), MAX_NAME_LEN);
-    bd->lname0 = gtk_label_new(NULL);
+
 #if GTK_CHECK_VERSION(3,0,0)
     gtk_widget_set_halign(bd->lname0, GTK_ALIGN_START);
     gtk_widget_set_valign(bd->lname0, GTK_ALIGN_CENTER);
@@ -3683,13 +3715,11 @@ draw_game_info(Board *board, BoardData *bd)
 
     /* score */
 
-    bd->mscore0 = gtk_multiview_new();
+
     gtk_box_pack_start(GTK_BOX(pw), bd->mscore0, FALSE, FALSE, 8);
 
-    bd->ascore0 = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 32767, 1, 1, 0));
-    bd->score0 = gtk_spin_button_new(GTK_ADJUSTMENT(bd->ascore0), 1, 0);
     gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(bd->score0), TRUE);
-    bd->lscore0 = gtk_label_new(NULL);
+
     gtk_container_add(GTK_CONTAINER(bd->mscore0), bd->lscore0);
     gtk_container_add(GTK_CONTAINER(bd->mscore0), bd->score0);
 
@@ -3704,7 +3734,7 @@ draw_game_info(Board *board, BoardData *bd)
 
     /* pip count label */
 
-    gtk_box_pack_start(GTK_BOX(pw), bd->pipcountlabel0 = gtk_label_new(NULL), FALSE, FALSE, 4);
+    gtk_box_pack_start(GTK_BOX(pw), bd->pipcountlabel0, FALSE, FALSE, 4);
 
     /* pip count */
 
@@ -3712,7 +3742,7 @@ draw_game_info(Board *board, BoardData *bd)
               probably because it contains only labels while the other
               has a an adjustment.
     */
-    gtk_box_pack_start(GTK_BOX(pw), bd->pipcount0 = gtk_label_new(NULL), FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(pw), bd->pipcount0, FALSE, FALSE, 8);
     
 
     /* 
@@ -3740,17 +3770,14 @@ draw_game_info(Board *board, BoardData *bd)
 
     /* picture of chequer */
 
-    bd->key1 = chequer_key_new(1, board);
     gtk_box_pack_start(GTK_BOX(pw), bd->key1, FALSE, FALSE, 4);
 
     /* name of player */
 
-    bd->mname1 = gtk_multiview_new();
     gtk_box_pack_start(GTK_BOX(pw), bd->mname1, FALSE, FALSE, 8);
 
-    bd->name1 = gtk_entry_new();
     gtk_entry_set_max_length(GTK_ENTRY(bd->name1), MAX_NAME_LEN);
-    bd->lname1 = gtk_label_new(NULL);
+
 #if GTK_CHECK_VERSION(3,0,0)
     gtk_widget_set_halign(bd->lname1, GTK_ALIGN_START);
     gtk_widget_set_valign(bd->lname1, GTK_ALIGN_CENTER);
@@ -3775,13 +3802,9 @@ draw_game_info(Board *board, BoardData *bd)
 
     /* score */
 
-    bd->mscore1 = gtk_multiview_new();
     gtk_box_pack_start(GTK_BOX(pw), bd->mscore1, FALSE, FALSE, 8);
-
-    bd->ascore1 = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 32767, 1, 1, 0));
-    bd->score1 = gtk_spin_button_new(GTK_ADJUSTMENT(bd->ascore1), 1, 0);
     gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(bd->score1), TRUE);
-    bd->lscore1 = gtk_label_new(NULL);
+
     gtk_container_add(GTK_CONTAINER(bd->mscore1), bd->lscore1);
     gtk_container_add(GTK_CONTAINER(bd->mscore1), bd->score1);
 
@@ -3796,11 +3819,11 @@ draw_game_info(Board *board, BoardData *bd)
 
     /* pip count label */
 
-    gtk_box_pack_start(GTK_BOX(pw), bd->pipcountlabel1 = gtk_label_new(NULL), FALSE, FALSE, 4);
+    gtk_box_pack_start(GTK_BOX(pw), bd->pipcountlabel1, FALSE, FALSE, 4);
 
     /* pip count */
 
-    gtk_box_pack_start(GTK_BOX(pw), bd->pipcount1 = gtk_label_new(NULL), FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(pw), bd->pipcount1, FALSE, FALSE, 8);
 
 
     /* 
@@ -3819,7 +3842,7 @@ draw_game_info(Board *board, BoardData *bd)
 
     /* move string */
 
-    gtk_box_pack_start(GTK_BOX(pwvbox), bd->wmove = gtk_label_new(NULL), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(pwvbox), bd->wmove, FALSE, FALSE, 0);
     gtk_widget_set_name(bd->wmove, "gnubg-move-current");
 
     /* match length */
@@ -3833,12 +3856,9 @@ draw_game_info(Board *board, BoardData *bd)
 
     gtk_box_pack_start(GTK_BOX(pw), gtk_label_new(_("Match:")), FALSE, FALSE, 4);
 
-    gtk_box_pack_start(GTK_BOX(pw), bd->mmatch = gtk_multiview_new(), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(pw), bd->mmatch, FALSE, FALSE, 0);
 
-    gtk_container_add(GTK_CONTAINER(bd->mmatch), bd->lmatch = gtk_label_new(NULL));
-
-    bd->amatch = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, MAXSCORE, 1, 1, 0));
-    bd->match = gtk_spin_button_new(GTK_ADJUSTMENT(bd->amatch), 1, 0);
+    gtk_container_add(GTK_CONTAINER(bd->mmatch), bd->lmatch);
 
     g_signal_connect(G_OBJECT(bd->match), "value-changed", G_CALLBACK(match_change_val), bd);
 
@@ -3846,14 +3866,12 @@ draw_game_info(Board *board, BoardData *bd)
 
     /* crawford and jacoby flag */
 
-    bd->crawford = gtk_check_button_new_with_label(_("Crawford game"));
-    bd->jacoby = gtk_check_button_new_with_label(_("Jacoby"));
     /*    g_signal_connect( G_OBJECT( bd->crawford ), "toggled",
      * G_CALLBACK( board_set_crawford ), bd );
      * g_signal_connect( G_OBJECT( bd->jacoby ), "toggled",
      * G_CALLBACK( board_set_jacoby ), bd ); 
      */
-    bd->pwvboxcnt = gtk_event_box_new();
+
     if (ms.nMatchTo)
         gtk_container_add(GTK_CONTAINER(bd->pwvboxcnt), bd->crawford);
     else
@@ -3923,7 +3941,7 @@ board_init(Board * board)
 #endif
 
     /* various stuff below the board */
-    draw_game_info(board, bd);
+    init_game_info(board, bd);
 
     /* dice drawing area */
 
