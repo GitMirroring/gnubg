@@ -88,7 +88,7 @@ ButtonClickedYesNo(GtkWidget * UNUSED(pw), char *sz)
 
 }
 
-void
+static void
 toolbar_toggle_set_style(GtkToggleButton *pw, int style)
 {
     GtkWidget *stack = g_object_get_data(G_OBJECT(pw), "toggle_stack");
@@ -114,7 +114,7 @@ toggle_button_from_images(GtkWidget *pwImageOff, GtkWidget *pwImageOn, const cha
 
     GtkWidget **aapw = g_malloc(3 * sizeof(GtkWidget *));
     GtkWidget *pwm = gtk_stack_new();  // Assumed to be your own container widget
-    GtkToggleButton *pw = gtk_toggle_button_new();
+    GtkToggleButton *pw = GTK_TOGGLE_BUTTON(gtk_toggle_button_new());
     GtkWidget *pwvbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     GtkWidget *pwlabel = gtk_label_new(label);
 
@@ -247,7 +247,6 @@ extern void
 ToggleClockwise(GtkToggleAction * action, gpointer UNUSED(user_data))
 {
     int f = gtk_toggle_action_get_active(action);
-    toolbarwidget *ptw = g_object_get_data(G_OBJECT(pwToolbar), "toolbarwidget");
     GtkWidget *img =
         gtk_image_new_from_stock(f ? GNUBG_STOCK_CLOCKWISE : GNUBG_STOCK_ANTI_CLOCKWISE, GTK_ICON_SIZE_SMALL_TOOLBAR);
     gtk_widget_show(img);
@@ -510,7 +509,7 @@ ToolbarUpdate(GtkWidget * pwToolbar,
 
 #if GTK_CHECK_VERSION(3,0,0)
 static GtkWidget *
-ToolbarAddButton(GtkToolbar *pwToolbar, const char *icon_name, const char *label, const char *tooltip,
+ToolbarAddButton(GtkToolbar *pwToolbar, char *icon_name, char *label, const char *tooltip,
                  GCallback callback, void *data)
 {
     GtkToolItem *btn = gtk_tool_button_new(NULL, label);
@@ -604,7 +603,7 @@ ToolbarNew(void)
 #if GTK_CHECK_VERSION(3,0,0)
     GtkWidget *vbox_toolbar;
     GtkToolItem *ti;
-    GtkWidget *pwtb, *pwvbox;
+    GtkWidget *pwtb;
     toolbarwidget *ptw = g_malloc(sizeof(toolbarwidget));
 
     vbox_toolbar = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -663,18 +662,18 @@ ToolbarNew(void)
                                    _("Show the best moves or cube action"),
                                    G_CALLBACK(ButtonClicked), "hint");
 
-    ptw->pwEdit =
+    ptw->pwEdit = GTK_WIDGET(
         toggle_button_from_images(gtk_image_new_from_icon_name("document-edit", GTK_ICON_SIZE_LARGE_TOOLBAR),
                                   gtk_image_new_from_icon_name("document-edit", GTK_ICON_SIZE_LARGE_TOOLBAR),
-                                  _("Edit"));
+                                  _("Edit")));
     g_signal_connect(G_OBJECT(ptw->pwEdit), "toggled", G_CALLBACK(ToolbarToggleEdit), NULL);
     ti = GTK_TOOL_ITEM(ToolbarAddWidget(GTK_TOOLBAR(pwtb), ptw->pwEdit, _("Toggle Edit Mode")));
 
-    ptw->pwButtonClockwise =
+    ptw->pwButtonClockwise = GTK_WIDGET(
         toggle_button_from_images(
             gtk_image_new_from_icon_name("anti_clockwise_24", GTK_ICON_SIZE_LARGE_TOOLBAR),
             gtk_image_new_from_icon_name("clockwise_24", GTK_ICON_SIZE_LARGE_TOOLBAR),
-            _("Direction"));
+            _("Direction")));
     g_signal_connect(G_OBJECT(ptw->pwButtonClockwise), "toggled",
                      G_CALLBACK(ToolbarToggleClockwise), ptw);
     ToolbarAddWidget(GTK_TOOLBAR(pwtb), ptw->pwButtonClockwise, _("Reverse direction of play"));
@@ -1037,7 +1036,7 @@ SetToolbarStyle(int value)
         } else if (GTK_IS_TOOL_ITEM(child)) {
             GtkWidget *custom = gtk_bin_get_child(GTK_BIN(child));
             if (GTK_IS_TOGGLE_BUTTON(custom)) {
-                toolbar_toggle_set_style(custom, value);
+                toolbar_toggle_set_style(GTK_TOGGLE_BUTTON(custom), value);
             }
         }
     }
