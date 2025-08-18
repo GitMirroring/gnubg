@@ -4586,6 +4586,7 @@ null_debug(const gchar * UNUSED(dom), GLogLevelFlags UNUSED(logflags), const gch
 
 static char *pchPythonScript = NULL;
 static int fPython = FALSE;
+static int fNoX = FALSE;
 
 static gboolean
 callback_parse_python_option(const gchar *UNUSED(name), const gchar *value, gpointer UNUSED(data), GError **UNUSED(error))
@@ -4596,6 +4597,7 @@ callback_parse_python_option(const gchar *UNUSED(name), const gchar *value, gpoi
         pchPythonScript = NULL;
 
     fPython = TRUE;
+    fNoX |= pchPythonScript != NULL;
 
     return TRUE;
 }
@@ -4612,7 +4614,7 @@ main(int argc, char *argv[])
     char *met = NULL;
 
     static char *pchCommands = NULL, *lang = NULL;
-    static int fNoBearoff = FALSE, fNoX = FALSE, fSplash = FALSE, fNoTTY = FALSE, show_version = FALSE, debug = FALSE;
+    static int fNoBearoff = FALSE, fSplash = FALSE, fNoTTY = FALSE, show_version = FALSE, debug = FALSE;
     GOptionEntry ao[] = {
         {"no-bearoff", 'b', 0, G_OPTION_ARG_NONE, &fNoBearoff,
          N_("Do not use bearoff database"), NULL},
@@ -4621,7 +4623,7 @@ main(int argc, char *argv[])
         {"lang", 'l', 0, G_OPTION_ARG_STRING, &lang,
          N_("Set language to LANG"), "LANG"},
         {"python", 'p', G_OPTION_FLAG_OPTIONAL_ARG, G_OPTION_ARG_CALLBACK, callback_parse_python_option,
-         N_("Start in Python mode or evaluate code in FILE and exit"), "FILE"},
+         N_("Start in Python mode or evaluate code in FILE and exit. Implies --tty if used with a FILE argument."), "FILE"},
         {"quiet", 'q', 0, G_OPTION_ARG_NONE, &fQuiet,
          N_("Disable sound effects"), NULL},
         {"no-rc", 'r', 0, G_OPTION_ARG_NONE, &fNoRC,
