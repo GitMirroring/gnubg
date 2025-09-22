@@ -242,20 +242,20 @@ sigmoid_ps(float_vector xin)
     float_vector c;
     xin = _mm256_and_ps(xin, abs_mask.ps);      /* Abs. value by clearing signbit */
     c = sigmoid_positive_ps(xin);
-    return _mm256_blendv_ps(_mm256_sub_ps(ones.ps, c), c, mask);
+    return _mm256_blendv_ps(c, _mm256_sub_ps(ones.ps, c), mask);
 #elif defined(HAVE_SSE)
     float_vector mask = _mm_cmplt_ps(xin, _mm_setzero_ps());
     float_vector c;
     xin = _mm_and_ps(xin, abs_mask.ps); /* Abs. value by clearing signbit */
     c = sigmoid_positive_ps(xin);
     /* _mm_blendv_ps() is only available with SSE4.1 or later */
-    return _mm_or_ps(_mm_and_ps(mask, c), _mm_andnot_ps(mask, _mm_sub_ps(ones.ps, c)));
+    return _mm_or_ps(_mm_andnot_ps(mask, c), _mm_and_ps(mask, _mm_sub_ps(ones.ps, c)));
 #else
     int_vector mask = (int_vector)vcltq_f32(xin, vdupq_n_f32(0.0f));
     float_vector c;
     xin = (float_vector)vandq_s32((int_vector)xin, (int_vector)abs_mask.ps); /* Abs. value by clearing signbit */
     c = sigmoid_positive_ps(xin);
-    return vbslq_f32((uint32x4_t)mask, c, vsubq_f32(ones.ps, c));
+    return vbslq_f32((uint32x4_t)mask, vsubq_f32(ones.ps, c), c);
 #endif
 }
 
@@ -458,11 +458,11 @@ EvaluateSSE(const neuralnet * restrict pnn, const float arInput[], float ar[], f
 
 #if defined(USE_SSE2) || defined(USE_AVX) || defined(USE_NEON)
 #if defined(USE_AVX)
-    scalevec = _mm256_set1_ps(pnn->rBetaHidden);
+    scalevec = _mm256_set1_ps(-pnn->rBetaHidden);
 #elif defined(HAVE_SSE)
-    scalevec = _mm_set1_ps(pnn->rBetaHidden);
+    scalevec = _mm_set1_ps(-pnn->rBetaHidden);
 #else
-    scalevec = vdupq_n_f32(pnn->rBetaHidden);
+    scalevec = vdupq_n_f32(-pnn->rBetaHidden);
 #endif
 
     for (par = ar, i = (cHidden >> LOG2VEC_SIZE); i; i--, par += VEC_SIZE) {
