@@ -310,6 +310,23 @@ draw_rgb_image(cairo_t * cr, unsigned char *data, int x, int y, int width, int h
     g_object_unref(pixbuf);
 }
 
+/* draw the centered chequer only, leave the remainder of the pixbuf in the background color */
+
+static void
+draw_rgb_image_radial_clip(cairo_t * cr, unsigned char *data, int x, int y, int width, int height, int radius)
+{
+    GdkPixbuf *pixbuf;
+
+    pixbuf = gdk_pixbuf_new_from_data(data, GDK_COLORSPACE_RGB, FALSE, 8, width, height, width * 3, NULL, NULL);
+    gdk_cairo_set_source_pixbuf(cr, pixbuf, x, y);
+    cairo_arc(cr, (double)(x + width / 2), (double)(y + height / 2), (double)radius, 0.0, 2*M_PI);
+    cairo_clip(cr);
+    cairo_paint(cr);
+
+    g_object_unref(pixbuf);
+}
+
+
 static void
 board_draw_area(cairo_t * cr, gint x, gint y, gint cx, gint cy, BoardData * bd)
 {
@@ -1905,7 +1922,7 @@ board_button_press(GtkWidget * board, GdkEventButton * event, BoardData * bd)
                     g_assert_not_reached();
                 }
                 /* Play a sound if any chequers have moved */
-                if (memcmp(old_points, bd->points, sizeof old_points))
+                if (memcmp(old_points, bd->points, sizeof old_points) != 0)
                     playSound(SOUND_CHEQUER);
             }
             return TRUE;
@@ -2970,8 +2987,7 @@ GrayScaleColC(unsigned char *pCols)
 extern void
 board_create_pixmaps(GtkWidget * UNUSED(board), BoardData * bd)
 {
-    unsigned char auch[20 * 20 * 3],
-        auchBoard[BOARD_WIDTH * 3 * BOARD_HEIGHT * 3 * 3], auchChequers[2][CHEQUER_WIDTH * 3 * CHEQUER_HEIGHT * 3 * 4];
+    unsigned char auchBoard[BOARD_WIDTH * 3 * BOARD_HEIGHT * 3 * 3], auchChequers[2][CHEQUER_WIDTH * 3 * CHEQUER_HEIGHT * 3 * 4];
     unsigned short asRefract[2][CHEQUER_WIDTH * 3 * CHEQUER_HEIGHT * 3];
     int i, nSizeReal;
     int fgrayBoard = FALSE;
@@ -3028,6 +3044,7 @@ board_create_pixmaps(GtkWidget * UNUSED(board), BoardData * bd)
 
     for (i = 0; i < 2; i++) {
         cairo_t *cr;
+        unsigned char auch[20 * 20 * 3];
 
         CopyArea(auch, 20 * 3, auchBoard + 3 * 3 * BOARD_WIDTH * 3 + 3 * 3 * 3, BOARD_WIDTH * 3 * 3, 10, 10);
         CopyArea(auch + 10 * 3, 20 * 3, auchBoard + 3 * 3 * BOARD_WIDTH * 3 + 3 * 3 * 3, BOARD_WIDTH * 3 * 3, 10, 10);
@@ -3043,7 +3060,27 @@ board_create_pixmaps(GtkWidget * UNUSED(board), BoardData * bd)
                      asRefract[i], CHEQUER_WIDTH * 3, CHEQUER_WIDTH * 3, CHEQUER_HEIGHT * 3);
 
         cr = gtk_locdef_cairo_create_from_surface(bd->appmKey[i]);
-        draw_rgb_image(cr, auch, 0, 0, 20, 20);
+
+	/* background */
+
+#if GTK_CHECK_VERSION(3,0,0)
+        GtkStyleContext *context = gtk_widget_get_style_context(bd->table);
+        GdkRGBA color;
+
+        gtk_style_context_lookup_color(context, "theme_bg_color", &color);
+        cairo_set_source_rgba(cr, color.red, color.green, color.blue, color.alpha);
+#else
+        GtkStyle *style = gtk_widget_get_style(bd->table);
+        GdkColor color = style->bg[GTK_STATE_NORMAL];
+
+        cairo_set_source_rgba(cr, (double)color.red/65536, (double)color.green/65536, (double)color.blue/65536, 1);
+#endif
+        cairo_paint(cr);
+
+        /* chequer */
+
+        draw_rgb_image_radial_clip(cr, auch, 0, 0, 20, 20, 10);
+
         cairo_destroy(cr);
     }
 #if defined(USE_BOARD3D)
