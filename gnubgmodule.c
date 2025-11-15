@@ -726,7 +726,7 @@ PythonCubeInfo(PyObject * UNUSED(self), PyObject * args)
     int anScore[2];
     int fCrawford = ms.fCrawford;
     int fJacobyRule = ms.fJacoby;
-    int fBeavers = ms.cBeavers;
+    int fBeavers = (ms.cBeavers > 0);
     bgvariation bgv = ms.bgv;
     anScore[0] = ms.anScore[0];
     anScore[1] = ms.anScore[1];
