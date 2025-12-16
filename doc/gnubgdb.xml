@@ -4615,8 +4615,10 @@ Equity
         url="https://www.gnu.org/software/gnubg/">https://www.gnu.org/software/gnubg/</ulink>. Binaries
         and source code for <application>GNU Backgammon</application>
         can be downloaded from this site. Up to date source code can
-        be accessed through <ulink
-        url="https://savannah.gnu.org/cvs/?group=gnubg">CVS</ulink>.</para>
+        be accessed from the
+        <ulink url="https://cgit.git.savannah.gnu.org/cgit/gnubg.git/">
+        git repository</ulink>.
+        </para>
       </sect3>
       <sect3 id="gnubg-faq_general_pay">
         <title>What do I have to pay for <application>GNU
@@ -4685,7 +4687,7 @@ Equity
         sources as described <ulink
         url="https://www.gnu.org/software/gnubg/#downloading">here</ulink>
         and follow the instructions from <ulink
-        url="http://cvs.savannah.gnu.org/viewvc/*checkout*/gnubg/gnubg/INSTALL">this
+        url="https://cgit.git.savannah.gnu.org/cgit/gnubg.git/tree/INSTALL">this
         document</ulink>.</para>
         <para>Details like the exact names of the prerequisite packages will vary
           from a distribution to another but the general process will remain

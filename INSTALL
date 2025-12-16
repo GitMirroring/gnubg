@@ -4,7 +4,7 @@ Installation
 Installing GNUbg is rather painless through the use of the GNU autoconf
 package.  Simply untar the GNUbg distribution, and run the ``configure''
 script. Then ``make´´ and then, as root, ``make install´´.  If you have
-obtained the distribution from the CVS repository, run ``./autogen.sh'' first.
+obtained the distribution from the git repository, run ``./autogen.sh'' first.
 
 You are likely to want or need the following tools
 

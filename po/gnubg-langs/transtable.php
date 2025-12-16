@@ -202,7 +202,7 @@ include '__config.php';
 
             echo "<td class=\"lastupdate\">$value[3]</td>";
 
-            echo "<td class=\"download\"><a href=\"$cvs_url$lang.po?rev=$cvs_branch&content-type=text/plain\">$lang.po</a></td>";
+            echo "<td class=\"download\"><a href=\"$git_url$lang.po?h=$git_branch&content-type=text/plain\">$lang.po</a></td>";
 
             echo "</tr>\n";
 
@@ -216,7 +216,7 @@ include '__config.php';
 
         echo "<td>Template file</td><td></td><td></td><td></td><td></td><td></td>";
 
-        echo "<td class=\"download\"><a href=\"$cvs_url$potfile?rev=$cvs_branch&content-type=text/plain\">$potfile</a></td>";
+        echo "<td class=\"download\"><a href=\"$git_url$potfile?h=$git_branch&content-type=text/plain\">$potfile</a></td>";
 
         echo "</tr>\n";
 
