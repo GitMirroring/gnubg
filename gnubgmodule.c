@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2003-2004 Joern Thyssen <jth@gnubg.org>
- * Copyright (C) 2003-2022 the AUTHORS
+ * Copyright (C) 2003-2025 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1379,6 +1379,7 @@ PythonFindBestMove(PyObject * UNUSED(self), PyObject * args)
 
     fd.pml = &ml;
     fd.pboard = (ConstTanBoard) anBoard;
+    fd.fAnalyse = FALSE;
     fd.keyMove = NULL;
     fd.rThr = 0.0f;
     fd.pci = &ci;

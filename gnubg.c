@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1998-2003 Gary Wong <gtw@gnu.org>
- * Copyright (C) 1999-2023 the AUTHORS
+ * Copyright (C) 1999-2025 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2350,6 +2350,7 @@ hint_move(char *sz, gboolean show, procrecorddata * procdatarec)
         fd.pml = &ml;
         fd.pboard = msBoard();
         fd.keyMove = NULL;
+        fd.fAnalyse = TRUE;
         fd.rThr = arSkillLevel[SKILL_DOUBTFUL];
         fd.pci = &ci;
         fd.pec = &GetEvalChequer()->ec;
@@ -2381,6 +2382,7 @@ hint_move(char *sz, gboolean show, procrecorddata * procdatarec)
         fd.pml = &ml;
         fd.pboard = msBoard();
         fd.keyMove = &(pmr->ml.amMoves[pmr->n.iMove].key);
+        fd.fAnalyse = TRUE;
         fd.rThr = arSkillLevel[SKILL_DOUBTFUL];
         fd.pci = &ci;
         fd.pec = &GetEvalChequer()->ec;
@@ -5500,7 +5502,7 @@ void
 asyncFindBestMoves(findData * pfd)
 {
     if (FindnSaveBestMoves(pfd->pml, pfd->anDice[0], pfd->anDice[1], pfd->pboard,
-                           pfd->keyMove, pfd->rThr, pfd->pci, pfd->pec, pfd->aamf) < 0)
+                           pfd->keyMove, pfd->fAnalyse, pfd->rThr, pfd->pci, pfd->pec, pfd->aamf) < 0)
         MT_SetResultFailed();
 
     RefreshMoveList(pfd->pml, NULL);
@@ -5510,7 +5512,7 @@ void
 asyncFindMove(findData * pfd)
 {
     if (FindnSaveBestMoves(pfd->pml, ms.anDice[0], ms.anDice[1], pfd->pboard,
-                           pfd->keyMove, pfd->rThr, pfd->pci, pfd->pec, pfd->aamf) < 0)
+                           pfd->keyMove, pfd->fAnalyse, pfd->rThr, pfd->pci, pfd->pec, pfd->aamf) < 0)
         MT_SetResultFailed();
 }
 

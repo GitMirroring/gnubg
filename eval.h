@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1998-2002 Gary Wong <gtw@gnu.org>
- * Copyright (C) 2000-2017 the AUTHORS
+ * Copyright (C) 2000-2025 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,10 +25,10 @@
 #include "cache.h"
 
 #define EXP_LOCK_FUN(ret, name, ...) \
-	typedef ret (*f_##name)( __VA_ARGS__); \
-	extern f_##name name; \
-	extern ret name##NoLocking( __VA_ARGS__); \
-	extern ret name##WithLocking( __VA_ARGS__)
+    typedef ret (*f_##name)( __VA_ARGS__); \
+    extern f_##name name; \
+    extern ret name##NoLocking( __VA_ARGS__); \
+    extern ret name##WithLocking( __VA_ARGS__)
 
 #define WEIGHTS_VERSION "1.01"
 #define WEIGHTS_VERSION_BINARY 1.01f
@@ -366,7 +366,7 @@ EXP_LOCK_FUN(int, FindBestMove, int anMove[8], int nDice0, int nDice1,
 
 EXP_LOCK_FUN(int, FindnSaveBestMoves, movelist * pml,
              int nDice0, int nDice1, const TanBoard anBoard,
-             positionkey * keyMove, const float rThr,
+             positionkey * keyMove, int fAnalyse, const float rThr,
              const cubeinfo * pci, const evalcontext * pec, movefilter aamf[MAX_FILTER_PLIES][MAX_FILTER_PLIES]);
 
 extern void

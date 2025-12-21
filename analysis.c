@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2004 Joern Thyssen <joern@thyssen.nu>
- * Copyright (C) 2000-2024 the AUTHORS
+ * Copyright (C) 2000-2025 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -121,7 +121,7 @@ LuckFirst(const TanBoard anBoard, const int n0, const int n1, cubeinfo * pci, co
             memcpy(&anBoardTemp[0][0], &anBoard[0][0], 2 * 25 * sizeof(int));
 
             /* Find the best move for each roll at ply 0 only. */
-            if (FindnSaveBestMoves(&ml, i + 1, j + 1, (ConstTanBoard) anBoardTemp, NULL, 0.0f,
+            if (FindnSaveBestMoves(&ml, i + 1, j + 1, (ConstTanBoard) anBoardTemp, NULL, FALSE, 0.0f,
                                    pci, pec, defaultFilters) < 0) {
                 g_free(ml.amMoves);
                 return ERR_VAL;
@@ -159,7 +159,7 @@ LuckFirst(const TanBoard anBoard, const int n0, const int n1, cubeinfo * pci, co
             SwapSides(anBoardTemp);
 
             /* Find the best move for each roll at ply 0 only. */
-            if (FindnSaveBestMoves(&ml, i + 1, j + 1, (ConstTanBoard) anBoardTemp, NULL, 0.0f,
+            if (FindnSaveBestMoves(&ml, i + 1, j + 1, (ConstTanBoard) anBoardTemp, NULL, FALSE, 0.0f,
                                    &ciOpp, pec, defaultFilters) < 0) {
                 g_free(ml.amMoves);
                 return ERR_VAL;
@@ -214,7 +214,7 @@ LuckNormal(const TanBoard anBoard, const int n0, const int n1, const cubeinfo * 
             memcpy(&anBoardTemp[0][0], &anBoard[0][0], 2 * 25 * sizeof(int));
 
             /* Find the best move for each roll at ply 0 only. */
-            if (FindnSaveBestMoves(&ml, i + 1, j + 1, (ConstTanBoard) anBoardTemp, NULL, 0.0f,
+            if (FindnSaveBestMoves(&ml, i + 1, j + 1, (ConstTanBoard) anBoardTemp, NULL, FALSE, 0.0f,
                                    pci, pec, defaultFilters) < 0) {
                 g_free(ml.amMoves);
                 return ERR_VAL;
@@ -707,7 +707,7 @@ AnalyzeMove(moverecord * pmr, matchstate * pms, const listOLD * plParentGame,
                     MT_Release();
                     if (FindnSaveBestMoves(&ml, pmr->anDice[0],
                                            pmr->anDice[1],
-                                           (ConstTanBoard) pms->anBoard, &key,
+                                           (ConstTanBoard) pms->anBoard, &key, TRUE,
                                            arSkillLevel[SKILL_DOUBTFUL], &ci, &pesChequer->ec, aamf) < 0) {
                         g_free(ml.amMoves);
                         return -1;

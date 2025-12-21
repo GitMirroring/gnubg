@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2020 Aaron Tikuisis <Aaron.Tikuisis@uottawa.ca>
  * Copyright (C) 2020-2023 Isaac Keslassy <keslassy@gmail.com>
- * Copyright (C) 2022-2023 the AUTHORS
+ * Copyright (C) 2022-2025 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
                     [which calls InitQuadrant() for each score (i.e. in each scoremap square=quadrant) to initialize
                     the drawing tools].
                     It also initializes variables.
-            2. New: It calls CalcEquities(), which: 
+            2. New: It calls CalcEquities(), which:
                 - initializes the match state in each quadrant, by filling
                     psm->aaQuadrantData[i][j].ci for each i,j
                 - for each score i,j, also calls CalcQuadrantEquities() to find
@@ -55,29 +55,29 @@
     Radio buttons:
      - Changing the eval ply launches the ScoreMapPlyToggled function that also calls the functions in steps 2-5 above.
      - Changing the colour-by (ND/D or T/P) launches the ColourByToggled function that only calls UpdateScoreMapVisual
-         (no need for new equity values); 
+         (no need for new equity values);
      - and so on for the different radio buttons.
 */
 
-/* 
+/*
 01/2023: Isaac Keslassy:
 - new Settings>Options>ScoreMap panel where all default options can be configured
     -> set as a frame
     -> later moved to Settings>Analysis>ScoreMap
 - added Analyse > "Scoremap (move decision)" to the existing cube-ScoreMap entry
 - added ply display in hover of cube ScoreMap, and aligned displays
-- addressed the issues that occur when stopping computation in the middle, and 
+- addressed the issues that occur when stopping computation in the middle, and
     changed the order in which the ScoreMap displays, by using expanding squares
-- also changed the order in which operations are launched: instead of computing the 
-    cube info at all scores in one batch at first, which means a longer time before the 
-    progress-bar evaluations even start, thus troubling the user, now compute the info 
+- also changed the order in which operations are launched: instead of computing the
+    cube info at all scores in one batch at first, which means a longer time before the
+    progress-bar evaluations even start, thus troubling the user, now compute the info
     for each score just before evaluating it
 - also recomputing the cube info only on needed squares upon table scaling
 - also not recomputing the money-play equity unless needed
 - (added then canceled a smooth table scaling where we see the previous computation results
-    and colors while increasing the table size; the additional time to redisplay the previous 
-    computations is not worth it) 
-- removed label-by and layout radio buttons; they will only be configured in the 
+    and colors while increasing the table size; the additional time to redisplay the previous
+    computations is not worth it)
+- removed label-by and layout radio buttons; they will only be configured in the
     default settings panel
 - corrected "similar score" inaccuracy when scaling the table up
 - solved several bugs, including wrongly freeing memory allocations
@@ -88,7 +88,7 @@
 - new "scoreless" (unlimited) option of Money without Jacoby
 - new cube equity display options: absolute, or relative ND-D, or relative D/P-D/T
 - new tooltip hover text to explain each option
-- added effective ply mention in hover text (because gnubg sometimes returns a 2-ply eval in a 3-ply mode if 
+- added effective ply mention in hover text (because gnubg sometimes returns a 2-ply eval in a 3-ply mode if
     the eval difference between the best and 2nd-best move is large)
 - default smaller quadrant size to fit a smaller screen
 - default analysis: 2-ply
@@ -130,11 +130,11 @@ and come back, it works again. It may be a movelist construction issue.
 #include "drawboard.h"
 #include "format.h"
 #include "gtkwindows.h"
-//#include "gtkoptions.h"  
+//#include "gtkoptions.h"
 
 
 /*         GLOBAL *EXTERN) VARIABLES           */
-scoreMapPly scoreMapPlyDefault = TWO_PLY; //default -> TWO_PLY at the end 
+scoreMapPly scoreMapPlyDefault = TWO_PLY; //default -> TWO_PLY at the end
 const char* aszScoreMapPly[NUM_PLY] = {N_("0-ply"), N_("1-ply"), N_("2-ply"), N_("3-ply"), N_("4-ply") };
 const char* aszScoreMapPlyCommands[NUM_PLY] = { "0", "1", "2", "3", "4" };
 
@@ -146,7 +146,7 @@ const char* aszScoreMapMatchLengthCommands[NUM_MATCH_LENGTH]    = { "3", "5", "7
 
 scoreMapLabel scoreMapLabelDef = LABEL_AWAY;
 const char* aszScoreMapLabel[NUM_LABEL] = {N_("By away score"), N_("By true score")};
-const char* aszScoreMapLabelCommands[NUM_LABEL] = { "away", "score"}; 
+const char* aszScoreMapLabelCommands[NUM_LABEL] = { "away", "score"};
 
 /*
  * In the next for blocks, the asz*Short[] arrays are used in this file only
@@ -155,26 +155,26 @@ const char* aszScoreMapLabelCommands[NUM_LABEL] = { "away", "score"};
 scoreMapJacoby scoreMapJacobyDef = MONEY_NO_JACOBY;
 const char* aszScoreMapJacoby[NUM_JACOBY] = { N_("Unlimited game"), N_("Money game with Jacoby")};
 static const char* aszScoreMapJacobyShort[2] = { N_("Unlimited (money w/o J)"), N_("Money w/ J") };
-const char* aszScoreMapJacobyCommands[NUM_JACOBY] = { "nojacoby", "jacoby"}; 
+const char* aszScoreMapJacobyCommands[NUM_JACOBY] = { "nojacoby", "jacoby"};
 
 scoreMapCubeEquityDisplay scoreMapCubeEquityDisplayDef = CUBE_NO_EVAL;
 const char* aszScoreMapCubeEquityDisplay[NUM_CUBEDISP] = {N_("None"), N_("Equity"), N_("Double vs No Double"), N_("Double/Pass vs Double/Take")};
 static const char* aszScoreMapCubeEquityDisplayShort[NUM_CUBEDISP] = {N_("None"), N_("Equity"), N_("D-ND"), N_("D/P-D/T")};
-const char* aszScoreMapCubeEquityDisplayCommands[NUM_CUBEDISP] = { "no", "equity", "dnd", "dpdt"}; 
+const char* aszScoreMapCubeEquityDisplayCommands[NUM_CUBEDISP] = { "no", "equity", "dnd", "dpdt"};
 
 scoreMapMoveEquityDisplay scoreMapMoveEquityDisplayDef = MOVE_NO_EVAL;
 const char* aszScoreMapMoveEquityDisplay[NUM_MOVEDISP] = {N_("None"), N_("Equity"), N_("Relative to second best")};
 static const char* aszScoreMapMoveEquityDisplayShort[NUM_MOVEDISP] = {N_("None"), N_("Equity"), N_("vs 2nd best")};
-const char* aszScoreMapMoveEquityDisplayCommands[NUM_MOVEDISP] = { "no", "absolute", "relative"}; 
+const char* aszScoreMapMoveEquityDisplayCommands[NUM_MOVEDISP] = { "no", "absolute", "relative"};
 
 scoreMapColour scoreMapColourDef = ALL;
 const char* aszScoreMapColour[NUM_COLOUR] = {N_("All"), N_("Double vs No Double"), N_("Double/Pass vs Double/Take")};
 static const char* aszScoreMapColourShort[NUM_COLOUR] = {N_("All"), N_("D vs ND"), N_("D/P vs D/T")};
-const char* aszScoreMapColourCommands[NUM_COLOUR] = { "all", "dnd", "dpdt"}; 
+const char* aszScoreMapColourCommands[NUM_COLOUR] = { "all", "dnd", "dpdt"};
 
 scoreMapLayout scoreMapLayoutDef = VERTICAL;
 const char* aszScoreMapLayout[NUM_LAYOUT] = { N_("Bottom"), N_("Right") };
-const char* aszScoreMapLayoutCommands[NUM_LAYOUT] = { "bottom", "right"}; 
+const char* aszScoreMapLayoutCommands[NUM_LAYOUT] = { "bottom", "right"};
 
 
 
@@ -245,7 +245,7 @@ static const float NOBORDER[3]={-1.0,-1.0,-1.0};
 
 // score type definitions, for displaying special quadrants
 typedef enum {NOT_TRUE_SCORE, TRUE_SCORE, LIKE_TRUE_SCORE} scorelike;
-typedef enum {REGULAR, SCORELESS, MONEY_J, DMP, GG, GS} specialscore; 
+typedef enum {REGULAR, SCORELESS, MONEY_J, DMP, GG, GS} specialscore;
 typedef enum {ALLOWED, NO_CRAWFORD_DOUBLING, MISMATCHED_SCORES, UNREASONABLE_CUBE, UNALLOWED_DOUBLE, YET_UNDEFINED} allowedscore;
 
 
@@ -285,20 +285,20 @@ typedef struct {
     int anMove[8];
 } weightedDecision;
 
-typedef struct { 
+typedef struct {
 // Main structure, holding nearly everything
     // 1. shared b/w cube and move scoremaps:
     int cubeScoreMap; // whether we want a ScoreMap for cube or move (=1 for cube, =0 for move)
-    const matchstate *pms; // state of the *true* match 
+    const matchstate *pms; // state of the *true* match
     matchstate msTemp; // temp match state at some score (i,j)
     evalcontext ec; // The eval context (takes into account the selected ply)
     int tableSize; // This actually represents the max away score minus 1 (since we never show score=1)
     int truenMatchTo;   //match length of the real game (before scoremap was launched)
     // int tempScaleUp; //temporary indicator for when the table size is increased
     // int oldTableSize; //keeping the old size in the above case
-    
+
     /* current selected options*/
-    scoreMapLabel labelBasedOn; 
+    scoreMapLabel labelBasedOn;
     scoreMapColour colourBasedOn;
     scoreMapCubeEquityDisplay displayCubeEval;
     scoreMapMoveEquityDisplay displayMoveEval;
@@ -327,7 +327,7 @@ typedef struct {
     GtkWidget *pwHContainer;    // container for options in horizontal layout
     GtkWidget *pwVContainer;    // container for options in vertical layout
     GtkWidget *pwLastContainer; // points to last used container (either vertical or horizontal)
-    GtkWidget *pwOptionsBox;          // options in horizontal/vertical layout 
+    GtkWidget *pwOptionsBox;          // options in horizontal/vertical layout
 
     // 2. specific to cube scoremap:
     GtkWidget *apwFullGauge[GAUGE_SIZE];    // for cube scoremap
@@ -349,7 +349,7 @@ static GtkWidget *pwDialog = NULL;
 #define MATCH_SIZE(psm) (psm->matchLength) //(psm->cubeScoreMap ? psm->cubematchLength : psm->movematchLength)
 
 //coding reminder: (1) static = valid in this file only; (2) we need to define a function before calling it, so if a function A calls a function B and A is written before B, we define B at the start
-static void 
+static void
 CubeValToggled(GtkWidget * pw, scoremap * psm);
 
 static int isAllowed (int i, int j, scoremap * psm) {
@@ -370,7 +370,7 @@ REASON 3. more tricky: we don't allow an absurd cubing situation, eg someone lea
         if ( (i==0 && j==1) || (i==1 && j==0) || (i==1 && j==1) ) {
             psm->aaQuadrantData[i][j].isAllowedScore = MISMATCHED_SCORES;
             if (i==1 && j==1)
-//                strcpy(psm->aaQuadrantData[i][j].unallowedExplanation, _("11This score is not allowed because one player is in Crawford while the other is in post-Crawford"));          
+//                strcpy(psm->aaQuadrantData[i][j].unallowedExplanation, _("11This score is not allowed because one player is in Crawford while the other is in post-Crawford"));
                 strcpy(psm->aaQuadrantData[i][j].unallowedExplanation, _("This score is not allowed because both players cannot simultaneously reach one-away Crawford scores"));
             else
                 strcpy(psm->aaQuadrantData[i][j].unallowedExplanation, _("This score is not allowed because one player is in Crawford while the other is in post-Crawford"));
@@ -380,7 +380,7 @@ REASON 3. more tricky: we don't allow an absurd cubing situation, eg someone lea
             psm->aaQuadrantData[i][j].isAllowedScore = NO_CRAWFORD_DOUBLING;
             strcpy(psm->aaQuadrantData[i][j].unallowedExplanation, _("Doubling is not allowed in a Crawford game"));
             return 0;
-        } else { 
+        } else {
             // REASON 3
             //if I have doubled and got signednCube=-4, ie my opponent owns a 4-cube => the previous cube was +2
             //      => it cannot be that I am 1-away or 2-away from victory (or I wouldn't have had any reason to double);
@@ -464,11 +464,11 @@ In Move ScoreMap: Calculates the ordered best moves and their equities.
         } else {
             if (recomputeFully) {
                 float aarOutput[2][NUM_ROLLOUT_OUTPUTS];
-                if (GeneralCubeDecisionE(aarOutput, psm->pms->anBoard, & pq->ci, & psm->ec, NULL)) { 
+                if (GeneralCubeDecisionE(aarOutput, psm->pms->anBoard, & pq->ci, & psm->ec, NULL)) {
                         //GeneralCubeDecisionE is from eval.c
                         // extern int GeneralCubeDecisionE(float aarOutput[2][NUM_ROLLOUT_OUTPUTS], const TanBoard anBoard,
                         // cubeinfo * const pci, const evalcontext * pec, const evalsetup * UNUSED(pes))
-                    /*If we are within this condition, it means there was a problem, e.g. 
+                    /*If we are within this condition, it means there was a problem, e.g.
                     the user stopped the computation in the middle*/
                     pq->ndEquity=-1000;
                     pq->dtEquity=-1000;
@@ -489,7 +489,7 @@ In Move ScoreMap: Calculates the ordered best moves and their equities.
         return 0;
     } else {  //move scoremap
         if (FindnSaveBestMoves(&(pq->ml),psm->pms->anDice[0],psm->pms->anDice[1], (ConstTanBoard) psm->pms->anBoard, NULL, //or pkey
-                                        arSkillLevel[SKILL_DOUBTFUL], &(pq->ci), &psm->ec, aamfAnalysis) <0) { 
+                                        FALSE, arSkillLevel[SKILL_DOUBTFUL], &(pq->ci), &psm->ec, aamfAnalysis) <0) {
             strcpy(pq->decisionString,"");
             pq->ml.cMoves=0; //also used for DestroyDialog
             pq->ml.amMoves = NULL;
@@ -499,9 +499,9 @@ In Move ScoreMap: Calculates the ordered best moves and their equities.
         //g_assert(pq->ml.cMoves > 0);
         if (pq->ml.cMoves > 0) {
             FormatMove(pq->decisionString, (ConstTanBoard) psm->pms->anBoard, pq->ml.amMoves[0].anMove);
-            //g_free(pq->ml.amMoves);        
+            //g_free(pq->ml.amMoves);
             return 0;
-        } else {    
+        } else {
             g_message("Problem, no moves found. FindnSaveBestMoves returned %d, %d, %1.3f; decision: %s\n",pq->ml.cMoves,pq->ml.cMaxMoves, pq->ml.rBestScore,pq->decisionString);
             return -1;
         }
@@ -783,11 +783,11 @@ As a result, the function writes in rgbvals the desired border color for the qua
         // rgbvals[RED]=(1.0f-r)/2.0f;  //<---- here the /2.0 to avoid a purple-ish color
         // rgbvals[GREEN]=1.0f-r;
         // rgbvals[BLUE]=1.0f;
-    } else { 
+    } else {
         // at this point all cases should be covered but some old compilers don't see it
-	// and complain that bestDecisionColor may later be used uninitialized
+        // and complain that bestDecisionColor may later be used uninitialized
         g_assert_not_reached();
-	bestDecisionColor = -1;
+        bestDecisionColor = -1;
     }
 
     //colors the quadrant in the desired (light) color
@@ -910,7 +910,7 @@ Note: we add one more space for "ND" b/c it has one less character than D/T, D/P
 
     char ssz[200];
     char space2[50];
-    
+
     strcpy(buf, "");
 
     switch (pq->isTrueScore) {
@@ -928,7 +928,7 @@ Note: we add one more space for "ND" b/c it has one less character than D/T, D/P
             /* "" in buf is fine */
             break;
     }
-    switch (pq->isSpecialScore) {  //the square is special: MONEY_J, DMP etc. => write in hover text 
+    switch (pq->isSpecialScore) {  //the square is special: MONEY_J, DMP etc. => write in hover text
         case SCORELESS:
             strcpy(buf, "<b>Unlimited (money, no Jacoby):</b>\n\n");
             break;
@@ -964,14 +964,14 @@ Note: we add one more space for "ND" b/c it has one less character than D/T, D/P
         else {
             sprintf(space2, "%*c", DIGITS + 7, ' ');   //define spacing before putting ply of 1st line
             if (pq->dec == ND) { //ND is best //format: "+" forces +/-; .*f displays f with precision DIGITS
-                sprintf(ssz, _("<tt>1. ND \t%+.*f%s(%u-ply)\n2. D/P\t%+.*f  %+.*f  (%u-ply)\n3. D/T\t%+.*f  %+.*f  (%u-ply)</tt>"), DIGITS,nd,space2,psm->ec.nPlies,DIGITS,dp,DIGITS,dp-nd,psm->ec.nPlies,DIGITS,dt,DIGITS,dt-nd,psm->ec.nPlies);//pq->ml.amMoves[0].esMove.ec.nPlies 
+                sprintf(ssz, _("<tt>1. ND \t%+.*f%s(%u-ply)\n2. D/P\t%+.*f  %+.*f  (%u-ply)\n3. D/T\t%+.*f  %+.*f  (%u-ply)</tt>"), DIGITS,nd,space2,psm->ec.nPlies,DIGITS,dp,DIGITS,dp-nd,psm->ec.nPlies,DIGITS,dt,DIGITS,dt-nd,psm->ec.nPlies);//pq->ml.amMoves[0].esMove.ec.nPlies
             } else if (pq->dec == DT) {//DT is best
                 sprintf(ssz, _("<tt>1. D/T\t%+.*f%s(%u-ply)\n2. D/P\t%+.*f  %+.*f  (%u-ply)\n3. ND \t%+.*f  %+.*f  (%u-ply)</tt>"), DIGITS,dt,space2,psm->ec.nPlies,DIGITS,dp,DIGITS,dp-dt,psm->ec.nPlies,DIGITS,nd,DIGITS,nd-dt,psm->ec.nPlies);
             } else if (pq->dec == DP) { //DP is best
                 sprintf(ssz, _("<tt>1. D/P\t%+.*f%s(%u-ply)\n2. D/T\t%+.*f  %+.*f  (%u-ply)\n3. ND \t%+.*f  %+.*f  (%u-ply)</tt>"), DIGITS,dp, space2,psm->ec.nPlies,DIGITS,dt,DIGITS,dt-dp,psm->ec.nPlies,DIGITS,nd,DIGITS,nd-dp,psm->ec.nPlies);
             } else { //TGTD is best
                 sprintf(ssz, _("<tt>1. ND \t%+.*f%s(%u-ply)\n2. D/T\t%+.*f  %+.*f  (%u-ply)\n3. D/P\t%+.*f  %+.*f  (%u-ply)</tt>"), DIGITS,nd, space2,psm->ec.nPlies,DIGITS,dt,DIGITS,dt-nd,psm->ec.nPlies,DIGITS,dp,DIGITS,dp-nd,psm->ec.nPlies);
-            }                
+            }
         }
         strcat(buf,ssz);
     } else { // move scoremap
@@ -1000,7 +1000,7 @@ Note: we add one more space for "ND" b/c it has one less character than D/T, D/P
             //      not enough")
             // finally, if some lines have a positive equity (".012") and others a negative ("-.012"), then the "-"
             //      breaks the alignment by 1 character, so we want to take it into account as well
-            // ADDED: it turns out that gnubg sometimes returns a 2-ply eval even in a 3-ply mode if the eval difference 
+            // ADDED: it turns out that gnubg sometimes returns a 2-ply eval even in a 3-ply mode if the eval difference
             //      between the best and 2nd-best move is large. We now mention the n-ply in the hover text.
             len0 = (int)strlen(szMove0) + (pq->ml.amMoves[0].rScore < -0.0005f); //length, + 1 potentially b/c of the "-"
             len1 = (int)strlen(szMove1) + (pq->ml.amMoves[1].rScore < -0.0005f);
@@ -1033,7 +1033,7 @@ Note: we add one more space for "ND" b/c it has one less character than D/T, D/P
             strcat(buf,ssz);
         } else {
             /* This cannot happen. If there is no legal move there is no
-               move analysis and no Score Map button to bring us here. 
+               move analysis and no Score Map button to bring us here.
                ... Actually this may happen if the user stops the computation.
                The new hover text reflects it.*/
             //g_assert_not_reached();
@@ -1126,7 +1126,7 @@ Specifically: (1) The color of each square (2) The hover text of each square (3)
 {
     int i, j, i2, j2;
 
-    //start by the top-left money square 
+    //start by the top-left money square
     ColourQuadrant(& psm->moneygQuadrant, & psm->moneyQuadrantData, psm);
 
     // start by updating the score labels for each row/col and the color and hover text
@@ -1206,11 +1206,11 @@ Specifically: (1) The color of each square (2) The hover text of each square (3)
         // - but if e.g. the true match size is 3 and we simulate with up to 7-away, then we keep delta=0
         // i.e. we use the max of the two match sizes (true and fake) as the one to display
 
-        char sz[100]; 
+        char sz[100];
         char longsz[100];
         char hoversz[100]={""};
         char empty[100]={""};
-        int delta = MAX(0, psm->truenMatchTo - MATCH_SIZE(psm)); 
+        int delta = MAX(0, psm->truenMatchTo - MATCH_SIZE(psm));
 
         if (psm->cubeScoreMap) {
             if (psm->labelBasedOn == LABEL_AWAY)  {
@@ -1218,7 +1218,7 @@ Specifically: (1) The color of each square (2) The hover text of each square (3)
                 sprintf(longsz, _(" %d-away "), i+2);
             } else {
                 sprintf(sz, "%d", i2 + delta);
-                sprintf(longsz, " %d/%d ", i2 + delta, psm->tableSize + 1 + delta); 
+                sprintf(longsz, " %d/%d ", i2 + delta, psm->tableSize + 1 + delta);
             }
         } else {//move scoremap
             if (psm->labelBasedOn == LABEL_AWAY) {
@@ -1262,7 +1262,7 @@ Specifically: (1) The color of each square (2) The hover text of each square (3)
             gtk_label_set_text(GTK_LABEL(psm->apwColLabel[i2]), longsz);
         }
         gtk_widget_set_tooltip_markup(psm->apwRowLabel[i2], hoversz);
-        gtk_widget_set_tooltip_markup(psm->apwColLabel[i2], hoversz); 
+        gtk_widget_set_tooltip_markup(psm->apwColLabel[i2], hoversz);
 
         // } else {
         //     // Pango.AttrList attrs = new Pango.AttrList ();
@@ -1343,7 +1343,7 @@ Specifically: (1) The color of each square (2) The hover text of each square (3)
 static specialscore
 UpdateIsSpecialScore(const scoremap * psm, int i, int j)
 /*
-- In move ScoreMap, determines whether a quadrant corresponds to a special score like SCORELESS, MONEY_J, DMP, 
+- In move ScoreMap, determines whether a quadrant corresponds to a special score like SCORELESS, MONEY_J, DMP,
 GG, GS; or is just REGULAR.
 Note: we only apply a strict definition for cube==1. We could widen the definition if it's too strict: e.g.,
 if we are 3-away 4-away and cube=4, then it's practically DMP; etc.
@@ -1351,7 +1351,7 @@ if we are 3-away 4-away and cube=4, then it's practically DMP; etc.
 i,j indicate indices in aaQuadrantData. We use i=j=-1 for the money square.
 */
 {
-    if (i<0 || j<0) {//both in cube and move scoremaps 
+    if (i<0 || j<0) {//both in cube and move scoremaps
         if (psm->moneyJacoby)
             return MONEY_J;
         else
@@ -1403,7 +1403,7 @@ UpdateIsTrueScore(const scoremap * psm, int i, int j)
                 scoreLike=((j == 0) && (i == psm->pms->nMatchTo-psm->pms->anScore[0])) ? 1 : 0; // j=0 post-C
         } else //square is not allowed
             scoreLike = 0;
-    
+
         //in addition, we want to take the cube value into account when deciding whether a quadrant is indeed "score-like"
         // we will require the cube situation (as shown at the bottom in the cube radio buttons) to be the same as in the true game
         if (scoreLike) {//we want to see if we need to cancel b/c the cube is not the same
@@ -1426,13 +1426,13 @@ UpdateIsTrueScore(const scoremap * psm, int i, int j)
             return (psm->pms->nMatchTo == MATCH_SIZE(psm) || psm->labelBasedOn==LABEL_AWAY) ? TRUE_SCORE : LIKE_TRUE_SCORE;
         }
         else
-            return NOT_TRUE_SCORE;    
+            return NOT_TRUE_SCORE;
     }
 }
 
 
-static void 
-InitQuadrantCubeInfo(scoremap * psm, int i, int j) 
+static void
+InitQuadrantCubeInfo(scoremap * psm, int i, int j)
 {
     /* cubeinfo */
     /* NOTE: it is important to change the score and cube value in the match, and not in the
@@ -1445,7 +1445,7 @@ InitQuadrantCubeInfo(scoremap * psm, int i, int j)
         //              i=tableSize-1=matchLength-2 <-> score=m-1-(m-2)-1=0  <->matchLength-away
         psm->msTemp.anScore[0] = psm->tableSize - i - 1;
         psm->msTemp.anScore[1] = psm->tableSize - j - 1;
-        
+
         /* Create cube info using this data */
         //     psm->aaQuadrantData[i][j] = (scoremap *) g_malloc(sizeof(scoremap));
         GetMatchStateCubeInfo(&(psm->aaQuadrantData[i][j].ci), & psm->msTemp);
@@ -1480,7 +1480,7 @@ InitQuadrantCubeInfo(scoremap * psm, int i, int j)
             }
             else  //j-away
                 psm->msTemp.anScore[1] = MATCH_SIZE(psm) - j;
-        
+
             // // Create cube info using this data
             //     psm->aaQuadrantData[i][j] = (scoremap *) g_malloc(sizeof(scoremap));
             GetMatchStateCubeInfo(&(psm->aaQuadrantData[i][j].ci), & psm->msTemp);
@@ -1495,13 +1495,13 @@ InitQuadrantCubeInfo(scoremap * psm, int i, int j)
             psm->aaQuadrantData[i][j].isTrueScore = NOT_TRUE_SCORE;
             psm->aaQuadrantData[i][j].isSpecialScore = REGULAR; //if the cube makes the position unallowed
             // (eg I cannot double to 4 when 1-away...) we don't want to mark any squares as special
-            
-        }   
+
+        }
     }
 }
 
-// void 
-// InitQuadrantCubeInfo(scoremap * psm, int i, int j) 
+// void
+// InitQuadrantCubeInfo(scoremap * psm, int i, int j)
 // {
 
 //     if (isAllowed(i, j, psm)) {
@@ -1557,8 +1557,8 @@ InitQuadrantCubeInfo(scoremap * psm, int i, int j)
 //         psm->aaQuadrantData[i][j].isTrueScore = NOT_TRUE_SCORE;
 //         psm->aaQuadrantData[i][j].isSpecialScore = REGULAR; //if the cube makes the position unallowed
 //         // (eg I cannot double to 4 when 1-away...) we don't want to mark any squares as special
-        
-//     }   
+
+//     }
 // }
 
 
@@ -1578,10 +1578,10 @@ CalcEquities(scoremap * psm, int oldSize, int updateMoneyOnly, int calcOnly)
     When calcOnly is set: only do the 2nd step (e.g. if we only changed the ply, no need to recompute the cubeinfo array)
 */
 {
-    /* first free the allocation in money quadrant if it's recomputed (in move scoremap, because 
-    findnSaveBestMoves does a malloc) 
-    */    
-        
+    /* first free the allocation in money quadrant if it's recomputed (in move scoremap, because
+    findnSaveBestMoves does a malloc)
+    */
+
     if (!psm->cubeScoreMap && (oldSize==0 || updateMoneyOnly) && psm->moneyQuadrantData.ml.cMoves < IMPOSSIBLE_CMOVES) {
         //g_message("money freed: cMoves=%d",psm->moneyQuadrantData.ml.cMoves);
         g_free(psm->moneyQuadrantData.ml.amMoves);
@@ -1589,9 +1589,9 @@ CalcEquities(scoremap * psm, int oldSize, int updateMoneyOnly, int calcOnly)
     }
 
     if(!calcOnly) {
-        // matchstate ams = (*psm->pms); // Make a copy of the "master" matchstate  
+        // matchstate ams = (*psm->pms); // Make a copy of the "master" matchstate
         //         //[note: backgammon.h defines an extern ms => using a different name]
-        // psm->pmsTemp = &ams; 
+        // psm->pmsTemp = &ams;
         //psm->pmsTemp->nMatchTo = MATCH_SIZE(psm); // Set the match length
         psm->msTemp.nCube = abs(psm->signednCube); // Set the cube value
         if (psm->signednCube == 1) // Cube value 1: centre the cube
@@ -1599,8 +1599,8 @@ CalcEquities(scoremap * psm, int oldSize, int updateMoneyOnly, int calcOnly)
         else // Cube value > 1: Uncentre the cube. Ensure that the player on roll owns the cube (and thus can double)
             psm->msTemp.fCubeOwner = (psm->signednCube > 0) ? (psm->msTemp.fMove) : (1 - psm->msTemp.fMove);
 
-        /*top-left quadrant: we always recompute the money-play value; now set whether it's money play or an unlimited match 
-        in mps->pmsTemp we only change nMatchTo and fJacoby; below for non-money-play we change back nMatchTo, but don't 
+        /*top-left quadrant: we always recompute the money-play value; now set whether it's money play or an unlimited match
+        in mps->pmsTemp we only change nMatchTo and fJacoby; below for non-money-play we change back nMatchTo, but don't
         touch fJacoby, as we assume that it has no impact there*/
         if (oldSize==0 || updateMoneyOnly) { //if the money square equity wasn't already computed, or we ask for recomputation
             if (psm->labelTopleft == MONEY_JACOBY) {
@@ -1611,7 +1611,7 @@ CalcEquities(scoremap * psm, int oldSize, int updateMoneyOnly, int calcOnly)
                 psm->msTemp.nMatchTo = 0;
                 psm->msTemp.fJacoby = 0; //disabling the impact of Jacoby
             }
-            GetMatchStateCubeInfo(&(psm->moneyQuadrantData.ci), & psm->msTemp); 
+            GetMatchStateCubeInfo(&(psm->moneyQuadrantData.ci), & psm->msTemp);
             psm->moneyQuadrantData.isTrueScore=UpdateIsTrueScore(psm, -1, -1);
             psm->moneyQuadrantData.isSpecialScore=UpdateIsSpecialScore(psm, -1, -1);
             psm->moneyQuadrantData.isAllowedScore=ALLOWED;
@@ -1638,24 +1638,24 @@ CalcEquities(scoremap * psm, int oldSize, int updateMoneyOnly, int calcOnly)
         }
 
         /*
-        Next, we fill the table. i,j correspond to the locations in the table. 
-            - In cube ScoreMap, the away-scores are 2+i, 2+j (because the (0,0)-entry of 
+        Next, we fill the table. i,j correspond to the locations in the table.
+            - In cube ScoreMap, the away-scores are 2+i, 2+j (because the (0,0)-entry of
                 the table corresponds to 2-away 2-away).
-            - In move scoremap: i=0->1-away post Crawford; i=1->1-away Crawford; 
+            - In move scoremap: i=0->1-away post Crawford; i=1->1-away Crawford;
                 i=2+->i-away
 
-        In a first version, we incremented i from 1 to tableSize, then j similarly, 
+        In a first version, we incremented i from 1 to tableSize, then j similarly,
         i.e. row by row in (i,j) (or col by col as seen by the user with "away" labels).
-        
-        But if the user interrupts the process in the middle, maybe it's better to progress 
-        using growing squares or by computing the diagonal first. Here we implement the 
+
+        But if the user interrupts the process in the middle, maybe it's better to progress
+        using growing squares or by computing the diagonal first. Here we implement the
         growing squares. (Thanks to Philippe Michel for the feedback!)
 
-        In a third version, instead of first initializing all of the cubeinfo values before starting a 
+        In a third version, instead of first initializing all of the cubeinfo values before starting a
         progress bar, which may upset the user since the bar doesn't seem to start, we now
-        compute both at the same : (1) the cubeinfo and (2) the resulting equity values; so we need 
-        to combine the (aux,aux2) indexation values (which are used for expanding squares) with the 
-        (i,j) ones. 
+        compute both at the same : (1) the cubeinfo and (2) the resulting equity values; so we need
+        to combine the (aux,aux2) indexation values (which are used for expanding squares) with the
+        (i,j) ones.
         */
         if(!calcOnly) {
             psm->msTemp.nMatchTo = MATCH_SIZE(psm); // Set the match length
@@ -1678,11 +1678,11 @@ CalcEquities(scoremap * psm, int oldSize, int updateMoneyOnly, int calcOnly)
                 /*Note: in move scoremaps, we check a square validity in InitQuadrantCubeInfo() -> isAllowed();
                     [and maybe do so again implicitly in  CalcQuadrantEquities()->FindnSaveBestMoves()]
                 However in cube scoremaps, we only do it later in CalcQuadrantEquities()->GetDPEq()
-                */               
+                */
                 if(!calcOnly) // skip with ScoreMapPlyToggled
                     InitQuadrantCubeInfo(psm, aux2, aux);
                 if (psm->aaQuadrantData[aux2][aux].isAllowedScore == ALLOWED || psm->cubeScoreMap) {
-                    //Only running the line below when (i >= oldSize || j >= oldSize) 
+                    //Only running the line below when (i >= oldSize || j >= oldSize)
                     // [now aux>=oldSize] yields a bug with grey squares on resize
                     // if(aux>=oldSize) {
                         CalcQuadrantEquities(&psm->aaQuadrantData[aux2][aux], psm, (aux >= oldSize));
@@ -1696,14 +1696,14 @@ CalcEquities(scoremap * psm, int oldSize, int updateMoneyOnly, int calcOnly)
                     strcpy(psm->aaQuadrantData[aux2][aux].decisionString, "");
                     // psm->aaQuadrantData[aux2][aux].ml.cMoves=0; //also used for DestroyDialog
                 }
-                if (aux2<aux) {     //same as above but now doing the other side of the square, without the 
+                if (aux2<aux) {     //same as above but now doing the other side of the square, without the
                                     //(aux,aux) vertex on the diagonal
                     if(!psm->cubeScoreMap && psm->aaQuadrantData[aux][aux2].ml.cMoves < IMPOSSIBLE_CMOVES) {
                         // g_message("DELETED+FREED: aux=%d, aux2=%d, tableSize=%d, moves=%d......",aux,aux2,psm->tableSize,psm->aaQuadrantData[aux][aux2].ml.cMoves);
                         g_free(psm->aaQuadrantData[aux][aux2].ml.amMoves);
                         psm->aaQuadrantData[aux][aux2].ml.cMoves = IMPOSSIBLE_CMOVES;
                     }
-                    if(!calcOnly) 
+                    if(!calcOnly)
                         InitQuadrantCubeInfo(psm, aux, aux2);
                     if (psm->aaQuadrantData[aux][aux2].isAllowedScore == ALLOWED || psm->cubeScoreMap) {
                         // if(aux>=oldSize) {
@@ -1714,7 +1714,7 @@ CalcEquities(scoremap * psm, int oldSize, int updateMoneyOnly, int calcOnly)
                     }
                     else {
                         strcpy(psm->aaQuadrantData[aux][aux2].decisionString, "");
-                        //psm->aaQuadrantData[aux][aux2].ml.cMoves=0; //also used for DestroyDialog                        
+                        //psm->aaQuadrantData[aux][aux2].ml.cMoves=0; //also used for DestroyDialog
                     }
                 }
             }
@@ -1726,7 +1726,7 @@ CalcEquities(scoremap * psm, int oldSize, int updateMoneyOnly, int calcOnly)
                 psm->aaQuadrantData[i][j].isTrueScore = UpdateIsTrueScore(psm, i, j);
             }
         }
-        
+
         ProgressEnd();
 
     }
@@ -1734,7 +1734,6 @@ CalcEquities(scoremap * psm, int oldSize, int updateMoneyOnly, int calcOnly)
     // if(!calcOnly) {
     //     for (int i = 0; i < psm->tableSize; i++) {
     //         for (int j = 0; j < psm->tableSize; j++) {
- 
     //     }
     // }
     /* **************************** */
@@ -1742,7 +1741,7 @@ CalcEquities(scoremap * psm, int oldSize, int updateMoneyOnly, int calcOnly)
 
     if (!psm->cubeScoreMap)
         FindMostFrequentMoves(psm);
-    
+
     return 0;
 }
 
@@ -1762,7 +1761,7 @@ The resulting string is written to "output".
 
     if (pch == NULL) { //nothing in 2nd half
         size_t halfLen = (len+1)/2;
-	char *prefix = g_strndup(input, halfLen);
+        char *prefix = g_strndup(input, halfLen);
 
         pch = strrchr(prefix,' '); // find last space in 1st half
         if (pch == NULL) // No space => no cut.
@@ -1860,8 +1859,8 @@ The function updates the decision text in each square.
     //g_print("... %s:%s",pq->decisionString,pq->equityText);
     /* build the text that will be displayed in the quadrant
 
-    Version 1: we don't want to display text if (1) we are in the middle of scaling up the table size (psm->tempScaleUp == 1) 
-    and (2) we display a square for which we haven't computed the decision yet, i.e. beyond psm->oldTableSize; 
+    Version 1: we don't want to display text if (1) we are in the middle of scaling up the table size (psm->tempScaleUp == 1)
+    and (2) we display a square for which we haven't computed the decision yet, i.e. beyond psm->oldTableSize;
     also within this function, i,j are not well defined for the money square, so we make sure to allow text
     for the money square by using the identifying (*pi < 0) from above
 
@@ -1883,7 +1882,7 @@ The function updates the decision text in each square.
                 //    strcat(buf, _("Current: "));
 
                 if (psm->moneyJacoby)  // we analyze with Jacoby
-                    strcat(buf, _("Money")); 
+                    strcat(buf, _("Money"));
                 else
                     strcat(buf, _("Unlimited"));
             }
@@ -1895,8 +1894,8 @@ The function updates the decision text in each square.
             strcat(buf, aux);	//pq->decisionString);
             strcat(buf, "</b>");
             // pango_layout_set_markup(layout, buf, -1);
-        } else if (pq->isSpecialScore != REGULAR) { //the square is special: MONEY, DMP etc. => write in text             
-            if (pq->isSpecialScore == MONEY_J) 
+        } else if (pq->isSpecialScore != REGULAR) { //the square is special: MONEY, DMP etc. => write in text
+            if (pq->isSpecialScore == MONEY_J)
                 strcpy(buf, _("Money"));
             else if (pq->isSpecialScore == SCORELESS)
                 strcpy(buf, _("Unlimited"));
@@ -1921,10 +1920,10 @@ The function updates the decision text in each square.
     // }
     //strcat(buf,NULL);
     //tmp = g_markup_escape_text(buf, -1); // to avoid non-NULL terminated messages -> didn't work, displays the "html"
-    //if (buf != (const char *) NULL) // this one also didn't work, everything goes to the "else" 
+    //if (buf != (const char *) NULL) // this one also didn't work, everything goes to the "else"
     pango_layout_set_markup(layout, buf, -1);
     // else
-    //     pango_layout_set_text(layout, tmp, -1);   
+    //     pango_layout_set_text(layout, tmp, -1);
     //g_free(tmp);
     //g_message("buf: %d->%s\n",*pi , buf);
 
@@ -2114,7 +2113,7 @@ InitQuadrant(gtkquadrant * pq, GtkWidget * ptable, scoremap * psm, const int qua
 //     for (index=0; index<4; index++) {
 //     // // Set user_data to an encoding of which grid entry this is
 //     //     piArr[index] = (int *) g_malloc(sizeof(int));
-//     //     *piArr[index] = money ? -1 : i * MAX_TABLE_SIZE + j; 
+//     //     *piArr[index] = money ? -1 : i * MAX_TABLE_SIZE + j;
 
 //         g_object_set_data(G_OBJECT(pq->pDrawingAreaWidgetBorder[index]), "user_data", NULL);
 // #if GTK_CHECK_VERSION(3,0,0)
@@ -2181,7 +2180,7 @@ BuildTableContainer(scoremap * psm, int oldSize)
 
     /* drawing areas: starting with money square, then moving to (i,j) */
 
-    
+
 #if GTK_CHECK_VERSION(3,0,0)
     InitQuadrant( & psm->moneygQuadrant, psm->pwGrid, psm, quadrantWidth, quadrantHeight, 0, 0, TRUE);
 #else
@@ -2296,7 +2295,7 @@ BuildCubeFrame(scoremap * psm)
 /*
     Max cube value. Overestimate, actual value is 2^(floor(ln2(MAX_CUBE_VAL))).
     E.g.,   match size 3 -> MAX_CUBE_VAL=5 (so actual max value 4),
-            match size 4 -> MAX_CUBE_VAL=7 (so 4), 
+            match size 4 -> MAX_CUBE_VAL=7 (so 4),
             match size 5 -> MAX_CUBE_VAL=9 (so 8)
 */
     const int MAX_CUBE_VAL=2*MATCH_SIZE(psm)-1;
@@ -2306,7 +2305,7 @@ BuildCubeFrame(scoremap * psm)
    initialization is not really needed but silences a
    "may be used uninitialized" warning from gcc4 (not later versions)
 */
-    GtkWidget *pwx = NULL; 
+    GtkWidget *pwx = NULL;
     GtkWidget *pwLabel;
 #if GTK_CHECK_VERSION(3,0,0)
     GtkWidget *pwGrid;
@@ -2332,15 +2331,15 @@ BuildCubeFrame(scoremap * psm)
     if (psm->cubeScoreMap) {    //========== cube scoremap
         for (i=1; (2*i<= MAX_CUBE_VAL || i <= ABS(psm->signednCube)); i=2*i) {
             /* Iterate i = allowed cube values. (Only powers of two, up to and including the max score in the table)
-            * Note 1: in a cube scoremap, we don't ask if we can cube where there is no cube possible, so we want 
+            * Note 1: in a cube scoremap, we don't ask if we can cube where there is no cube possible, so we want
             * 2*i and not i to be below the max allowed
-            * Note 2: problem: assume we select a cube of 8 in a match of 21, then want to check a match of 3; 
-            * the cube becomes irrelevant, but we don't see its radio button anymore; so we also add this case 
+            * Note 2: problem: assume we select a cube of 8 in a match of 21, then want to check a match of 3;
+            * the cube becomes irrelevant, but we don't see its radio button anymore; so we also add this case
             * with a greyed radio button
             */
             if (i == psm->pms->nCube)
                  sprintf(sz,"%d (%s) ", i, _("current"));
-             else
+            else
                  sprintf(sz,"%d", i);
             if (i==1)
                 pw = pwx = gtk_radio_button_new_with_label(NULL, _(sz)); // (centered)"));
@@ -2348,33 +2347,33 @@ BuildCubeFrame(scoremap * psm)
                 pw = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(pwx), _(sz));
             }
             gtk_box_pack_start(GTK_BOX(psm->pwCubeBox), pw, FALSE, FALSE, 0);
-            gtk_widget_set_tooltip_text(pw, _("Select the cube value (before the current decision)")); 
+            gtk_widget_set_tooltip_text(pw, _("Select the cube value (before the current decision)"));
             pi = (int *)g_malloc(sizeof(int));
             *pi=i;
             g_object_set_data_full(G_OBJECT(pw), "user_data", pi, g_free);
             gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pw), i == ABS(psm->signednCube));
-            if (2 * i > MAX_CUBE_VAL)               
+            if (2 * i > MAX_CUBE_VAL)
                 gtk_toggle_button_set_inconsistent(GTK_TOGGLE_BUTTON(pw), TRUE);
             g_signal_connect(G_OBJECT(pw), "toggled", G_CALLBACK(CubeValToggled), psm);
-        }     
+        }
 
     } else {                    //========== move scoremap
         pw = pwx = gtk_radio_button_new_with_label(NULL, "1");
         gtk_box_pack_start(GTK_BOX(psm->pwCubeBox), pw, FALSE, FALSE, 0);
-        gtk_widget_set_tooltip_text(pw, _("Select the cube value and who doubled (before the current decision)")); 
+        gtk_widget_set_tooltip_text(pw, _("Select the cube value and who doubled (before the current decision)"));
         pi = (int *)g_malloc(sizeof(int));
         *pi=1;
         g_object_set_data_full(G_OBJECT(pw), "user_data", pi, g_free);
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pw), (1==psm->signednCube));
         g_signal_connect(G_OBJECT(pw), "toggled", G_CALLBACK(CubeValToggled), psm);
 
-        /* 
+        /*
         - i represents the column in pwTable, which shows the cube options
         - Intuitively, we want to find i=log2(MAX_CUBE_VAL) (rounded down)
-        - The formula is a bit more complex because of table scaling down, see down below 
+        - The formula is a bit more complex because of table scaling down, see down below
         for explanations
         */
-        for (i = 0, m = 2; (m <= MAX_CUBE_VAL || m <= ABS(psm->signednCube)); i++, m = 2 * m);  
+        for (i = 0, m = 2; (m <= MAX_CUBE_VAL || m <= ABS(psm->signednCube)); i++, m = 2 * m);
 
 #if GTK_CHECK_VERSION(3,0,0)
         pwGrid = gtk_grid_new();
@@ -2399,15 +2398,15 @@ BuildCubeFrame(scoremap * psm)
 #endif
         }
 
-            /* Iterate through allowed cube values. (Only powers of two) 
-            As above, also allow unallowed cubes if we scaled down the match length, but then make the 
+            /* Iterate through allowed cube values. (Only powers of two)
+            As above, also allow unallowed cubes if we scaled down the match length, but then make the
             radio button unavailable. Specifically, if the match length is 3, we'll allow a cube of 4,
-            but wouldn't normally allow a cube of 8 (>MAX_CUBE_VAL). However, if the previously 
+            but wouldn't normally allow a cube of 8 (>MAX_CUBE_VAL). However, if the previously
             simulated match size was 5, then maybe we chose a cube of 8  (ABS(psm->signednCube)), since
             it was allowed. Now we'll show it, but disable it.
             */
 
-        for (i = 1, m = 2; (m <= MAX_CUBE_VAL || m <= ABS(psm->signednCube)); m = 2*m, i++) { 
+        for (i = 1, m = 2; (m <= MAX_CUBE_VAL || m <= ABS(psm->signednCube)); m = 2*m, i++) {
             for (j = 0; j < 2; j++) {
                 if (m == psm->pms->nCube && (m == 1 || (j == 0 && psm->pms->fMove == psm->pms->fCubeOwner) ||
                             (j == 1 && psm->pms->fMove != psm->pms->fCubeOwner))) {
@@ -2436,7 +2435,7 @@ BuildCubeFrame(scoremap * psm)
 }
 
 static void
-ScoreMapPlyToggled(GtkWidget * pw, scoremap * psm) 
+ScoreMapPlyToggled(GtkWidget * pw, scoremap * psm)
 /* This is called by gtk when the user clicks on one of the ply radio buttons.
 */
 {
@@ -2477,13 +2476,13 @@ ColourByToggled(GtkWidget * pw, scoremap * psm)
 // }
 
 static void
-TopleftToggled(GtkWidget* pw, scoremap* psm) 
+TopleftToggled(GtkWidget* pw, scoremap* psm)
 /* This is called by gtk when the user clicks on one of the "Top-left" radio buttons.
 */
 {
     int* pi = (int*)g_object_get_data(G_OBJECT(pw), "user_data");// "topleft option"
     if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pw))) {
-        psm->labelTopleft = (scoreMapJacoby)(*pi);  //in the set: { MONEY_NO_JACOBY, MONEY_JACOBY} 
+        psm->labelTopleft = (scoreMapJacoby)(*pi);  //in the set: { MONEY_NO_JACOBY, MONEY_JACOBY}
         if (psm->labelTopleft== MONEY_JACOBY)
             psm->moneyJacoby = TRUE;
         else
@@ -2534,10 +2533,10 @@ MatchLengthToggled(GtkWidget * pw, scoremap * psm)
     if (MATCH_SIZE(psm)!=newmatchLength) {*/
     int* pi = (int*)g_object_get_data(G_OBJECT(pw), "user_data");
 
-    //int newmatchLength = MATCH_LENGTH_OPTIONS[*pi]; 
+    //int newmatchLength = MATCH_LENGTH_OPTIONS[*pi];
     if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pw))) {
         psm->matchLengthIndex = (*pi);
-        psm->matchLength = MATCH_LENGTH_OPTIONS[psm->matchLengthIndex]; 
+        psm->matchLength = MATCH_LENGTH_OPTIONS[psm->matchLengthIndex];
        //g_print("\n matchLengthToggled: size:%d", psm->matchLength);
        /* recalculate equities */
             //if (psm->cubeScoreMap)
@@ -2563,9 +2562,9 @@ MatchLengthToggled(GtkWidget * pw, scoremap * psm)
             for (int i=0;i<psm->tableSize; i++) {
                 for (int j=0;j<psm->tableSize; j++) {
                     if(i>=oldTableSize || j>=oldTableSize) {
-                        psm->aaQuadrantData[i][j].isAllowedScore=YET_UNDEFINED; 
+                        psm->aaQuadrantData[i][j].isAllowedScore=YET_UNDEFINED;
                         psm->aaQuadrantData[i][j].isTrueScore = NOT_TRUE_SCORE;
-                        psm->aaQuadrantData[i][j].isSpecialScore = REGULAR; 
+                        psm->aaQuadrantData[i][j].isSpecialScore = REGULAR;
                         // psm->aaQuadrantData[i][j].ml.cMoves = IMPOSSIBLE_CMOVES; // what if they were previously allocated!?!? => free now in CalcEquities
                         // psm->aaQuadrantData[i][j].ml.amMoves = NULL;
                     }
@@ -2573,7 +2572,7 @@ MatchLengthToggled(GtkWidget * pw, scoremap * psm)
             }
             /* next compute their equities */
             CalcEquities(psm,oldTableSize,FALSE,FALSE);
-        } 
+        }
         //     psm->tempScaleUp=0;
         //     psm->oldTableSize=0;
         // }
@@ -2591,8 +2590,8 @@ MatchLengthToggled(GtkWidget * pw, scoremap * psm)
 //         printf("%s\n", values[i]);
 static void
 BuildLabelFrame(scoremap *psm, GtkWidget * pwv, const char * frameTitle, const char * frameToolTip, const char * labelStrings[],
-    int labelStringsLen, int toggleOption, void (*functionWhenToggled)(GtkWidget *, scoremap *), 
-    int sensitive, int vAlignExpand) { 
+    int labelStringsLen, int toggleOption, void (*functionWhenToggled)(GtkWidget *, scoremap *),
+    int sensitive, int vAlignExpand) {
 /* Sub-function to build a new frame with a new set of labels, with a whole bunch of needed parameters
 
 - pwFrame ----------
@@ -2611,7 +2610,7 @@ BuildLabelFrame(scoremap *psm, GtkWidget * pwv, const char * frameTitle, const c
 
     pwFrame=gtk_frame_new(_(frameTitle));
     gtk_box_pack_start(GTK_BOX(pwv), pwFrame, vAlignExpand, FALSE, 0);
-    gtk_widget_set_tooltip_text(pwFrame, _(frameToolTip)); 
+    gtk_widget_set_tooltip_text(pwFrame, _(frameToolTip));
     gtk_widget_set_sensitive(pwFrame, sensitive);
 
 #if GTK_CHECK_VERSION(3,0,0)
@@ -2660,7 +2659,7 @@ Allows garbage collection.
 
     if(!psm->cubeScoreMap){
         // for (int i=0;i<psm->tableSize; i++) {
-        //     for (int j=0;j<psm->tableSize; j++) {    
+        //     for (int j=0;j<psm->tableSize; j++) {
         for (int i=0;i<MAX_TABLE_SIZE; i++) {
             for (int j=0;j<MAX_TABLE_SIZE; j++) {
 
@@ -2673,17 +2672,17 @@ Allows garbage collection.
                 if(psm->aaQuadrantData[i][j].ml.cMoves < IMPOSSIBLE_CMOVES){ //} && psm->aaQuadrantData[i][j].ml.cMoves > 0){
                     // g_message("FREED: i=%d, j=%d, tableSize=%d, moves=%d......",i,j,psm->tableSize,psm->aaQuadrantData[i][j].ml.cMoves);
                     g_free(psm->aaQuadrantData[i][j].ml.amMoves);
-                } 
+                }
                 // else {
-                //     g_message("NOT FREED: i=%d, j=%d, tableSize=%d, moves=%d......",i,j,psm->tableSize,psm->aaQuadrantData[i][j].ml.cMoves);                    
+                //     g_message("NOT FREED: i=%d, j=%d, tableSize=%d, moves=%d......",i,j,psm->tableSize,psm->aaQuadrantData[i][j].ml.cMoves);
                 // }
             }
         }
         if(psm->moneyQuadrantData.ml.cMoves < IMPOSSIBLE_CMOVES) {
                     // g_message("FINAL FREED money cMoves=%d",psm->moneyQuadrantData.ml.cMoves);
-            g_free(psm->moneyQuadrantData.ml.amMoves); 
+            g_free(psm->moneyQuadrantData.ml.amMoves);
         }
-    } 
+    }
     g_free(psm);
 }
 
@@ -2706,7 +2705,7 @@ AddText(GtkWidget* pwBox, char* Text)
 
 // display info on move scoremap
 extern void
-GTKShowMoveScoreMapInfo(GtkWidget* UNUSED(pw), GtkWidget* pwParent) 
+GTKShowMoveScoreMapInfo(GtkWidget* UNUSED(pw), GtkWidget* pwParent)
 {
     GtkWidget* pwInfoDialog, * pwBox;
     // const char* pch;
@@ -2743,7 +2742,7 @@ GTKShowMoveScoreMapInfo(GtkWidget* UNUSED(pw), GtkWidget* pwParent)
 
 // display info on cube scoremap
 extern void
-GTKShowCubeScoreMapInfo(GtkWidget* UNUSED(pw), GtkWidget* pwParent) 
+GTKShowCubeScoreMapInfo(GtkWidget* UNUSED(pw), GtkWidget* pwParent)
 {
     GtkWidget* pwInfoDialog, * pwBox;
     // const char* pch;
@@ -2770,7 +2769,7 @@ GTKShowCubeScoreMapInfo(GtkWidget* UNUSED(pw), GtkWidget* pwParent)
 }
 
 static void
-BuildOptions(scoremap * psm) { 
+BuildOptions(scoremap * psm) {
 /* Build the options part of the scoremap window, i.e. the part that goes after the scoremap table (and the gauge if it exists)
 */
 
@@ -2818,18 +2817,18 @@ BuildOptions(scoremap * psm) {
     //frameToolTip = "Select the ply at which to evaluate the equity at each score";
     BuildLabelFrame(psm, pwv, _("Evaluation"), _("Select the ply at which to evaluate the equity at each score"), aszScoreMapPly, NUM_PLY, psm->ec.nPlies, ScoreMapPlyToggled, TRUE, vAlignExpand);
 
-    /* Match length */ 
+    /* Match length */
     // const char* lengthStrings[NUM_MATCH_LENGTH-1] = { N_("3"), N_("5"), N_("7"), N_("9"), N_("11"), N_("15"), N_("21") };
     BuildLabelFrame(psm, pwv, _("Match length"), _("Select the match length (which determines the grid size)"), aszScoreMapMatchLength, NUM_MATCH_LENGTH-1, psm->matchLengthIndex, MatchLengthToggled, TRUE, vAlignExpand);
 
     /*cube*/
 
     psm->pwCubeFrame=gtk_frame_new(_("Cube value"));
-    gtk_box_pack_start(GTK_BOX(pwv), psm->pwCubeFrame, vAlignExpand, FALSE, 0); 
+    gtk_box_pack_start(GTK_BOX(pwv), psm->pwCubeFrame, vAlignExpand, FALSE, 0);
 
     BuildCubeFrame(psm);
 
-  
+
     // ***************************************** //
 
    // If vertical layout: second column (using vertical box)
@@ -2864,21 +2863,21 @@ BuildOptions(scoremap * psm) {
 
     /* colour by frame */
    if (psm->cubeScoreMap) {
-        // We now insert the radio buttons of the "colour by" scheme, in (a) cube scoremap, or 
+        // We now insert the radio buttons of the "colour by" scheme, in (a) cube scoremap, or
         // (b) move scoremap we disable the buttons since they are only relevant to the cube scoremap
 
         /* Colour by */
 
         //frameToolTip = "Select whether to colour the table squares using all options, or emphasize the Double vs. No-Double decision, or emphasize the Double/Take vs. Double/Pass decision";
         BuildLabelFrame(psm, pwv, _("Colour by"), _("Select whether to colour the table squares using all options, or emphasize the Double vs. No-Double decision, or emphasize the Double/Take vs. Double/Pass decision"), aszScoreMapColourShort, NUM_COLOUR, psm->colourBasedOn, ColourByToggled, psm->cubeScoreMap, vAlignExpand);
-   }  
+   }
 
     // /* Label by toggle */
     // // This button offers the choice between the display of true scores and away scores.
 
     // //frameToolTip = "Select whether to orient the table axes by the away score, i.e. the difference between the current score and the match length, or the true score. For example, a player with a true score of 2 out of 7 has an away score of 5";
     // BuildLabelFrame(psm, pwv, _("Label by"), _("Select whether to orient the table axes by the away score, i.e. the difference between the current score and the match length, or the true score. For example, a player with a true score of 2 out of 7 has an away score of 5"), aszScoreMapLabel, 2, psm->labelBasedOn, LabelByToggled, TRUE, vAlignExpand);
-     
+
     // /* Layout frame */
 
     // //frameToolTip = "Select whether the options pane should be at the bottom or on the right side of the table";
@@ -2933,7 +2932,7 @@ Layout 2: options on bottom (LAYOUT_HORIZONTAL==FALSE, i.e. layout==VERTICAL)
 | -------------------- |
 ------------------------
 
-Implemented as: 
+Implemented as:
 
 -- psm->pwHContainer----------------------------------------------------|
 | --- psm->pwVContainer---------  -- (options w/ vertical) -------|     |
@@ -3012,10 +3011,10 @@ if needed (this was initially planned for some explanation text, which was then 
     //colourBasedOn=ALL;     //default gauge; see also the option to set the starting gauge at the bottom
     // psm->describeUsing=DEFAULT_DESCRIPTION; //default description mode: NUMBERS, ENGLISH, BOTH -> moved to static variable
     psm->pms = pms;
-    // matchstate ams = (*pms); // Make a copy of the "master" matchstate  
+    // matchstate ams = (*pms); // Make a copy of the "master" matchstate
                 //[note: backgammon.h defines an extern ms => using a different name]
-    psm->msTemp = *pms; 
- 
+    psm->msTemp = *pms;
+
     psm->ec.fCubeful = TRUE;
     psm->ec.nPlies = scoreMapPlyDefault; // evalPlies;
     psm->ec.fUsePrune = TRUE; // FALSE;
@@ -3025,8 +3024,8 @@ if needed (this was initially planned for some explanation text, which was then 
     // psm->tempScaleUp=0;
     // psm->oldTableSize=0;
 
-    psm->labelBasedOn = scoreMapLabelDef; 
-    psm->colourBasedOn = scoreMapColourDef;   
+    psm->labelBasedOn = scoreMapLabelDef;
+    psm->colourBasedOn = scoreMapColourDef;
     psm->displayCubeEval = scoreMapCubeEquityDisplayDef;
     psm->displayMoveEval = scoreMapMoveEquityDisplayDef;
     psm->layout = scoreMapLayoutDef;
@@ -3037,9 +3036,9 @@ if needed (this was initially planned for some explanation text, which was then 
     }
     psm->labelTopleft = scoreMapJacobyDef;
     psm->moneyJacoby = (scoreMapJacobyDef ==  MONEY_NO_JACOBY)? FALSE : TRUE;
-    
+
     // ******* DEFINITION OF MATCH LENGTH ***
-        /* 
+        /*
         Goal: choose the match length to simulate, which impacts the table size
         (A) The user picks a default match length index (fixed or variable) through scoreMapMatchLengthDefIdx
         in the Settings > Options
@@ -3084,16 +3083,16 @@ if needed (this was initially planned for some explanation text, which was then 
     // if psm->cubeScoreMap, we show away score from 2-away to (psm->matchLength)-away
     // if not, we show away score at 1-away twice (w/ and post crawford), then 2-away through (psm->matchLength)-away
     psm->tableSize = (psm->cubeScoreMap) ? psm->matchLength - 1 : psm->matchLength + 1;//psm->cubematchLength-1 : psm->movematchLength+1;
-    
+
     /* 1) We initialize isAllowedScore to make sure there is no redrawing without a defined value.
-    Since we're already here, we also initialize the other properties. 
+    Since we're already here, we also initialize the other properties.
     2) We also initialize ml.cMoves to -1
     */
     for (int i=0;i<psm->tableSize; i++) {
         for (int j=0;j<psm->tableSize; j++) {
-            psm->aaQuadrantData[i][j].isAllowedScore=YET_UNDEFINED; 
+            psm->aaQuadrantData[i][j].isAllowedScore=YET_UNDEFINED;
             psm->aaQuadrantData[i][j].isTrueScore = NOT_TRUE_SCORE;
-            psm->aaQuadrantData[i][j].isSpecialScore = REGULAR; 
+            psm->aaQuadrantData[i][j].isSpecialScore = REGULAR;
             // psm->aaQuadrantData[i][j].ml.cMoves = IMPOSSIBLE_CMOVES;
         }
     }
@@ -3102,9 +3101,9 @@ if needed (this was initially planned for some explanation text, which was then 
             psm->aaQuadrantData[i][j].ml.cMoves = IMPOSSIBLE_CMOVES;
         }
     }
-    psm->moneyQuadrantData.isAllowedScore=YET_UNDEFINED; 
+    psm->moneyQuadrantData.isAllowedScore=YET_UNDEFINED;
     psm->moneyQuadrantData.isTrueScore = NOT_TRUE_SCORE;
-    psm->moneyQuadrantData.isSpecialScore = REGULAR; 
+    psm->moneyQuadrantData.isSpecialScore = REGULAR;
     psm->moneyQuadrantData.ml.cMoves = IMPOSSIBLE_CMOVES;
 
 
@@ -3135,7 +3134,7 @@ if needed (this was initially planned for some explanation text, which was then 
     psm->pwHContainer = gtk_hbox_new(FALSE, 2); //gtk_hbox_new (gboolean homogeneous, gint spacing);
 #endif
     gtk_box_pack_start(GTK_BOX(psm->pwMegaVContainer), psm->pwHContainer, TRUE, TRUE, 0);
-    
+
      /* left vbox: holds table and gauge */
 #if GTK_CHECK_VERSION(3,0,0)
     psm->pwVContainer = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
@@ -3218,16 +3217,16 @@ if needed (this was initially planned for some explanation text, which was then 
 
     /* options box, with either vertical or horizontal layout */
     psm->pwLastContainer = (psm->layout == VERTICAL) ? (psm->pwVContainer) : (psm->pwHContainer);
-    BuildOptions(psm); 
+    BuildOptions(psm);
 
     gtk_box_pack_start(GTK_BOX(psm->pwMegaVContainer), pwButton = gtk_button_new_with_label(_("Explanations")), FALSE, FALSE, 8);
-    gtk_widget_set_tooltip_text(pwButton, _("Click to obtain more explanations on this ScoreMap window")); 
-    //g_signal_connect(G_OBJECT(pwButton), "clicked", G_CALLBACK(GTKShowMoveScoreMapInfo), pwDialog); 
+    gtk_widget_set_tooltip_text(pwButton, _("Click to obtain more explanations on this ScoreMap window"));
+    //g_signal_connect(G_OBJECT(pwButton), "clicked", G_CALLBACK(GTKShowMoveScoreMapInfo), pwDialog);
     if (psm->cubeScoreMap)
         g_signal_connect(G_OBJECT(pwButton), "clicked", G_CALLBACK(GTKShowCubeScoreMapInfo), pwDialog);
     else
         g_signal_connect(G_OBJECT(pwButton), "clicked", G_CALLBACK(GTKShowMoveScoreMapInfo), pwDialog);
- 
+
 
 // **************************************************************************************************
     /* calculate values and set colours/text in the table */

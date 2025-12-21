@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1999-2003 Gary Wong <gtw@gnu.org>
- * Copyright (C) 1999-2023 the AUTHORS
+ * Copyright (C) 1999-2025 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -241,6 +241,7 @@ typedef struct {
     movelist *pml;
     ConstTanBoard pboard;
     positionkey *keyMove;
+    int fAnalyse;
     float rThr;
     const cubeinfo *pci;
     const evalcontext *pec;
@@ -255,20 +256,20 @@ typedef struct {
 } scoreData;
 
 /* Defining structures for AnalyzeFileSetting.
-Other defined structures throughout the files: 
-- apwAnalyzeFileSetting (gtkgame.c); 
-- "set analysis filesetting" (gtkgame.c); 
+Other defined structures throughout the files:
+- apwAnalyzeFileSetting (gtkgame.c);
+- "set analysis filesetting" (gtkgame.c);
 - CommandSetAnalysisFileSetting (backgammon.h)
 */
 typedef enum {
-    AnalyzeFileBatch, 
-    AnalyzeFileRegular, 
-    AnalyzeFileSmart, 
+    AnalyzeFileBatch,
+    AnalyzeFileRegular,
+    AnalyzeFileSmart,
     NUM_AnalyzeFileSettings
     } analyzeFileSetting;
 extern analyzeFileSetting AnalyzeFileSettingDef;
 extern const char* aszAnalyzeFileSetting[NUM_AnalyzeFileSettings];
-extern const char* aszAnalyzeFileSettingCommands[NUM_AnalyzeFileSettings]; 
+extern const char* aszAnalyzeFileSettingCommands[NUM_AnalyzeFileSettings];
 
 typedef void (*AsyncFun) (void *);
 

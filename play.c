@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1999-2003 Gary Wong <gtw@gnu.org>
- * Copyright (C) 1999-2024 the AUTHORS
+ * Copyright (C) 1999-2025 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1429,6 +1429,7 @@ ComputerTurn(void)
 
             fd.pml = &pmr->ml;
             fd.pboard = (ConstTanBoard) anBoardMove;
+            fd.fAnalyse = FALSE;
             fd.keyMove = NULL;
             fd.rThr = 0.0f;
             fd.pci = &ci;
@@ -3025,7 +3026,7 @@ CommandNewSession(char *sz)
 // #endif
 
     if (sz == NULL)
-	nSessionLen = LONG_MAX;
+        nSessionLen = LONG_MAX;
     else {
         nSessionLen = strtol(sz, NULL, 10);
         if (nSessionLen <= 0)

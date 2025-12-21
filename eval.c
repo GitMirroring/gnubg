@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1998-2003 Gary Wong <gtw@gnu.org>
- * Copyright (C) 2000-2022 the AUTHORS
+ * Copyright (C) 2000-2025 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3423,7 +3423,7 @@ FindBestCubeDecision(float arDouble[], float aarOutput[2][NUM_ROLLOUT_OUTPUTS], 
                 else
                     return (pci->fCubeOwner == -1) ? DOUBLE_TAKE : REDOUBLE_TAKE;
             } else
-		/* no (presumably optional) double if we are sure to lose */
+                /* no (presumably optional) double if we are sure to lose */
                 return (pci->fCubeOwner == -1) ? NODOUBLE_TAKE : NO_REDOUBLE_TAKE;
 
         } else {
@@ -5684,7 +5684,7 @@ FindBestMovePlied(int anMove[8], int nDice0, int nDice1,
         for (i = 0; i < 8; ++i)
             anMove[i] = -1;
 
-    if (FindnSaveBestMoves(&ml, nDice0, nDice1, (ConstTanBoard) anBoard, NULL, 0.0f, pci, &ec, aamf) < 0) {
+    if (FindnSaveBestMoves(&ml, nDice0, nDice1, (ConstTanBoard) anBoard, NULL, FALSE, 0.0f, pci, &ec, aamf) < 0) {
         g_free(ml.amMoves);
         return -1;
     }
@@ -5715,7 +5715,7 @@ FindBestMove(int anMove[8], int nDice0, int nDice1,
 
 extern int
 FindnSaveBestMoves(movelist * pml, int nDice0, int nDice1, const TanBoard anBoard, positionkey * keyMove, const
-                   float rThr, const cubeinfo * pci, const evalcontext * pec,
+                   int fAnalyse, float rThr, const cubeinfo * pci, const evalcontext * pec,
                    movefilter aamf[MAX_FILTER_PLIES][MAX_FILTER_PLIES])
 {
 
@@ -5817,6 +5817,32 @@ FindnSaveBestMoves(movelist * pml, int nDice0, int nDice1, const TanBoard anBoar
 
     cOldMoves = pml->cMoves;
     pml->cMoves = nMoves;
+
+    if (fAnalyse) {
+
+        /*
+         * If fAnalyse is true we don't want to have a move evaluated at a
+         * lower ply to appear better than a one evaluated at a higher ply:
+         * re-evaluate it at the ply of the previous move
+         */
+
+        int fChanged;
+
+        do {
+            fChanged = 0;
+            for (i = 1; i < pml->cMoves; i++)
+                if (pml->amMoves[i].esMove.ec.nPlies < pml->amMoves[i-1].esMove.ec.nPlies
+                    && pml->amMoves[i].rScore > pml->amMoves[i-1].rScore) {
+                fChanged = 1;
+
+                for (unsigned int j = i; j < pml->cMoves; j++)
+                    if (pml->amMoves[j].rScore > pml->amMoves[i-1].rScore)
+                        ScoreMove(NULL, pml->amMoves + j, pci, pec, pml->amMoves[i-1].esMove.ec.nPlies);
+                }
+
+            qsort(pml->amMoves, pml->cMoves, sizeof(move), (cfunc) CompareMoves);
+        } while (fChanged == 1);
+    }
 
     /* Make sure that keyMove and top move are both
      * evaluated at the deepest ply. */
