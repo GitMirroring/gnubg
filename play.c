@@ -4079,7 +4079,7 @@ CommandRoll(char *UNUSED(sz))
     if (!move_not_last_in_match_ok())
         return;
 
-    if (fTutor && fTutorCube && ms.fCubeUse && !GiveAdvice(tutor_double(FALSE)))
+    if (fTutor && fTutorCube && ms.fCubeUse && ms.nCube < MAX_CUBE && !GiveAdvice(tutor_double(FALSE)))
         return;
 
     if (!fCheat || CheatDice(ms.anDice, &ms, afCheatRoll[ms.fMove]))
