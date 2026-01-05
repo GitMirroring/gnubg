@@ -210,7 +210,7 @@ GetStyleGeneral(const int hecss, ...)
     int i = 0;
     int j;
 
-    va_start(val, (const int) hecss);
+    va_start(val, hecss);
 
     switch (hecss) {
     case HTML_EXPORT_CSS_INLINE:
@@ -521,7 +521,7 @@ printHTMLBoardBBS(FILE * pf, matchstate * pms, int fTurn,
     /* avoid page break when printing */
     fputs("<tr><td align=\"center\" colspan=\"2\">", pf);
 
-    /* 
+    /*
      * Top row
      */
 
@@ -1407,7 +1407,7 @@ printHTMLBoard(FILE * pf, matchstate * pms, int fTurn,
 
 
 /*
- * Print html header for board: move or cube decision 
+ * Print html header for board: move or cube decision
  *
  * Input:
  *   pf: output file
@@ -1859,11 +1859,11 @@ HTMLPrintCubeAnalysisTable(FILE * pf,
                 OutputEquity(aarOutput[0][OUTPUT_EQUITY], pci, TRUE),
                 GetStyle(CLASS_CUBE_CUBELESS_TEXT, hecss),
                 _("Money"), GetStyle(CLASS_CUBE_EQUITY, hecss),
-		OutputMoneyEquity(aarOutput[0], TRUE));
+                OutputMoneyEquity(aarOutput[0], TRUE));
     else
         fprintf(pf, " %s</td><td>%s</td><td></td>\n",
-		_("cubeless equity"),
-		OutputMoneyEquity(aarOutput[0], TRUE));
+                _("cubeless equity"),
+                OutputMoneyEquity(aarOutput[0], TRUE));
 
     fprintf(pf, "</tr>\n");
 
@@ -2230,7 +2230,7 @@ HTMLPrintMoveAnalysis(FILE * pf, matchstate * pms, moverecord * pmr,
             fprintf(pf, "</tr>\n");
 
             /*
-             * print row with detailed probabilities 
+             * print row with detailed probabilities
              */
 
             if (exsExport.fMovesDetailProb) {
@@ -2274,7 +2274,7 @@ HTMLPrintMoveAnalysis(FILE * pf, matchstate * pms, moverecord * pmr,
             }
 
             /*
-             * Write row with move parameters 
+             * Write row with move parameters
              */
 
             if (exsExport.afMovesParameters[pmr->ml.amMoves[i].esMove.et - 1]) {
@@ -2846,7 +2846,7 @@ ExportGameHTML(FILE * pf, listOLD * plGame, const char *szImageDir,
 /*
  * Open file gnubg.css with same path as requested html file
  *
- * If the gnubg.css file already exists NULL is returned 
+ * If the gnubg.css file already exists NULL is returned
  * (and gnubg.css is NOT overwritten)
  *
  */
