@@ -269,7 +269,7 @@ cat > credits.c <<EOF
 #include "credits.h"
 
 const char aszCOPYRIGHT[] = N_("Copyright (C) 1999-2004 Gary Wong.\n"
-                               "Copyright (C) 2004-2025 the AUTHORS; for details type \`show version'.");
+                               "Copyright (C) 2004-2026 the AUTHORS; for details type \`show version'.");
 
 credEntry ceAuthors[] = {
 EOF
