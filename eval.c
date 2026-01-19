@@ -5833,11 +5833,13 @@ FindnSaveBestMoves(movelist * pml, int nDice0, int nDice1, const TanBoard anBoar
             for (i = 1; i < pml->cMoves; i++)
                 if (pml->amMoves[i].esMove.ec.nPlies < pml->amMoves[i-1].esMove.ec.nPlies
                     && pml->amMoves[i].rScore > pml->amMoves[i-1].rScore) {
+                float limit = pml->amMoves[i-1].rScore;
                 fChanged = 1;
-
                 for (unsigned int j = i; j < pml->cMoves; j++)
-                    if (pml->amMoves[j].rScore > pml->amMoves[i-1].rScore)
+                    if (pml->amMoves[j].rScore > limit) {
                         ScoreMove(NULL, pml->amMoves + j, pci, pec, pml->amMoves[i-1].esMove.ec.nPlies);
+                        limit = MIN(limit, pml->amMoves[j].rScore);
+                    }
                 }
 
             qsort(pml->amMoves, pml->cMoves, sizeof(move), (cfunc) CompareMoves);
