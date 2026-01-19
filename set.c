@@ -4302,7 +4302,7 @@ CommandSetCheatPlayerRoll(char *sz)
 
     int n;
     if ((n = ParseNumber(&sz)) < 1 || n > 21) {
-        outputl(_("You must specify a size between 1 and 21."));
+        outputl(_("You must specify a roll ranking between 1 and 21."));
         return;
     }
 
