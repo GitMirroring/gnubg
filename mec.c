@@ -46,13 +46,13 @@ struct dp {
 
 typedef struct dp dp;
 
-static void post_crawford(double, double, int, double **, double, double);
+static void post_crawford(double gr, double wpf, int ml, double **E, double fd2, double fd4);
 
-static void crawford(double, double, int, double **);
+static void crawford(double gr, double wpf, int ml, double **E);
 
-static void pre_crawford(double, double, int, double **);
+static void pre_crawford(double gr, double wpf, int ml, double **E);
 
-static dp dpt(int, int, int, double, double, double **);
+static dp dpt(int p, int o, int c, double gr, double wpp, double **E);
 
 /*
  * Arguments are (in this order):

@@ -88,7 +88,7 @@ static unsigned char *TTachCube, *TTachCubeFaces;
 static randctx rctx;
 #define RAND irand( &rctx )
 
-static gint board_set(Board * board, gchar * board_text, const gint resigned, const gint cube_use);
+static gint board_set(Board * board, gchar * board_text, gint resigned, gint cube_use);
 static void InitialPos(BoardData * bd);
 
 #if GTK_CHECK_VERSION(3,0,0)
@@ -549,7 +549,7 @@ board_point(GtkWidget * UNUSED(board), BoardData * bd, int x0, int y0)
 
     /* jsc: support for faster rolling of dice by clicking board
      *
-     * These arguments should be dynamically calculated instead 
+     * These arguments should be dynamically calculated instead
      * of hardcoded, but it's too painful right now.
      */
     if (intersects(x0, y0, 0, 0,
@@ -888,7 +888,7 @@ generate_drag_moves(guint * dice, TanBoard real_board, TanBoard old_board, movel
 {
     if (dice[0] != dice[1]
         && memcmp(real_board, old_board, sizeof(TanBoard)) != 0) {
-        /* only complete moves to disallow moving, e.g., a 2 twice in a 
+        /* only complete moves to disallow moving, e.g., a 2 twice in a
          * 42 roll */
         GenerateMoves(pml, (ConstTanBoard) old_board, dice[0], dice[1], FALSE);
     } else {
@@ -1105,13 +1105,13 @@ static gboolean
 place_chequer_or_revert(BoardData * bd, int dest)
 {
     /* This procedure has grown more complicated than I like
-     * We might want to discard most of it and use a calculated 
-     * list of valid destination points (since we have the code for that available 
-     * 
+     * We might want to discard most of it and use a calculated list
+     * of valid destination points (since we have the code for that available
+     *
      * Known problems:
-     *    
-     * Not tested for "allow dragging to illegal points". Unlikely to work, might crash 
-     * It is not possible to drag checkers from the bearoff tray. This must be corrected in 
+     *
+     * Not tested for "allow dragging to illegal points". Unlikely to work, might crash
+     * It is not possible to drag checkers from the bearoff tray. This must be corrected in
      * the pick-up code - this proc should be ready for it.
      *
      * Nis Jorgensen, 2004-06-17
@@ -1197,8 +1197,8 @@ place_chequer_or_revert(BoardData * bd, int dest)
         }
     } else if ((source - dest2) * bd->drag_colour < 0) {
 
-        /* 
-         * Check for taking chequer off point where we hit 
+        /*
+         * Check for taking chequer off point where we hit
          */
 
         /* check if the opponent had a chequer on the drag point (source),
@@ -1424,7 +1424,7 @@ updateBoard(GtkWidget * UNUSED(board), BoardData * bd)
 /* Snowie style editing: we will try to place i chequers of the
  * indicated colour on point n.  The x,y coordinates will be used to
  * map to a point n and a checker position i.
- * 
+ *
  * Clicking on a point occupied by the opposite color clears the point
  * first.  If not enough chequers are available in the bearoff tray,
  * we try to add what we can.  So if there are no chequers in the
@@ -3061,7 +3061,7 @@ board_create_pixmaps(GtkWidget * UNUSED(board), BoardData * bd)
 
         cr = gtk_locdef_cairo_create_from_surface(bd->appmKey[i]);
 
-	/* background */
+        /* background */
 
 #if GTK_CHECK_VERSION(3,0,0)
         GtkStyleContext *context = gtk_widget_get_style_context(bd->table);
@@ -3697,8 +3697,8 @@ init_game_info(Board *board, BoardData *bd)
 
     gtk_box_pack_end(GTK_BOX(board), bd->table, FALSE, TRUE, 0);
 
-    /* 
-     * player 0 
+    /*
+     * player 0
      */
 
     pwFrame = gtk_frame_new(NULL);
@@ -3780,9 +3780,9 @@ init_game_info(Board *board, BoardData *bd)
               has a an adjustment.
     */
     gtk_box_pack_start(GTK_BOX(pw), bd->pipcount0, FALSE, FALSE, 8);
-    
 
-    /* 
+
+    /*
      * player 1
      */
 
@@ -3863,7 +3863,7 @@ init_game_info(Board *board, BoardData *bd)
     gtk_box_pack_start(GTK_BOX(pw), bd->pipcount1, FALSE, FALSE, 8);
 
 
-    /* 
+    /*
      * move string, match length, crawford flag, dice
      */
 
@@ -3906,7 +3906,7 @@ init_game_info(Board *board, BoardData *bd)
     /*    g_signal_connect( G_OBJECT( bd->crawford ), "toggled",
      * G_CALLBACK( board_set_crawford ), bd );
      * g_signal_connect( G_OBJECT( bd->jacoby ), "toggled",
-     * G_CALLBACK( board_set_jacoby ), bd ); 
+     * G_CALLBACK( board_set_jacoby ), bd );
      */
 
     if (ms.nMatchTo)
@@ -4126,7 +4126,7 @@ board_cube_widget(Board * board)
 #else
     pw = gtk_table_new(3, N_CUBES_IN_WIDGET, TRUE);
 #endif
-   
+
     CopyAppearance(&rd);
     rd.nSize = setSize;
 #if defined(USE_BOARD3D)

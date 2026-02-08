@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: gtkwindows.h,v 1.26 2019/11/14 20:39:10 plm Exp $
  */
 
 #ifndef GTKWINDOWS_H
@@ -53,8 +51,8 @@ typedef enum {
     NUM_DIALOG_TYPES
 } dialogtype;
 
-extern GtkWidget *GTKCreateDialog(const char *szTitle, const dialogtype dt,
-                                  GtkWidget * parent, int flags, GCallback okFun, void *p);
+extern GtkWidget *GTKCreateDialog(const char *szTitle, dialogtype dt,
+                                  GtkWidget * parent, int flags, GCallback okFun, void *okFunData);
 extern GtkWidget *DialogArea(GtkWidget * pw, dialogarea da);
 extern void GTKRunDialog(GtkWidget * dialog);
 

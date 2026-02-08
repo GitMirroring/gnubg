@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: gtkmovefilter.h,v 1.7 2013/06/16 02:16:15 mdpetch Exp $
  */
 
 #ifndef GTKMOVEFILTER_H
@@ -24,13 +22,11 @@
 extern GtkWidget *MoveFilterWidget(movefilter * pmf, int *pfOK, GCallback pfChanged, gpointer userdata);
 
 extern void
-
-
 SetMovefilterCommands(const char *sz,
                       movefilter aamfNew[MAX_FILTER_PLIES][MAX_FILTER_PLIES],
                       movefilter aamfOld[MAX_FILTER_PLIES][MAX_FILTER_PLIES]);
 
 extern void
- MoveFilterSetPredefined(GtkWidget * pwMoveFilter, const int i);
+MoveFilterSetPredefined(GtkWidget * pwMoveFilter, int i);
 
 #endif                          /* GTKMOVEFILTER_H */

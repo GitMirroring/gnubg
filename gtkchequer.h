@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: gtkchequer.h,v 1.23 2021/10/05 20:58:46 plm Exp $
  */
 
 #ifndef GTKCHEQUER_H
@@ -45,7 +43,7 @@ typedef struct {
 } hintdata;
 
 extern GtkWidget *CreateMoveList(moverecord * pmr,
-                                 const int fButtonsValid, const int fDestroyOnMove, const int fDetails, int hist);
+                                 int fButtonsValid, int fDestroyOnMove, int fDetails, int hist);
 
 extern int
  CheckHintButtons(hintdata * phd);

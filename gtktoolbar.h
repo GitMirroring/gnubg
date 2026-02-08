@@ -33,7 +33,7 @@ extern GtkWidget *ToolbarNew(void);
 
 extern toolbarcontrol
 ToolbarUpdate(GtkWidget * pwToolbar,
-              const matchstate * pms, const DiceShown diceShown, const int fComputerTurn, const int fPlaying);
+              const matchstate * pms, DiceShown diceShown, int fComputerTurn, int fPlaying);
 
 extern int
  ToolbarIsEditing(GtkWidget * pwToolbar);
@@ -42,10 +42,10 @@ extern void
  ToolbarActivateEdit(GtkWidget * pwToolbar);
 
 extern void
- ToolbarSetPlaying(GtkWidget * pwToolbar, const int f);
+ ToolbarSetPlaying(GtkWidget * pwToolbar, int f);
 
 extern void
- ToolbarSetClockwise(GtkWidget * pwToolbar, const int f);
+ ToolbarSetClockwise(GtkWidget * pwToolbar, int f);
 
 extern GtkWidget *image_from_xpm_d(char **xpm, GtkWidget * pw);
 

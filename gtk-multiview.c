@@ -3,7 +3,7 @@
  * Copyright (C) 2001-2019 the AUTHORS
  *
  * License changed from the GNU LGPL to the GNU GPL (as permitted under
- * Term 3 of the GNU LGPL) by Gary Wong for distribution with GNU Backgammon. 
+ * Term 3 of the GNU LGPL) by Gary Wong for distribution with GNU Backgammon.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: gtk-multiview.c,v 1.20 2021/04/03 21:09:26 plm Exp $
  */
 
 #include "config.h"
@@ -49,9 +47,9 @@ static void
 gtk_multiview_forall(GtkContainer * container,
                      gboolean include_internals, GtkCallback callback, gpointer callback_data);
 static void
-gtk_multiview_add(GtkContainer * widget, GtkWidget * child);
+gtk_multiview_add(GtkContainer * container, GtkWidget * child);
 static void
-gtk_multiview_remove(GtkContainer * widget, GtkWidget * child);
+gtk_multiview_remove(GtkContainer * container, GtkWidget * child);
 
 static void
 gtk_multiview_init(GtkMultiview * multiview)

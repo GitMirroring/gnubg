@@ -47,52 +47,52 @@ extern const char* aszScoreMapMatchLengthCommands[NUM_MATCH_LENGTH];
 typedef enum { LABEL_AWAY, LABEL_SCORE, NUM_LABEL} scoreMapLabel;
 extern scoreMapLabel scoreMapLabelDef;
 extern const char* aszScoreMapLabel[NUM_LABEL];
-extern const char* aszScoreMapLabelCommands[NUM_LABEL]; 
+extern const char* aszScoreMapLabelCommands[NUM_LABEL];
 
 /* Used in the "Top-left" radio buttons - we assume the same order as the labels */
 /* Additional options elsewhere:
-- apwScoreMapJacoby (gtkgame.c); 
-- "set scoremapjacoby" (gtkgame.c); 
+- apwScoreMapJacoby (gtkgame.c);
+- "set scoremapjacoby" (gtkgame.c);
 - CommandSetScoreMapJacoby (backgammon.h)*/
 typedef enum {MONEY_NO_JACOBY, MONEY_JACOBY, NUM_JACOBY} scoreMapJacoby;
 extern scoreMapJacoby scoreMapJacobyDef;
 extern const char* aszScoreMapJacoby[NUM_JACOBY];
-extern const char* aszScoreMapJacobyCommands[NUM_JACOBY]; 
+extern const char* aszScoreMapJacobyCommands[NUM_JACOBY];
 
 /* Used in the "Display Eval" radio buttons - we assume the same order as the labels */
 typedef enum {CUBE_NO_EVAL, CUBE_ABSOLUTE_EVAL, CUBE_RELATIVE_EVAL_ND_D, CUBE_RELATIVE_EVAL_DT_DP, NUM_CUBEDISP} scoreMapCubeEquityDisplay;
 extern scoreMapCubeEquityDisplay scoreMapCubeEquityDisplayDef;
 extern const char* aszScoreMapCubeEquityDisplay[NUM_CUBEDISP];
-extern const char* aszScoreMapCubeEquityDisplayCommands[NUM_CUBEDISP]; 
+extern const char* aszScoreMapCubeEquityDisplayCommands[NUM_CUBEDISP];
 // Same for move evaluation
 typedef enum {MOVE_NO_EVAL, MOVE_ABSOLUTE_EVAL, MOVE_RELATIVE_EVAL,  NUM_MOVEDISP} scoreMapMoveEquityDisplay;
 extern scoreMapMoveEquityDisplay scoreMapMoveEquityDisplayDef;
 extern const char* aszScoreMapMoveEquityDisplay[NUM_MOVEDISP];
-extern const char* aszScoreMapMoveEquityDisplayCommands[NUM_MOVEDISP]; 
+extern const char* aszScoreMapMoveEquityDisplayCommands[NUM_MOVEDISP];
 
 /* Used in the "Colour by" radio buttons - we assume the same order as the labels */
 /* Additional options elsewhere:
-- apwScoreMapColour (gtkgame.c); 
+- apwScoreMapColour (gtkgame.c);
 - CommandSetScoreMapColour (backgammon.h)
-- "set scoremapcolour" (gtkgame.c); 
+- "set scoremapcolour" (gtkgame.c);
 */
 typedef enum {ALL, DND, PT, NUM_COLOUR} scoreMapColour;
 extern scoreMapColour scoreMapColourDef;
 extern const char* aszScoreMapColour[NUM_COLOUR];
-extern const char* aszScoreMapColourCommands[NUM_COLOUR]; 
+extern const char* aszScoreMapColourCommands[NUM_COLOUR];
 
 /* Layout options: either horizontal or vertical. */
 /* Additional options elsewhere:
-- apwScoreMapLayout (gtkgame.c); 
+- apwScoreMapLayout (gtkgame.c);
 - CommandSetScoreMapLayout (backgammon.h)
-- "set scoremaplayout" (gtkgame.c); 
+- "set scoremaplayout" (gtkgame.c);
 */
 typedef enum {VERTICAL, HORIZONTAL, NUM_LAYOUT} scoreMapLayout;
 extern scoreMapLayout scoreMapLayoutDef;
 extern const char* aszScoreMapLayout[NUM_LAYOUT];
-extern const char* aszScoreMapLayoutCommands[NUM_LAYOUT]; 
+extern const char* aszScoreMapLayoutCommands[NUM_LAYOUT];
 
-extern void GTKShowScoreMap(const matchstate ams[], int cube);
+extern void GTKShowScoreMap(const matchstate *pms, int cube);
 extern void GTKShowMoveScoreMapInfo(GtkWidget* pw, GtkWidget* pwParent);
 extern void GTKShowCubeScoreMapInfo(GtkWidget* pw, GtkWidget* pwParent);
 

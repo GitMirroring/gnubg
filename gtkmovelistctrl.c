@@ -29,7 +29,7 @@
 
 GdkColor wlCol;
 
-static void custom_cell_renderer_movelist_init(CustomCellRendererMovelist * cellprogress, gpointer g_class);
+static void custom_cell_renderer_movelist_init(CustomCellRendererMovelist * cellrendererprogress, gpointer g_class);
 static void custom_cell_renderer_movelist_class_init(CustomCellRendererMovelistClass * klass, gpointer class_data);
 static void custom_cell_renderer_movelist_set_property(GObject * object,
                                                        guint param_id, const GValue * value, GParamSpec * pspec);
@@ -193,7 +193,7 @@ custom_cell_renderer_movelist_finalize(GObject * object)
  */
 static void
 custom_cell_renderer_movelist_set_property(GObject * object,
-                                           guint param_id, const GValue * value, GParamSpec * UNUSED(notused))
+                                           guint param_id, const GValue * value, GParamSpec * UNUSED(pspec))
 {
     CustomCellRendererMovelist *cellprogress = CUSTOM_CELL_RENDERER_MOVELIST(object);
     if (param_id == 1)

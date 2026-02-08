@@ -190,8 +190,7 @@ NewMoveRecord(void)
 }
 
 static int
- CheatDice(unsigned int anDice[2], matchstate * pms, const int fBest);
-
+CheatDice(unsigned int anDice[2], matchstate * pms, int fBest);
 
 #if defined (USE_GTK)
 #include "gtkgame.h"
@@ -4480,7 +4479,7 @@ pmr_hint_destroy(void)
 }
 
 static void
- OptimumRoll(TanBoard anBoard, const cubeinfo * pci, const evalcontext * pec, const int fBest, unsigned int anDice[2]);
+OptimumRoll(TanBoard anBoard, const cubeinfo * pci, const evalcontext * pec, int fBest, unsigned int anDice[2]);
 
 static int
 CheatDice(unsigned int anDice[2], matchstate * pms, const int fBest)

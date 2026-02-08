@@ -222,7 +222,7 @@ f_GeneralEvaluationE GeneralEvaluationE = GeneralEvaluationENoLocking;
 #define CacheLookup CacheLookupNoLocking
 
 static int EvaluatePositionCache(NNState * nnStates, const TanBoard anBoard, float arOutput[],
-                                 cubeinfo * const pci, const evalcontext * pecx, int nPlies, positionclass pc);
+                                 cubeinfo * pci, const evalcontext * pecx, int nPlies, positionclass pc);
 
 static int FindBestMovePlied(int anMove[8], int nDice0, int nDice1,
                              TanBoard anBoard, const cubeinfo * pci,
@@ -5277,9 +5277,9 @@ static int FindBestMovePlied(int anMove[8], int nDice0, int nDice1,
 #endif
 
 static int GeneralEvaluationEPlied(NNState * nnStates, float arOutput[NUM_ROLLOUT_OUTPUTS],
-                                   const TanBoard anBoard, cubeinfo * const pci, const evalcontext * pec, int nPlies);
+                                   const TanBoard anBoard, cubeinfo * pci, const evalcontext * pec, int nPlies);
 static int EvaluatePositionCubeful3(NNState * nnStates, const TanBoard anBoard, float arOutput[NUM_OUTPUTS],
-                                    float arCubeful[], const cubeinfo aciCubePos[], int cci, cubeinfo * const pciMove,
+                                    float arCubeful[], const cubeinfo aciCubePos[], int cci, cubeinfo * pciMove,
                                     const evalcontext * pec, int nPlies, int fTop);
 
 /* Functions that have both locking and non-locking versions below here */

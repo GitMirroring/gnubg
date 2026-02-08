@@ -46,7 +46,7 @@ typedef struct stat GStatBuf;
 
 static int
 ParseSnowieTxt(char *sz,
-               int *pnMatchTo, int *pfJacoby, int *pfUnused1, int *pfUnused2,
+               int *pnMatchTo, int *pfJacoby, int *p1, int *p2,
                int *pfTurn, char aszPlayer[2][MAX_NAME_LEN], int *pfCrawfordGame,
                int anScore[2], int *pnCube, int *pfCubeOwner, TanBoard anBoard, int anDice[2]);
 

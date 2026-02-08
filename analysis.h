@@ -98,7 +98,7 @@ extern const char *aszLuckRating[N_LUCKS];
 
 extern int afAnalysePlayers[2];
 
-extern ratingtype GetRating(const float rError);
+extern ratingtype GetRating(float rError);
 extern void IniStatcontext(statcontext * psc);
 extern void AddStatcontext(const statcontext * pscA, statcontext * pscB);
 
@@ -114,11 +114,11 @@ extern lucktype getLuckRating(float rLuck);
 
 extern float relativeFibsRating(float r, int n);
 
-extern float absoluteFibsRating(const float rChequer, const float rCube, const int n, const float rOffset);
+extern float absoluteFibsRating(float rChequer, float rCube, int n, float rOffset);
 
-extern float absoluteFibsRatingChequer(const float rChequer, const int n);
+extern float absoluteFibsRatingChequer(float rChequer, int n);
 
-extern float absoluteFibsRatingCube(const float rCube, const int n);
+extern float absoluteFibsRatingCube(float rCube, int n);
 
 
 #define CHEQUERPLAY  0

@@ -108,13 +108,12 @@ static void AddPages(BoardData * bd, GtkWidget * pwNotebook, GList * plBoardDesi
 static void AddDesignRow(gpointer data, gpointer user_data);
 static void AddDesignRowIfNew(gpointer data, gpointer user_data);
 
-static GList *ParseBoardDesigns(const char *szFile, const int fDeletable);
+static GList *ParseBoardDesigns(const char *szFile, int fDeletable);
 
 typedef struct {
     gchar *szTitle;             /* Title of board design */
     gchar *szAuthor;            /* Name of author */
     gchar *szBoardDesign;       /* Command for setting board */
-
     int fDeletable;             /* is the board design deletable */
 } boarddesign;
 

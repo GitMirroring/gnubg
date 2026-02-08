@@ -167,14 +167,14 @@ extern void read_board(BoardData * bd, TanBoard points);
 extern void update_pipcount(BoardData * bd, const TanBoard points);
 extern void InitBoardData(BoardData * bd);
 extern gboolean board_button_press(GtkWidget * board, GdkEventButton * event, BoardData * bd);
-extern gboolean board_motion_notify(GtkWidget * widget, GdkEventMotion * event, BoardData * bd);
+extern gboolean board_motion_notify(GtkWidget * board, GdkEventMotion * event, BoardData * bd);
 extern gboolean board_button_release(GtkWidget * board, GdkEventButton * event, BoardData * bd);
 extern void RollDice2d(BoardData * bd);
 extern void DestroyPanel(gnubgwindow window);
 extern void
-DrawDie(cairo_t * pd,
+DrawDie(cairo_t * cr,
         unsigned char *achDice[], unsigned char *achPip[],
-        const int s, int x, int y, int fColour, int n, int alpha);
+        int s, int x, int y, int fColour, int n, int alpha);
 
 extern int UpdateMove(BoardData * bd, TanBoard anBoard);
 extern void stop_board_expose(BoardData * bd);

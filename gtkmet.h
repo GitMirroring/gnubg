@@ -14,12 +14,10 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: gtkmet.h,v 1.7 2013/06/16 02:16:15 mdpetch Exp $
  */
 
 #ifndef GTKMET_H
 #define GTKMET_H
 
-extern void GTKShowMatchEquityTable(const unsigned int nMatchTo, const int anScore[2]);
+extern void GTKShowMatchEquityTable(unsigned int nMatchTo, const int anScore[2]);
 #endif
