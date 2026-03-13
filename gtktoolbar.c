@@ -89,6 +89,24 @@ ButtonClickedYesNo(GtkWidget * UNUSED(pw), char *sz)
 }
 
 static void
+button_set_style(GtkBin *btn, int style)
+{
+    GtkWidget *stack = g_object_get_data(G_OBJECT(btn), "stored_icon");
+    GtkWidget *lbl = g_object_get_data(G_OBJECT(btn), "stored_label");
+
+    if (style == 0) {
+        gtk_widget_show(stack);
+        gtk_widget_hide(lbl);
+    } else if (style == 1) {
+        gtk_widget_hide(stack);
+        gtk_widget_show(lbl);
+    } else {
+        gtk_widget_show(stack);
+        gtk_widget_show(lbl);
+    }
+}
+
+static void
 toolbar_toggle_set_style(GtkToggleButton *pw, int style)
 {
     GtkWidget *stack = g_object_get_data(G_OBJECT(pw), "toggle_stack");
@@ -405,17 +423,23 @@ ToolbarAddButton(GtkToolbar *pwToolbar, char *icon_name, char *label, const char
                  GCallback callback, void *data)
 {
     GtkToolItem *btn = gtk_tool_button_new(NULL, label);
-    g_object_set_data(G_OBJECT(btn), "stored_label", (gpointer)label);
-    g_object_set_data(G_OBJECT(btn), "stored_icon", (gpointer)icon_name);
+    GtkWidget *pwImage = gtk_image_new_from_icon_name(icon_name, GTK_ICON_SIZE_LARGE_TOOLBAR);
+    GtkWidget *pwLabel = gtk_label_new(label);
+    GtkWidget *pwvbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
+    g_object_set_data(G_OBJECT(btn), "stored_label", (gpointer)pwLabel);
+    g_object_set_data(G_OBJECT(btn), "stored_icon", (gpointer)pwImage);
 
     if (!GTK_IS_TOOL_BUTTON(btn)) {
         g_warning("Failed to create GtkToolButton");
         return NULL;
     }
 
-    if (icon_name)
-        gtk_tool_button_set_icon_name(GTK_TOOL_BUTTON(btn), icon_name);
+    // Compose vbox with image and label
+    gtk_box_pack_start(GTK_BOX(pwvbox), pwImage, FALSE, FALSE, 0);
+    gtk_box_pack_end(GTK_BOX(pwvbox), pwLabel, FALSE, FALSE, 0);
+
+    gtk_tool_button_set_label_widget(GTK_TOOL_BUTTON(btn), pwvbox);
 
     gtk_tool_item_set_is_important(btn, TRUE);
 
@@ -525,7 +549,7 @@ ToolbarNew(void)
                                   gtk_image_new_from_icon_name("document-edit", GTK_ICON_SIZE_LARGE_TOOLBAR),
                                   _("Edit")));
     g_signal_connect(G_OBJECT(ptw->pwEdit), "toggled", G_CALLBACK(ToolbarToggleEdit), NULL);
-    ti = GTK_TOOL_ITEM(ToolbarAddWidget(GTK_TOOLBAR(pwtb), ptw->pwEdit, _("Toggle Edit Mode")));
+    ToolbarAddWidget(GTK_TOOLBAR(pwtb), ptw->pwEdit, _("Toggle Edit Mode"));
 
     ptw->pwButtonClockwise = GTK_WIDGET(
         toggle_button_from_images(
@@ -677,30 +701,16 @@ SetToolbarStyle(int value)
 
     int num = gtk_toolbar_get_n_items(GTK_TOOLBAR(pwtb));
     for (int i = 0; i < num; ++i) {
-        GtkToolItem *child = gtk_toolbar_get_nth_item(GTK_TOOLBAR(pwtb), i);
+        GtkToolItem *item = gtk_toolbar_get_nth_item(GTK_TOOLBAR(pwtb), i);
 
-        if (GTK_IS_TOOL_BUTTON(child)) {
-            GtkToolButton *btn = GTK_TOOL_BUTTON(child);
+        if (GTK_IS_TOOL_BUTTON(item)) {
+            button_set_style(GTK_BIN(item), value);
+            gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);
+        } else if (GTK_IS_TOOL_ITEM(item)) {
+            GtkWidget *btn = gtk_bin_get_child(GTK_BIN(item));
 
-            const gchar *label = g_object_get_data(G_OBJECT(btn), "stored_label");
-            const gchar *icon = g_object_get_data(G_OBJECT(btn), "stored_icon");
-
-            if (value == 0) {
-                gtk_tool_button_set_label(btn, NULL);
-                gtk_tool_button_set_icon_name(btn, icon);
-            } else if (value == 1) {
-                gtk_tool_button_set_icon_name(btn, NULL);
-                gtk_tool_button_set_label(btn, label);
-            } else if (value == 2) {
-                gtk_tool_button_set_icon_name(btn, icon);
-                gtk_tool_button_set_label(btn, label);
-            }
-
-            gtk_tool_item_set_is_important(GTK_TOOL_ITEM(btn), TRUE);
-        } else if (GTK_IS_TOOL_ITEM(child)) {
-            GtkWidget *custom = gtk_bin_get_child(GTK_BIN(child));
-            if (GTK_IS_TOGGLE_BUTTON(custom)) {
-                toolbar_toggle_set_style(GTK_TOGGLE_BUTTON(custom), value);
+            if (GTK_IS_TOGGLE_BUTTON(btn)) {
+                toolbar_toggle_set_style(GTK_TOGGLE_BUTTON(btn), value);
             }
         }
     }
