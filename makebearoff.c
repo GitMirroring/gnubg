@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 1997-2003 Gary Wong <gary@cs.arizona.edu>
  * Copyright (C) 2002-2024 the AUTHORS
  *
@@ -660,9 +660,7 @@ generate_os(const int nOS, const int fHeader,
         size_t u;
         /* write contents of pfTmp to output */
 
-        errno = 0;
-        rewind(pfTmp);
-        if (errno != 0) {
+        if (fseek(pfTmp, 0L, SEEK_SET) < 0) {
             g_printerr(_("Error rewinding '%s'\n"), tmpfile);
             exit(3);
         }
@@ -727,8 +725,8 @@ NDBearoff(const int iPos, const unsigned int nPoints, float ar[4], xhash * ph, b
     for (i = nPoints; i < 25; i++)
         anBoard[1][i] = 0;
 
-    /* 
-     * look for position in existing bearoff file 
+    /*
+     * look for position in existing bearoff file
      */
 
     if (pbc) {
@@ -1237,11 +1235,11 @@ generate_ts(const int nTSP, const int nTSC,
     XhashDestroy(&h);
 
     /* sort file from ordering:
-     * 
+     *
      * 136       123
-     * 258  to   456 
-     * 479       789 
-     * 
+     * 258  to   456
+     * 479       789
+     *
      */
 
     for (i = 0; i < n; ++i) {

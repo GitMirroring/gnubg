@@ -203,7 +203,10 @@ static const char* LoadFile(const char* filename)
                 return NULL;
         }
 
-	rewind(fp);
+	if (fseek(fp, 0L, SEEK_SET) < 0) {
+		fclose(fp);
+		return NULL;
+	}
 
 	/* allocate memory for entire content */
 	buffer = calloc(1, lSize + 1);
