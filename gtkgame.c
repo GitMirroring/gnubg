@@ -3401,6 +3401,7 @@ static char *aaszLang[][3] = {
     {N_("Icelandic"), "is_IS.UTF-8", "flags/iceland.png"},
     {N_("Italian"), "it_IT.UTF-8", "flags/italy.png"},
     {N_("Japanese"), "ja_JP.UTF-8", "flags/japan.png"},
+    {N_("Portuguese (Brazil)"), "pt_BR.UTF-8", "flags/brazil.png"},
     {N_("Romanian"), "ro_RO.UTF-8", "flags/romania.png"},
     {N_("Russian"), "ru_RU.UTF-8", "flags/russia.png"},
     {N_("Spanish"), "es_ES.UTF-8", "flags/spain.png"},

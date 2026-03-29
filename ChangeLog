@@ -1,3 +1,9 @@
+2026-03-28  Philippe Michel  <philippe.michel7@free.fr>
+
+	* po/pt_BR, configure.ac, gtkgame.c, flags/brazil.png:
+	* flags/Makefile.am, credits.sh, README, doc/gnubgdb.xml:
+	Portuguese translation by Annibal Biondi Mendes da Silva.
+
 2026-01-31  Philippe Michel  <philippe.michel7@free.fr>
 
 	* gtkgame.c, gtkgame.h, gtkpanels.c, gtktoolbar.c, gtktoolbar.h:

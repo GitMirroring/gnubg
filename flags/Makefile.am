@@ -18,7 +18,7 @@
 # 
 
 flagsdir = $(pkgdatadir)/flags
-flagfiles = czech.png denmark.png finland.png france.png \
+flagfiles = brazil.png czech.png denmark.png finland.png france.png \
              germany.png greece.png iceland.png italy.png japan.png \
              romania.png russia.png spain.png turkey.png uk.png usa.png
 flags_DATA = $(flagfiles)

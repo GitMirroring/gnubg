@@ -28,6 +28,8 @@ $langnames = array(
 
     "ja" => "Japanese",
 
+    "pt_BR" => "PortuguXese",
+
     "ro" => "Romanian",
 
     "ru" => "Russian",
