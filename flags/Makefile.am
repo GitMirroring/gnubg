@@ -13,10 +13,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#
-# $Id: $
-# 
-
 flagsdir = $(pkgdatadir)/flags
 flagfiles = brazil.png czech.png denmark.png finland.png france.png \
              germany.png greece.png iceland.png italy.png japan.png \
