@@ -141,7 +141,7 @@ static DBProvider providers[NUM_PROVIDERS] = {
 #endif
 };
 #else
-DBProvider providers[1] = {
+static DBProvider providers[1] = {
     {
 	.Connect = NULL,
 	.Disconnect = NULL,
@@ -213,12 +213,12 @@ FreeRowset(RowSet * pRow)
                 for (j = 0; j < pRow->cols; j++) {
                     g_free(pRow->data[i][j]);
                 }
-            g_free(pRow->data[i]);
+                g_free(pRow->data[i]);
             }
         }
 
         g_free(pRow->data);
-    }   
+    }
 
     g_free(pRow);
 }
@@ -303,7 +303,7 @@ SetDBParam(const char *db, const char *key, const char *value)
 
     if (!StrCaseCmp(key, "database")) {
         g_free(providers[type].database);
-        providers[type].database= g_strdup(value);
+        providers[type].database = g_strdup(value);
     } else if (!StrCaseCmp(key, "username")) {
         g_free(providers[type].username);
         providers[type].username = g_strdup(value);
@@ -312,7 +312,7 @@ SetDBParam(const char *db, const char *key, const char *value)
         providers[type].password = g_strdup(value);
     } else if (!StrCaseCmp(key, "hostname")) {
         g_free(providers[type].hostname);
-	providers[type].hostname = g_strdup(value);
+        providers[type].hostname = g_strdup(value);
     }
 }
 
@@ -326,7 +326,7 @@ void
 SetDBSettings(DBProviderType dbType, const char *database, const char *user, const char *password, const char *hostname)
 {
     dbProviderType = dbType;
-    
+
     g_free(providers[dbProviderType].database);
     providers[dbProviderType].database = g_strdup(database);
 
