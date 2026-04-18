@@ -30,7 +30,6 @@
 #include "relational.h"
 #include "backgammon.h"
 #include "positionid.h"
-#include "rollout.h"
 #include "analysis.h"
 #include "util.h"
 #include <glib/gstdio.h>
@@ -152,9 +151,9 @@ MatchResult(int nMatchTo)
 
 #define NS(x) (x == NULL) ? "NULL" : x
 #define APPENDF(x,y) {g_string_append_printf(column, "%s, ", x); \
-	g_string_append_printf(value, "'%s', ", g_ascii_dtostr(tmpf, G_ASCII_DTOSTR_BUF_SIZE, y));}
+        g_string_append_printf(value, "'%s', ", g_ascii_dtostr(tmpf, G_ASCII_DTOSTR_BUF_SIZE, y));}
 #define APPENDI(x,y) {g_string_append_printf(column, "%s, ", x); \
-	g_string_append_printf(value, "'%i', ", y);}
+        g_string_append_printf(value, "'%i', ", y);}
 #define APPENDU(x,y) {g_string_append_printf(column, "%s, ", x); \
         g_string_append_printf(value, "'%u', ", y);}
 

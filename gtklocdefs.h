@@ -14,17 +14,12 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: gtklocdefs.h,v 1.24 2023/01/01 17:48:19 plm Exp $
  */
 
 #ifndef GTKLOCDEFS_H
 #define GTKLOCDEFS_H
 
 #include "config.h"
-
-#include <glib.h>
-#include <glib-object.h>
 
 #if defined(USE_GTK)
 #include <gtk/gtk.h>
@@ -78,12 +73,12 @@ extern gint gdk_visual_get_depth(GdkVisual * visual);
 
 #if ! GTK_CHECK_VERSION(2,20,0)
 #define gtk_widget_set_mapped(widget,fMap) \
-	{ \
-		if ((fMap)) \
-			GTK_WIDGET_SET_FLAGS((widget), GTK_MAPPED); \
-		else \
-			GTK_WIDGET_UNSET_FLAGS((widget), GTK_MAPPED); \
-	};
+    { \
+        if ((fMap)) \
+            GTK_WIDGET_SET_FLAGS((widget), GTK_MAPPED); \
+        else \
+            GTK_WIDGET_UNSET_FLAGS((widget), GTK_MAPPED); \
+    };
 
 #define gtk_widget_get_realized(p)  GTK_WIDGET_REALIZED((p))
 #define gtk_widget_has_grab(p)  GTK_WIDGET_HAS_GRAB((p))
@@ -101,6 +96,6 @@ extern GtkWidget *get_statusbar_label(GtkStatusbar * statusbar);
 extern GdkPixbuf *gdk_pixbuf_new_from_resource(const char *resource_path, GError **error);
 #endif
 
-#endif
+#endif    /* USE_GTK */
 
 #endif
