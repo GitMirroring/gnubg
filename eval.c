@@ -5869,7 +5869,7 @@ FindnSaveBestMoves(movelist * pml, int nDice0, int nDice1, const TanBoard anBoar
 
                 /* move it up to the other moves evaluated on nMaxPly */
 
-                if (fResort && pec->nPlies) {
+                if (fResort && pec->nPlies && i > 0) {
                     move m;
                     unsigned int j;
 
