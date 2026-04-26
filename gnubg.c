@@ -562,8 +562,6 @@ static char const *aszBuildInfo[] = {
     N_("Windows sound system supported."),
 #elif defined(HAVE_APPLE_COREAUDIO)
     N_("Apple CoreAudio sound system supported."),
-#elif defined(HAVE_APPLE_QUICKTIME)
-    N_("Apple QuickTime sound system supported."),
 #elif defined(HAVE_CANBERRA)
     N_("libcanberra sound system supported."),
 #endif
