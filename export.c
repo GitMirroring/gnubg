@@ -202,7 +202,7 @@ draw_cairo_pages(cairo_t * cairo, listOLD * game_ptr)
     matchstate msExport;
     static statcontext scTotal;
     moverecord *pmr;
-    statcontext *psc = NULL;
+    const statcontext *psc = NULL;
     listOLD *pl;
     int iMove = 0;
     int iGame = 0;
@@ -426,13 +426,9 @@ CommandExportMatchPDF(char *sz)
 
     if (surface) {
         cairo_t *cairo;
-        int nGames = 0;
-        int i;
-
-        for (pl = lMatch.plNext; pl != &lMatch; pl = pl->plNext, nGames++);
 
         cairo = cairo_create(surface);
-        for (pl = lMatch.plNext, i = 0; pl != &lMatch; pl = pl->plNext, i++) {
+        for (pl = lMatch.plNext; pl != &lMatch; pl = pl->plNext) {
             draw_cairo_pages(cairo, pl->p);
         }
         cairo_surface_destroy(surface);
@@ -459,13 +455,9 @@ CommandExportMatchPS(char *sz)
 
     if (surface) {
         cairo_t *cairo;
-        int nGames = 0;
-        int i;
-
-        for (pl = lMatch.plNext; pl != &lMatch; pl = pl->plNext, nGames++);
 
         cairo = cairo_create(surface);
-        for (pl = lMatch.plNext, i = 0; pl != &lMatch; pl = pl->plNext, i++) {
+        for (pl = lMatch.plNext; pl != &lMatch; pl = pl->plNext) {
             draw_cairo_pages(cairo, pl->p);
         }
         cairo_surface_destroy(surface);
@@ -1176,7 +1168,7 @@ ExportGameJF(FILE * pf, listOLD * plGame, int iGame, int withScore, int fSst)
                     g_assert_not_reached();
                 } else {
                     const moverecord *pnextmr = pl->plNext->p;
-		    char *ct;
+                    char *ct;
 
                     msExport.nMatchTo = ms.nMatchTo;
                     msExport.nCube = nFileCube;
@@ -1354,7 +1346,7 @@ ExportMatchMat(char *sz, int fSst)
         if (mi.pchAnnotator)
             fprintf(pf, "; [Transcriber \"%s\"]\n", mi.pchAnnotator);
         if (mi.pchComment) {
-            char *pc;
+            const char *pc;
 
             fprintf(pf, "\n; ");
             for (pc = mi.pchComment; *pc != 0; pc++)
