@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: gtkexport.c,v 1.60 2022/08/30 18:38:35 plm Exp $
  */
 
 #include "config.h"
@@ -262,7 +260,7 @@ SetExportCommands(const exportsetup * pexsOrig, const exportsetup * pexsNew)
 
     /* HTML */
 
-    if (strcmp(pexsOrig->szHTMLPictureURL, pexsNew->szHTMLPictureURL)) {
+    if (pexsNew->szHTMLPictureURL && strcmp(pexsOrig->szHTMLPictureURL, pexsNew->szHTMLPictureURL)) {
         char *sz = g_strdup_printf("set export html pictureurl \"%s\"",
                                    pexsNew->szHTMLPictureURL);
         UserCommand(sz);
