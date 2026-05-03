@@ -187,6 +187,32 @@ typedef enum {
 /* TRUE if GNUbg is automatically setting the state of a menu item. */
 static int fAutoCommand;
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+#define GNUBG_STOCK_NEW       "document-new"
+#define GNUBG_STOCK_OPEN      "document-open"
+#define GNUBG_STOCK_SAVE      "document-save"
+#define GNUBG_STOCK_UNDO      "edit-undo"
+#define GNUBG_STOCK_PASTE     "edit-paste"
+#define GNUBG_STOCK_CLEAR     "edit-clear"
+#define GNUBG_STOCK_EXECUTE   "system-run"
+#define GNUBG_STOCK_DIRECTORY "folder"
+#define GNUBG_STOCK_ADD       "list-add"
+#define GNUBG_STOCK_ABOUT     "help-about"
+#define GNUBG_STOCK_EDIT      "document-edit"
+#else
+#define GNUBG_STOCK_NEW       GTK_STOCK_NEW
+#define GNUBG_STOCK_OPEN      GTK_STOCK_OPEN
+#define GNUBG_STOCK_SAVE      GTK_STOCK_SAVE
+#define GNUBG_STOCK_UNDO      GTK_STOCK_UNDO
+#define GNUBG_STOCK_PASTE     GTK_STOCK_PASTE
+#define GNUBG_STOCK_CLEAR     GTK_STOCK_CLEAR
+#define GNUBG_STOCK_EXECUTE   GTK_STOCK_EXECUTE
+#define GNUBG_STOCK_DIRECTORY GTK_STOCK_DIRECTORY
+#define GNUBG_STOCK_ADD       GTK_STOCK_ADD
+#define GNUBG_STOCK_ABOUT     GTK_STOCK_ABOUT
+#define GNUBG_STOCK_EDIT      GTK_STOCK_EDIT
+#endif
+
 /*
  * Some of the callback functions below, either explicit or
  * constructed with macros, are unused (were they added "just in case" ?)
@@ -3692,11 +3718,11 @@ ReportBug(gpointer UNUSED(p), guint UNUSED(n), GtkWidget * UNUSED(pwEvent))
 
 static GtkActionEntry actionEntries[] = {
     { "FileMenuAction", NULL, N_("_File"), NULL, NULL, G_CALLBACK(NULL) },
-    { "FileNewAction", GTK_STOCK_NEW, N_("_New..."), "<control>N", N_("Start new game, match, session or position"),
+    { "FileNewAction", GNUBG_STOCK_NEW, N_("_New..."), "<control>N", N_("Start new game, match, session or position"),
      G_CALLBACK(NewClicked) },
-    { "FileOpenAction", GTK_STOCK_OPEN, N_("_Open"), "<control>O", N_("Open game, match, session or position"),
+    { "FileOpenAction", GNUBG_STOCK_OPEN, N_("_Open"), "<control>O", N_("Open game, match, session or position"),
      G_CALLBACK(GTKOpen) },
-    { "FileSaveAction", GTK_STOCK_SAVE, N_("_Save"), "<control>S", N_("Save match, session, game or position"),
+    { "FileSaveAction", GNUBG_STOCK_SAVE, N_("_Save"), "<control>S", N_("Save match, session, game or position"),
      G_CALLBACK(GTKSave) },
     { "FileCommandsOpenAction", NULL, N_("Open _Commands..."), NULL, NULL, G_CALLBACK(GTKCommandsOpen) },
     { "FileMatchInfoAction", NULL, N_("Match information..."), NULL, NULL, G_CALLBACK(GTKMatchInfo) },
@@ -3707,7 +3733,7 @@ static GtkActionEntry actionEntries[] = {
 #endif
 
     { "EditMenuAction", NULL, N_("_Edit"), NULL, NULL, G_CALLBACK(NULL) },
-    { "UndoAction", GTK_STOCK_UNDO, N_("_Undo"), "<control>Z", N_("Undo moves"), G_CALLBACK(GTKUndo) },
+    { "UndoAction", GNUBG_STOCK_UNDO, N_("_Undo"), "<control>Z", N_("Undo moves"), G_CALLBACK(GTKUndo) },
     { "CopyIDMenuAction", NULL, N_("_Copy ID to Clipboard"), NULL, NULL, G_CALLBACK(NULL) },
     { "CopyGNUBGIDAction", NULL, N_("GNUbg ID"), "<control>C", NULL, G_CALLBACK(CopyIDs) },
     { "CopyMatchIDAction", NULL, N_("Match ID"), "<control>M", NULL, G_CALLBACK(CopyMatchID) },
@@ -3717,7 +3743,7 @@ static GtkActionEntry actionEntries[] = {
     { "CopyPosAsAsciiAction", NULL, N_("Position as ASCII"), NULL, NULL, G_CALLBACK(CommandCopy) },
     { "CopyAsGammOnLineAction", NULL, N_("BGonline (HTML)"), NULL, NULL, G_CALLBACK(CopyAsGOL) },
 
-    { "PasteIDAction", GTK_STOCK_PASTE, N_("_Paste ID"), "<control>V", NULL, G_CALLBACK(PasteIDs) },
+    { "PasteIDAction", GNUBG_STOCK_PASTE, N_("_Paste ID"), "<control>V", NULL, G_CALLBACK(PasteIDs) },
 
     { "ViewMenuAction", NULL, N_("_View"), NULL, NULL, G_CALLBACK(NULL) },
     { "PanelsMenuAction", NULL, N_("_Panels"), NULL, NULL, G_CALLBACK(NULL) },
@@ -3765,11 +3791,11 @@ static GtkActionEntry actionEntries[] = {
      CMD_ACTION_CALLBACK_FROMID(CMD_ANALYSE_MATCH) },
 
     { "ClearAnalysisMenuAction", NULL, N_("Clear analysis"), NULL, NULL, G_CALLBACK(NULL) },
-    { "ClearAnalysisMoveAction", GTK_STOCK_CLEAR, N_("Move"), NULL, NULL,
+    { "ClearAnalysisMoveAction", GNUBG_STOCK_CLEAR, N_("Move"), NULL, NULL,
      CMD_ACTION_CALLBACK_FROMID(CMD_ANALYSE_CLEAR_MOVE) },
-    { "ClearAnalysisGameAction", GTK_STOCK_CLEAR, N_("_Game"), NULL, NULL,
+    { "ClearAnalysisGameAction", GNUBG_STOCK_CLEAR, N_("_Game"), NULL, NULL,
      CMD_ACTION_CALLBACK_FROMID(CMD_ANALYSE_CLEAR_GAME) },
-    { "ClearAnalysisMatchOrSessionAction", GTK_STOCK_CLEAR, N_("_Match or session"), NULL, NULL,
+    { "ClearAnalysisMatchOrSessionAction", GNUBG_STOCK_CLEAR, N_("_Match or session"), NULL, NULL,
      CMD_ACTION_CALLBACK_FROMID(CMD_ANALYSE_CLEAR_MATCH) },
 
     { "CMarkMenuAction", NULL, N_("CMark"), NULL, NULL, G_CALLBACK(NULL) },
@@ -3794,15 +3820,15 @@ static GtkActionEntry actionEntries[] = {
      CMD_ACTION_CALLBACK_FROMID(CMD_ANALYSE_ROLLOUT_GAME) },
     { "RolloutMatchAction", NULL, N_("CMarked from Match"), NULL, NULL,
      CMD_ACTION_CALLBACK_FROMID(CMD_ANALYSE_ROLLOUT_MATCH) },
-    { "AnalyseCurrentAction", GTK_STOCK_EXECUTE, N_("Analyse"), NULL,
+    { "AnalyseCurrentAction", GNUBG_STOCK_EXECUTE, N_("Analyse"), NULL,
      N_("Analyse current match (set default behavior in Settings -> Analysis)"), G_CALLBACK(GTKAnalyzeCurrent) },
-    { "AnalyseFileAction", GTK_STOCK_DIRECTORY, N_("Analyse File"), NULL,
+    { "AnalyseFileAction", GNUBG_STOCK_DIRECTORY, N_("Analyse File"), NULL,
      N_("Analyze match from file (set default behaviour in Settings -> Analysis -> Analysis Buttons)"),
      G_CALLBACK(GTKAnalyzeFile) },
     { "BatchAnalyseAction", NULL, N_("Batch analyse..."), NULL, NULL, G_CALLBACK(GTKBatchAnalyse) },
     { "MatchOrSessionStatsAction", NULL, N_("Match or session statistics"), NULL, NULL,
      CMD_ACTION_CALLBACK_FROMID(CMD_SHOW_STATISTICS_MATCH) },
-    { "AddMatchOrSessionStatsToDBAction", GTK_STOCK_ADD, N_("Add match or session to database"), NULL, NULL,
+    { "AddMatchOrSessionStatsToDBAction", GNUBG_STOCK_ADD, N_("Add match or session to database"), NULL, NULL,
      G_CALLBACK(GtkRelationalAddMatch) },
     { "ShowRecordsAction", NULL, N_("Show Records"), NULL, NULL, G_CALLBACK(GtkShowRelational) },
     { "PlotHistoryAction", NULL, N_("Plot History"), NULL, NULL,
@@ -3861,12 +3887,12 @@ static GtkActionEntry actionEntries[] = {
     { "HelpManualAllAboutAction", NULL, N_("_Manual (all about)"), NULL, NULL,
      CMD_ACTION_CALLBACK_FROMID(CMD_SHOW_MANUAL_ABOUT) },
     { "HelpManualWebAction", NULL, N_("Manual (_web)"), NULL, NULL, CMD_ACTION_CALLBACK_FROMID(CMD_SHOW_MANUAL_WEB) },
-    { "HelpAboutGNUBGAction", GTK_STOCK_ABOUT, N_("_About GNU Backgammon"), NULL, NULL,
+    { "HelpAboutGNUBGAction", GNUBG_STOCK_ABOUT, N_("_About GNU Backgammon"), NULL, NULL,
      CMD_ACTION_CALLBACK_FROMID(CMD_SHOW_VERSION) }
 };
 
 static GtkToggleActionEntry toggleActionEntries[] = {
-    { "EditPositionAction", GTK_STOCK_EDIT, N_("_Edit Position"), NULL, N_("Toggle Edit Mode"), G_CALLBACK(ToggleEdit),
+    { "EditPositionAction", GNUBG_STOCK_EDIT, N_("_Edit Position"), NULL, N_("Toggle Edit Mode"), G_CALLBACK(ToggleEdit),
      FALSE },
 
     { "PanelGameRecordAction", NULL, N_("_Game record"), NULL, NULL, GENERIC_TOGGLE_CALLBACK_FROMID(TOGGLE_GAMELIST), FALSE },  /* TOGGLE */
@@ -4784,7 +4810,7 @@ NewWidget(newwidget * pnw)
                                                        GTK_ICON_SIZE_LARGE_TOOLBAR);
     pwToolButton = gtk_tool_button_new(editIcon, "Edit");
 #else
-    pwToolButton = gtk_tool_button_new_from_stock(GTK_STOCK_EDIT);
+    pwToolButton = gtk_tool_button_new_from_stock(GNUBG_STOCK_EDIT);
 #endif
     gtk_widget_set_tooltip_text(GTK_WIDGET(pwToolButton), _("Edit position"));
     gtk_toolbar_insert(GTK_TOOLBAR(pwToolbar2), pwToolButton, -1);
