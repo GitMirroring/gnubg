@@ -237,29 +237,25 @@ GTKCreateDialog(const char *szTitle, const dialogtype dt,
 extern GtkWidget *
 DialogArea(GtkWidget * pw, dialogarea da)
 {
-    GList *pl, *pl_org;
+    GList *pl;
     GtkWidget *pwChild = NULL;
 
     switch (da) {
     case DA_MAIN:
         pl = gtk_container_get_children(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(pw))));
-        pwChild = pl->data;
+        if (pl)
+            pwChild = pl->data;
         g_list_free(pl);
         return pwChild;
 
     case DA_BUTTONS:
+#if GTK_CHECK_VERSION(3, 12, 0)
+        g_warning("DialogArea(..., DA_BUTTONS) is deprecated");
+#endif
         return gtk_dialog_get_action_area(GTK_DIALOG(pw));
 
     case DA_OK:
-        pl = pl_org = gtk_container_get_children(GTK_CONTAINER(gtk_dialog_get_action_area(GTK_DIALOG(pw))));
-        while (pl) {
-            pwChild = pl->data;
-            if (!strcmp(gtk_button_get_label(GTK_BUTTON(pwChild)), _("OK")))
-                break;
-            pl = pl->next;
-        }
-        g_list_free(pl_org);
-        return pwChild;
+        return gtk_dialog_get_widget_for_response(GTK_DIALOG(pw), GTK_RESPONSE_OK);
     }
 
     g_assert_not_reached();
