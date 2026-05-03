@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2007-2009 Christian Anthon <anthon@kiku.dk>
- * Copyright (C) 2007-2019 the AUTHORS
+ * Copyright (C) 2007-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: util.c,v 1.43 2022/02/26 20:31:23 plm Exp $
  */
 
 #include "config.h"
@@ -29,6 +27,10 @@ char *prefsdir = NULL;
 char *datadir = NULL;
 char *pkg_datadir = NULL;
 char *docdir = NULL;
+
+#if !defined(WIN32)
+#include <unistd.h>
+#endif
 
 #if defined(WIN32)
 #include <io.h>
@@ -128,7 +130,7 @@ getDocDir(void)
 void
 PrintError(const char *message)
 {
-    g_printerr("%s: %s", message, strerror(errno));
+    g_printerr("%s: %s\n", message, strerror(errno));
 }
 
 /* Non-Ansi compliant function */
@@ -140,15 +142,29 @@ extern FILE *
 GetTemporaryFile(const char *nameTemplate, char **retName)
 {
     FILE *pf;
-    int tmpd = g_file_open_tmp(nameTemplate, retName, NULL);
+    int tmpd;
+
+    if (!retName)
+        return NULL;
+
+    tmpd = g_file_open_tmp(nameTemplate, retName, NULL);
 
     if (tmpd < 0)
         return NULL;
 
     pf = fdopen(tmpd, "wb+");
 
-    if (pf == NULL)
-        g_free(retName);
+    if (pf == NULL) {
+#if defined(WIN32)
+        _close(tmpd);
+#else
+        close(tmpd);
+#endif
+        if (retName && *retName) {
+            g_free(*retName);
+            *retName = NULL;
+        }
+    }
 
     return pf;
 }
