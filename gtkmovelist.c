@@ -73,14 +73,37 @@ MoveListCreate(hintdata * phd)
     int offset = (phd->fDetails) ? 0 : MIN_COLUMN_COUNT - DETAIL_COLUMN_COUNT;
 
     if (showWLTree) {
+        GtkCellRenderer *renderer = custom_cell_renderer_movelist_new();
+
+        gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(view), -1,
+                                                    _(aszTitleDetails[ML_COL_RANK]),
+                                                    renderer, "movelist", 0, "rank",
+                                                    1, NULL);
+
+#if GTK_CHECK_VERSION(3, 0, 0)
+    {
+        GtkStyleContext *context = gtk_widget_get_style_context(view);
+        GdkRGBA bg;
+
+        gtk_style_context_get(context,
+                              GTK_STATE_FLAG_NORMAL,
+                              "background-color", &bg,
+                              NULL);
+
+        g_object_set(renderer,
+                     "cell-background-rgba", &bg,
+                     "cell-background-set", TRUE,
+                     NULL);
+    }
+#else
+    {
         GtkStyle *psDefault = gtk_widget_get_style(view);
 
-        GtkCellRenderer *renderer = custom_cell_renderer_movelist_new();
-        gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(view), -1, _(aszTitleDetails[ML_COL_RANK]), renderer,
-                                                    "movelist", 0, "rank", 1, NULL);
         gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(view), FALSE);
         g_object_set(renderer, "cell-background-gdk", &psDefault->bg[GTK_STATE_NORMAL],
                      "cell-background-set", TRUE, NULL);
+    }
+#endif
 
         g_object_set_data(G_OBJECT(view), "hintdata", phd);
     } else {
