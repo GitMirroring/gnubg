@@ -214,9 +214,6 @@ extern void
 ToggleClockwise(GtkToggleAction * action, gpointer UNUSED(user_data))
 {
     int f = gtk_toggle_action_get_active(action);
-    GtkWidget *img =
-        gtk_image_new_from_stock(f ? GNUBG_STOCK_CLOCKWISE : GNUBG_STOCK_ANTI_CLOCKWISE, GTK_ICON_SIZE_SMALL_TOOLBAR);
-    gtk_widget_show(img);
 
     if (fClockwise != f) {
         gchar *sz = g_strdup_printf("set clockwise %s", f ? "on" : "off");
