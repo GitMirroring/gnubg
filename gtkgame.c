@@ -5288,7 +5288,7 @@ RolloutPageGeneral(rolloutpagegeneral * prpw, rolloutwidget * prw)
     gtk_box_pack_start(GTK_BOX(pwPage), pwFrame, FALSE, FALSE, 0);
 
     gtk_widget_set_tooltip_text(pwFrame,
-                                _("Truncated rollouts are rollouts played to a certain number of moves as opposed to the end of the game or a double/pass cube action. " "They are faster and their results have a lower variance than full rollouts, but their accuracy depends on that of the static evaluation at the trucation point."));
+                                _("Truncated rollouts are rollouts played to a certain number of moves as opposed to the end of the game or a double/pass cube action. " "They are faster and their results have a lower variance than full rollouts, but their accuracy depends on that of the static evaluation at the truncation point."));
 
 #if GTK_CHECK_VERSION(3,0,0)
     pwh = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
@@ -5464,7 +5464,7 @@ RolloutPageGeneral(rolloutpagegeneral * prpw, rolloutwidget * prw)
     gtk_box_pack_start(GTK_BOX(pwPage), pwFrame, FALSE, FALSE, 0);
 
     gtk_widget_set_tooltip_text(pwFrame,
-        _("Truncating the rollouts when reaching the bearoff databases slighly improves the speed and decrease their variance. " "The first option is totally accurate and should be selected for practical use; the second one can be slightly inaccurate but is useful on average and its use is recommended."));
+        _("Truncating the rollouts when reaching the bearoff databases slightly improves the speed and decrease their variance. " "The first option is totally accurate and should be selected for practical use; the second one can be slightly inaccurate but is useful on average and its use is recommended."));
 
 #if GTK_CHECK_VERSION(3,0,0)
     prpw->pwTruncBearoffOpts = pwv = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
