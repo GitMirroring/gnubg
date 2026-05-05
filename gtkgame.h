@@ -162,7 +162,7 @@ extern void SwapBoardToPanel(int ToPanel, int updateEvents);
 extern void DoHideAllPanels(int updateEvents);
 
 #if GTK_CHECK_VERSION(3,0,0)
-extern void ToggleEdit(GtkToggleButton *widget, gpointer user_data);
+extern void ToggleEdit(GtkWidget *widget, gpointer user_data);
 #else
 extern void ToggleEdit(GtkToggleAction * action, gpointer user_data);
 #endif

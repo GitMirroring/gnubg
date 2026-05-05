@@ -286,7 +286,7 @@ click_edit(void)
 
 #if GTK_CHECK_VERSION(3,0,0)
 extern void
-ToggleEdit(GtkToggleButton *widget, gpointer UNUSED(user_data))
+ToggleEdit(GtkWidget *widget, gpointer UNUSED(user_data))
 {
     BoardData *pbd = BOARD(pwBoard)->board_data;
     gboolean active = FALSE;
@@ -304,30 +304,6 @@ ToggleEdit(GtkToggleButton *widget, gpointer UNUSED(user_data))
     } else {
         editing = FALSE;
     }
-
-    board_edit(pbd);
-}
-static void
-ToolbarToggleEdit(GtkWidget *pw)
-{
-    BoardData *pbd = BOARD(pwBoard)->board_data;
-
-    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pw))) {
-        if (ms.gs == GAME_NONE)
-            edit_new(nDefaultLength);
-        GTKUndo();
-        editing = TRUE;
-    } else {
-        editing = FALSE;
-    }
-
-    inCallback = TRUE;
-
-    GtkWidget *menu_item = gtk_ui_manager_get_widget(puim, "/MainMenu/EditMenu/EditPosition");
-    if (GTK_IS_CHECK_MENU_ITEM(menu_item))
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menu_item), editing);
-
-    inCallback = FALSE;
 
     board_edit(pbd);
 }
@@ -544,7 +520,7 @@ ToolbarNew(void)
         toggle_button_from_images(gtk_image_new_from_icon_name("document-edit", GTK_ICON_SIZE_LARGE_TOOLBAR),
                                   gtk_image_new_from_icon_name("document-edit", GTK_ICON_SIZE_LARGE_TOOLBAR),
                                   _("Edit")));
-    g_signal_connect(G_OBJECT(ptw->pwEdit), "toggled", G_CALLBACK(ToolbarToggleEdit), NULL);
+    g_signal_connect(G_OBJECT(ptw->pwEdit), "toggled", G_CALLBACK(ToggleEdit), NULL);
     ToolbarAddWidget(GTK_TOOLBAR(pwtb), ptw->pwEdit, _("Toggle Edit Mode"));
 
     ptw->pwButtonClockwise = GTK_WIDGET(
