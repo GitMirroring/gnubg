@@ -4784,7 +4784,7 @@ edit_new_clicked(GtkWidget * pw, newwidget * pnw)
 static GtkWidget *
 NewWidget(newwidget * pnw)
 {
-    int i, j = 1;
+    int i;
     GtkWidget *pwVbox, *pwHbox, *pwLabel, *pwToolbar2;
     GtkWidget *pwButtons, *pwFrame, *pwVbox2;
     GtkToolItem *pwToolButton;
@@ -4831,7 +4831,7 @@ NewWidget(newwidget * pnw)
 
     gtk_toolbar_insert(GTK_TOOLBAR(pwToolbar2), gtk_separator_tool_item_new(), -1);
 
-    for (i = 1; i < 19; i = i + 2, j++) {
+    for (i = 1; i < 19; i = i + 2) {
         gchar *sz;
         gchar stock[50];
         int *pi;
