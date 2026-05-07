@@ -215,12 +215,16 @@ GTKCreateDialog(const char *szTitle, const dialogtype dt,
                               OkButton ? GTK_RESPONSE_OK : GTK_RESPONSE_CLOSE);
         gtk_dialog_set_default_response(GTK_DIALOG(pwDialog), OkButton ? GTK_RESPONSE_OK : GTK_RESPONSE_CLOSE);
 
-        if (!fQuestion)
+        if (!fQuestion) {
+            GtkWidget *da = DialogArea(pwDialog, DA_OK);
+
+            if (da != NULL)
 #if GTK_CHECK_VERSION(2,21,8)
-            gtk_widget_add_accelerator(DialogArea(pwDialog, DA_OK), "clicked", pag, GDK_KEY_Escape, (GdkModifierType)0, (GtkAccelFlags)0);
+                gtk_widget_add_accelerator(da, "clicked", pag, GDK_KEY_Escape, (GdkModifierType)0, (GtkAccelFlags)0);
 #else
-            gtk_widget_add_accelerator(DialogArea(pwDialog, DA_OK), "clicked", pag, GDK_Escape, (GdkModifierType)0, (GtkAccelFlags)0);
+                gtk_widget_add_accelerator(da, "clicked", pag, GDK_Escape, (GdkModifierType)0, (GtkAccelFlags)0);
 #endif
+        }
     }
 
     if (fQuestion)
