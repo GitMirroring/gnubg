@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2011-2014 Michael Petch <mpetch@capp-sysware.com>
- * Copyright (C) 2011-2016 the AUTHORS
+ * Copyright (C) 2011-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,6 @@ gdk_visual_get_depth(GdkVisual * visual)
 extern GtkWidget *
 get_statusbar_label(GtkStatusbar * statusbar)
 {
-#if GTK_CHECK_VERSION(2,20,0)
     GList *pl;
     GtkWidget *label;
 
@@ -43,9 +42,6 @@ get_statusbar_label(GtkStatusbar * statusbar)
 
     g_list_free(pl);
     return label;
-#else
-    return GTK_WIDGET(statusbar->label);
-#endif
 }
 
 #ifndef USE_GRESOURCE

@@ -2988,11 +2988,7 @@ if needed (this was initially planned for some explanation text, which was then 
     guint monitor;
     GdkRectangle screen_geometry = { 0, 0, 0, 0 };
 
-#if GTK_CHECK_VERSION(2,20,0)
     monitor = gdk_screen_get_primary_monitor(screen);
-#else
-    monitor = 0;
-#endif
 
     gdk_screen_get_monitor_geometry(screen, monitor, &screen_geometry);
     screenWidth=MAX(screen_geometry.width,100); // in case we get 0...

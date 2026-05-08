@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2011-2014 Michael Petch <mpetch@capp-sysware.com>
- * Copyright (C) 2011-2021 the AUTHORS
+ * Copyright (C) 2011-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,24 +69,6 @@ typedef void *GtkCssProvider;
 
 #if ! GTK_CHECK_VERSION(2,22,0)
 extern gint gdk_visual_get_depth(GdkVisual * visual);
-#endif
-
-#if ! GTK_CHECK_VERSION(2,20,0)
-#define gtk_widget_set_mapped(widget,fMap) \
-    { \
-        if ((fMap)) \
-            GTK_WIDGET_SET_FLAGS((widget), GTK_MAPPED); \
-        else \
-            GTK_WIDGET_UNSET_FLAGS((widget), GTK_MAPPED); \
-    };
-
-#define gtk_widget_get_realized(p)  GTK_WIDGET_REALIZED((p))
-#define gtk_widget_has_grab(p)  GTK_WIDGET_HAS_GRAB((p))
-#define gtk_widget_get_visible(p)  GTK_WIDGET_VISIBLE((p))
-#define gtk_widget_get_mapped(p)  GTK_WIDGET_MAPPED((p))
-#define gtk_widget_get_sensitive(p)  GTK_WIDGET_SENSITIVE((p))
-#define gtk_widget_is_sensitive(p)  GTK_WIDGET_IS_SENSITIVE((p))
-#define gtk_widget_has_focus(p)  GTK_WIDGET_HAS_FOCUS((p))
 #endif
 
 extern GtkWidget *get_statusbar_label(GtkStatusbar * statusbar);

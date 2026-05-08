@@ -3,7 +3,7 @@ dnl     autoconf
 dnl in the directory containing this script.
 
 dnl Copyright (C) 1999-2002 Gary Wong <gtw@gnu.org>
-dnl Copyright (C) 2002-2024 the AUTHORS
+dnl Copyright (C) 2002-2026 the AUTHORS
 
 dnl This program is free software: you can redistribute it and/or modify
 dnl it under the terms of the GNU General Public License as published by
@@ -161,7 +161,7 @@ if test "x$with_gtk" != "xno"; then
     if test "x$with_gtk3" = "xyes"; then
         PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= 3.22.0], have_gtk="yes", AC_MSG_WARN([no gtk3 support]))
     else
-        PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= 2.18.0], have_gtk="yes", AC_MSG_WARN([no gtk2 support]))
+        PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= 2.20.0], have_gtk="yes", AC_MSG_WARN([no gtk2 support]))
     fi
 
     if test "x$with_board3d" != "xno"; then
