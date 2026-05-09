@@ -186,39 +186,15 @@ void SelectPickProgram(void)
 
 static const char* LoadFile(const char* filename)
 {
-	long lSize;
-	char* buffer;
+    gchar *contents = NULL;
+    gsize length;
 
-	FILE* fp = fopen(filename, "rb");
-	if (!fp)
-	{
-		printf(_("Failed to open %s!\n"), filename);
-		return NULL;
-	}
+    if (!g_file_get_contents(filename, &contents, &length, NULL)) {
+        g_print(_("Failed to open %s!\n"), filename);
+        return NULL;
+    }
 
-	fseek(fp, 0L, SEEK_END);
-	lSize = ftell(fp);
-	if (lSize == -1) {
-                fclose(fp);
-                return NULL;
-        }
-
-	if (fseek(fp, 0L, SEEK_SET) < 0) {
-		fclose(fp);
-		return NULL;
-	}
-
-	/* allocate memory for entire content */
-	buffer = calloc(1, lSize + 1);
-	if (!buffer) {
-                fclose(fp);
-                return NULL;
-        }
-
-	fread(buffer, lSize, 1, fp);
-
-	fclose(fp);
-	return buffer;
+    return contents;
 }
 
 static guint CreateShader(int shader_type, const char* shader_name)
@@ -253,7 +229,7 @@ static guint CreateShader(int shader_type, const char* shader_name)
 		return 0;
 	}
 
-	free((void *)source);
+	g_free((gpointer)source);
 	return shader;
 }
 
