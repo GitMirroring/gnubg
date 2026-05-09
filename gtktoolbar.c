@@ -571,29 +571,45 @@ ToolbarNew(void)
     gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(ti), FALSE);
     gtk_toolbar_insert(GTK_TOOLBAR(pwtb), ti, -1);
 
-    ptw->pwPrevCMarked = ToolbarAddButton(GTK_TOOLBAR(pwtb), "go_prev_marked_24", "", _("Go to Previous Marked"),
-                                          G_CALLBACK(ButtonClicked), "previous marked");
+    ptw->pwPrevCMarked = ToolbarAddButton(
+        GTK_TOOLBAR(pwtb), "go_prev_marked_24",
+        _("Previous Marked"), _("Go to Previous Marked"),
+        G_CALLBACK(ButtonClicked), "previous marked");
     gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(ptw->pwPrevCMarked), FALSE);
-    ptw->pwPrevMarked = ToolbarAddButton(GTK_TOOLBAR(pwtb), "go_prev_cmarked_24", "", _("Go to Previous CMarked"),
-                                         G_CALLBACK(ButtonClicked), "previous cmarked");
+    ptw->pwPrevMarked = ToolbarAddButton(
+        GTK_TOOLBAR(pwtb), "go_prev_cmarked_24",
+        _("Previous CMarked"), _("Go to Previous CMarked"),
+        G_CALLBACK(ButtonClicked), "previous cmarked");
     gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(ptw->pwPrevMarked), FALSE);
-    ptw->pwPrev = ToolbarAddButton(GTK_TOOLBAR(pwtb), "go_prev_24", "", _("Go to Previous Roll"),
-                                   G_CALLBACK(ButtonClicked), "previous roll");
+    ptw->pwPrev = ToolbarAddButton(
+        GTK_TOOLBAR(pwtb), "go_prev_24",
+        _("Previous Roll"), _("Go to Previous Roll"),
+        G_CALLBACK(ButtonClicked), "previous roll");
     gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(ptw->pwPrev), FALSE);
-    ptw->pwPrevGame = ToolbarAddButton(GTK_TOOLBAR(pwtb), "go_prev_game_24", "", _("Go to Previous Game"),
-                                       G_CALLBACK(ButtonClicked), "previous game");
+    ptw->pwPrevGame = ToolbarAddButton(
+        GTK_TOOLBAR(pwtb), "go_prev_game_24",
+        _("Previous Game"), _("Go to Previous Game"),
+        G_CALLBACK(ButtonClicked), "previous game");
     gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(ptw->pwPrevGame), FALSE);
-    ptw->pwNextGame = ToolbarAddButton(GTK_TOOLBAR(pwtb), "go_next_game_24", "", _("Go to Next Game"),
-                                       G_CALLBACK(ButtonClicked), "next game");
+    ptw->pwNextGame = ToolbarAddButton(
+        GTK_TOOLBAR(pwtb), "go_next_game_24",
+        _("Next Game"), _("Go to Next Game"),
+        G_CALLBACK(ButtonClicked), "next game");
     gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(ptw->pwNextGame), FALSE);
-    ptw->pwNext = ToolbarAddButton(GTK_TOOLBAR(pwtb), "go_next_24", "", _("Go to Next Roll"),
-                                   G_CALLBACK(ButtonClicked), "next roll");
+    ptw->pwNext = ToolbarAddButton(
+        GTK_TOOLBAR(pwtb), "go_next_24",
+        _("Next Roll"), _("Go to Next Roll"),
+        G_CALLBACK(ButtonClicked), "next roll");
     gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(ptw->pwNext), FALSE);
-    ptw->pwNextCMarked = ToolbarAddButton(GTK_TOOLBAR(pwtb), "go_next_cmarked_24", "", _("Go to Next CMarked"),
-                                          G_CALLBACK(ButtonClicked), "next cmarked");
+    ptw->pwNextCMarked = ToolbarAddButton(
+        GTK_TOOLBAR(pwtb), "go_next_cmarked_24",
+        _("Next CMarked"), _("Go to Next CMarked"),
+        G_CALLBACK(ButtonClicked), "next cmarked");
     gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(ptw->pwNextCMarked), FALSE);
-    ptw->pwNextMarked = ToolbarAddButton(GTK_TOOLBAR(pwtb), "go_next_marked_24", "", _("Go to Next Marked"),
-                                         G_CALLBACK(ButtonClicked), "next marked");
+    ptw->pwNextMarked = ToolbarAddButton(
+        GTK_TOOLBAR(pwtb), "go_next_marked_24",
+        _("Next Marked"), _("Go to Next Marked"),
+        G_CALLBACK(ButtonClicked), "next marked");
     gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(ptw->pwNextMarked), FALSE);
 
     g_object_set_data(G_OBJECT(pwtb), "toolbarwidget", ptw);
