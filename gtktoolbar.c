@@ -482,7 +482,7 @@ ToolbarNew(void)
     GtkWidget *vbox_toolbar;
     GtkToolItem *ti;
     GtkWidget *pwtb;
-    toolbarwidget *ptw = g_malloc(sizeof(toolbarwidget));
+    toolbarwidget *ptw = g_new0(toolbarwidget, 1);
 
     vbox_toolbar = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     g_object_set_data_full(G_OBJECT(vbox_toolbar), "toolbarwidget", ptw, g_free);
