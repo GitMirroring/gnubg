@@ -284,7 +284,7 @@ SaveCommon(guint f, gchar * prompt)
 }
 
 static ImportType lastOpenType;
-static GtkWidget *openButton, *selFileType;
+static GtkWidget *openButton = NULL, *selFileType;
 static int autoOpen;
 
 static void
@@ -314,7 +314,8 @@ selection_changed_cb(GtkFileChooser * file_chooser, void *UNUSED(notused))
     gtk_label_set_markup(GTK_LABEL(selFileType), buf);
     g_free(buf);
 
-    gtk_widget_set_sensitive(openButton, openable);
+    if (openButton != NULL)
+        gtk_widget_set_sensitive(openButton, openable);
 }
 
 static void
@@ -440,12 +441,12 @@ GTKOpen(gpointer UNUSED(p), guint UNUSED(n), GtkWidget * UNUSED(pw))
 
     if (gtk_dialog_run(GTK_DIALOG(fc)) == GTK_RESPONSE_ACCEPT) {
         gchar *fn = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(fc));
-	
+
         import_type = gtk_combo_box_get_active(GTK_COMBO_BOX(type_combo));
         if (import_type == 0) { /* Type automatically based on file */
             do_import_file((gint)lastOpenType, fn);
-	    g_free(last_import_file);
-	    last_import_file = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(fc));
+            g_free(last_import_file);
+            last_import_file = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(fc));
         } else {
             import_type--;      /* Ignore auto option */
             if (import_type == N_IMPORT_TYPES) {        /* Load command file */
@@ -459,8 +460,8 @@ GTKOpen(gpointer UNUSED(p), guint UNUSED(n), GtkWidget * UNUSED(pw))
                 g_free(cmd);
             } else {            /* Import as specific type */
                 do_import_file(import_type, fn);
-		g_free(last_import_file);
-		last_import_file = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(fc));
+                g_free(last_import_file);
+                last_import_file = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(fc));
             }
         }
 
@@ -512,15 +513,15 @@ batch_create_save(gchar * filename, gchar ** save, char **result)
     gchar *dir;
 
     DisectPath(filename, NULL, &file, &folder);
-    
+
     if (file == NULL || folder == NULL) {
-	g_free(file);
-	g_free(folder);
-	if (result)
+        g_free(file);
+        g_free(folder);
+        if (result)
             *result = _("Incorrect path");
-	return FALSE;
+        return FALSE;
     }
- 
+
     dir = g_build_filename(folder, "analysed", NULL);
     g_free(folder);
 
@@ -851,15 +852,15 @@ static void recentByModification(const char* path, char* recent){
                 continue;
             /* check file type when DIRENT is defined; could use stat if not*/
 #ifdef _DIRENT_HAVE_D_TYPE
-            if (entry->d_type == DT_REG) 
+            if (entry->d_type == DT_REG)
 // #else
 //             DIR* dir2 = opendir(entry);
 //             if(dir2==NULL) {
-#endif 
-            {    
+#endif
+            {
                 /* we then check that it's more recent than what we've seen so far*/
                 sprintf(buffer, "%s/%s", path, entry->d_name);
-                stat(buffer, &statbuf);            
+                stat(buffer, &statbuf);
                 if (statbuf.st_mtime > recenttime) {
                     /* next we check that it's a correct file format*/
                     fdp = ReadFilePreview(buffer);
@@ -981,7 +982,7 @@ GTKAnalyzeFile(void)
         GTKBatchAnalyse(NULL, 0, NULL);
     } else if (AnalyzeFileSettingDef == AnalyzeFileRegular) {
         AnalyzeSingleFile();
-    } else { //   AnalyzeFileSmart, 
+    } else { //   AnalyzeFileSmart
         SmartAnalyze();
     }
     return;

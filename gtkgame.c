@@ -6129,7 +6129,7 @@ extern void
 GTKCubeHint(moverecord * pmr, const matchstate * pms, int did_double, int did_take, int hist)
 {
 
-    GtkWidget *pw, *pwHint;
+    GtkWidget *pw, *pwHint, *da;
 
     if (GetPanelWidget(WINDOW_HINT))
         gtk_widget_destroy(GetPanelWidget(WINDOW_HINT));
@@ -6141,7 +6141,9 @@ GTKCubeHint(moverecord * pmr, const matchstate * pms, int did_double, int did_ta
 
     gtk_container_add(GTK_CONTAINER(DialogArea(pwHint, DA_MAIN)), pw);
 
-    gtk_widget_grab_focus(DialogArea(pwHint, DA_OK));
+    da = DialogArea(pwHint, DA_OK);
+    if (da != NULL)
+        gtk_widget_grab_focus(da);
 
     setWindowGeometry(WINDOW_HINT);
     g_object_weak_ref(G_OBJECT(pwHint), DestroyHint, NULL);
