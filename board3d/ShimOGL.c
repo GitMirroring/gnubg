@@ -276,16 +276,16 @@ void SHIMglVertex2f(GLfloat x, GLfloat y)
 
 void SHIMglFrustum(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat zNear, GLfloat zFar)
 {
-	mat4 frustrum;
-	glm_frustum(left, right, bottom, top, zNear, zFar, frustrum);
-	glm_mat4_mul(*GetCurMatStackMat(), frustrum, *GetCurMatStackMat());
+	mat4 frustum;
+	glm_frustum(left, right, bottom, top, zNear, zFar, frustum);
+	glm_mat4_mul(*GetCurMatStackMat(), frustum, *GetCurMatStackMat());
 }
 
 void SHIMglOrtho(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat zNear, GLfloat zFar)
 {
-	mat4 frustrum;
-	glm_ortho(left, right, bottom, top, zNear, zFar, frustrum);
-	glm_mat4_mul(*GetCurMatStackMat(), frustrum, *GetCurMatStackMat());
+	mat4 frustum;
+	glm_ortho(left, right, bottom, top, zNear, zFar, frustum);
+	glm_mat4_mul(*GetCurMatStackMat(), frustum, *GetCurMatStackMat());
 }
 
 void SHIMglLoadIdentity(void)

@@ -64,8 +64,8 @@ idle(BoardData3d * bd3d)
 
 void
 StopIdle3d(const BoardData * bd, BoardData3d * bd3d)
-{                               /* Animation has finished (or could have been interruptted) */
-    /* If interruptted - reset dice/moving piece details */
+{                               /* Animation has finished (or could have been interrupted) */
+    /* If interrupted - reset dice/moving piece details */
     if (bd3d->shakingDice) {
         bd3d->shakingDice = 0;
         updateDiceOccPos(bd, bd3d);

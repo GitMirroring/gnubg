@@ -1550,7 +1550,7 @@ drawPoint(const renderdata* prd, float tuv, unsigned int i, int p, int outline)
 			}
 			glEnd();
 		}
-		/* Move rest of point in slighlty */
+		/* Move rest of point in slightly */
 		if (p)
 			x -= -((PIECE_HOLE * (1 - TAKI_WIDTH)) / 2.0f);
 		else
@@ -2971,8 +2971,8 @@ int RenderGlyph(const FT_Outline* pOutline)
 
 	glNormal3f(0.0f, 0.0f, 1.0f);
 
-	for (index = 0; index < mesh.tesselations->len; index++) {
-		Tesselation* subMesh = &g_array_index(mesh.tesselations, Tesselation, index);
+	for (index = 0; index < mesh.tessellations->len; index++) {
+		Tessellation* subMesh = &g_array_index(mesh.tessellations, Tessellation, index);
 
 		glBegin(subMesh->meshType);
 		for (point = 0; point < subMesh->tessPoints->len; point++) {

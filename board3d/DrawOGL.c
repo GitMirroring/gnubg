@@ -474,7 +474,7 @@ MAAmoveIndicator(void)
 
 static void
 circleOutlineOutward(float radius, float height, unsigned int accuracy)
-{                               /* Draw an ouline of a disc in current z plane with outfacing normals */
+{                               /* Draw an outline of a disc in current z plane with outfacing normals */
 	unsigned int i;
 	float angle, step;
 
@@ -492,7 +492,7 @@ circleOutlineOutward(float radius, float height, unsigned int accuracy)
 
 static void
 circleOutline(float radius, float height, unsigned int accuracy)
-{                               /* Draw an ouline of a disc in current z plane */
+{                               /* Draw an outline of a disc in current z plane */
 	unsigned int i;
 	float angle, step;
 
@@ -693,7 +693,7 @@ drawPointLegacy(const renderdata* prd, float tuv, unsigned int i, int p, int out
 			}
 			glEnd();
 		}
-		/* Move rest of point in slighlty */
+		/* Move rest of point in slightly */
 		if (p)
 			x -= -((PIECE_HOLE * (1 - TAKI_WIDTH)) / 2.0f);
 		else

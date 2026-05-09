@@ -98,10 +98,10 @@ typedef struct {
 typedef struct {
 	GArray* tessPoints;
 	GLenum meshType;
-} Tesselation;
+} Tessellation;
 
 typedef struct {
-	GArray* tesselations;
+	GArray* tessellations;
 } Mesh;
 
 #define TT_COUNT 3              /* 3 texture types: general, piece and hinge */

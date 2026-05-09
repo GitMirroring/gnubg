@@ -76,7 +76,7 @@ AddPoint(GArray* points, double x, double y)
 {
 	if (points->len > 0) {      /* Ignore duplicate contour points */
 		Point3d* point = &g_array_index(points, Point3d, points->len - 1);
-		/* See if point is duplicated (often happens when tesselating)
+		/* See if point is duplicated (often happens when tessellating)
 		 * so suppress lint error 777 (testing floats for equality) */
 		if ( /*lint --e(777) */ point->data[0] == x && point->data[1] == y)
 			return;
@@ -220,7 +220,7 @@ GetFontHeight3d(const OGLFont* font)
 }
 
 GList* combineList;
-static Tesselation curTess;
+static Tessellation curTess;
 
 extern void
 TidyMemory(const Vectoriser* pVect, const Mesh* pMesh)
@@ -233,11 +233,11 @@ TidyMemory(const Vectoriser* pVect, const Mesh* pMesh)
 		g_array_free(contour->conPoints, TRUE);
 	}
 	g_array_free(pVect->contours, TRUE);
-	for (i = 0; i < pMesh->tesselations->len; i++) {
-		Tesselation* subMesh = &g_array_index(pMesh->tesselations, Tesselation, i);
+	for (i = 0; i < pMesh->tessellations->len; i++) {
+		Tessellation* subMesh = &g_array_index(pMesh->tessellations, Tessellation, i);
 		g_array_free(subMesh->tessPoints, TRUE);
 	}
-	g_array_free(pMesh->tesselations, TRUE);
+	g_array_free(pMesh->tessellations, TRUE);
 
 	for (pl = g_list_first(combineList); pl; pl = g_list_next(pl)) {
 		g_free(pl->data);
@@ -286,7 +286,7 @@ tcbBegin(GLenum type, Mesh* UNUSED(pMesh))
 void TESS_CALLBACK
 tcbEnd( /*lint -e{818} */ Mesh* pMesh)
 {                               /* Declaring pMesh as constant isn't useful as pointer member is modified (error 818) */
-	g_array_append_val(pMesh->tesselations, curTess);
+	g_array_append_val(pMesh->tessellations, curTess);
 }
 
 #include "ShimOGL.h"

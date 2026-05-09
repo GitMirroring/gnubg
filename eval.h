@@ -51,7 +51,7 @@
                                  * rollouts do. */
 #define OUTPUT_CUBEFUL_EQUITY 6
 
-/* Cubeful evalutions */
+/* Cubeful evaluations */
 typedef enum {
     OUTPUT_OPTIMAL = 0,
     OUTPUT_NODOUBLE,

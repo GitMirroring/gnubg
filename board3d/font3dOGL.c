@@ -19,7 +19,7 @@
 #include "config.h"
 #include "legacyGLinc.h"
 
-#include <GL/glu.h>	/* Used for vertex tesselation */
+#include <GL/glu.h>	/* Used for vertex tessellation */
 
 #include "fun3d.h"
 #include "util.h"
@@ -218,8 +218,8 @@ MAArenderGlyph(const FT_Outline* pOutline, int AA)
 	glNormal3f(0.f, 0.f, 1.f);
 	if (!AA)
 	{	// Inner part of font
-		for (index = 0; index < mesh.tesselations->len; index++) {
-			Tesselation* subMesh = &g_array_index(mesh.tesselations, Tesselation, index);
+		for (index = 0; index < mesh.tessellations->len; index++) {
+			Tessellation* subMesh = &g_array_index(mesh.tessellations, Tessellation, index);
 
 			glBegin(subMesh->meshType);
 			for (point = 0; point < subMesh->tessPoints->len; point++) {
@@ -291,7 +291,7 @@ PopulateMesh(const Vectoriser* pVect, Mesh* pMesh)
 
 	combineList = NULL;
 
-	pMesh->tesselations = g_array_new(FALSE, FALSE, sizeof(Tesselation));
+	pMesh->tessellations = g_array_new(FALSE, FALSE, sizeof(Tessellation));
 
 	gluTessCallback(tobj, GLU_TESS_BEGIN_DATA, GLUFUN(tcbBegin));
 	gluTessCallback(tobj, GLU_TESS_VERTEX_DATA, GLUFUN(tcbVertex));

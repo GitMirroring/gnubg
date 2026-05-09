@@ -37,7 +37,7 @@ typedef struct {
     /* one sided dbs */
     int fCompressed;            /* is database compressed? */
     int fGammon;                /* gammon probs included */
-    int fND;                    /* normal distibution instead of exact dist? */
+    int fND;                    /* normal distribution instead of exact dist? */
     int fHeuristic;             /* heuristic database? */
     /* two sided dbs */
     int fCubeful;               /* cubeful equities included */
