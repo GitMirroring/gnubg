@@ -254,7 +254,7 @@ DialogArea(GtkWidget * pw, dialogarea da)
 
     case DA_BUTTONS:
 #if GTK_CHECK_VERSION(3, 12, 0)
-        g_warning("DialogArea(..., DA_BUTTONS) is deprecated");
+        #warning "DialogArea(..., DA_BUTTONS) is deprecated"
 #endif
         return gtk_dialog_get_action_area(GTK_DIALOG(pw));
 
