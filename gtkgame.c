@@ -4544,7 +4544,7 @@ extern int
 GtkTutor(char *sz)
 {
     int f = FALSE;
-    GtkWidget *pwTutorDialog, *pwOK, *pwCancel, *pwEndTutor, *pwButtons, *pwPrompt, *pwHint;
+    GtkWidget *pwTutorDialog, *pwOK, *pwCancel, *pwEndTutor, *pwPrompt, *pwHint;
 
     pwTutorDialog = GTKCreateDialog(_("GNU Backgammon - Tutor"),
                                     DT_CUSTOM, NULL, DIALOG_FLAG_MODAL, G_CALLBACK(OK), (void *) &f);
@@ -4552,18 +4552,15 @@ GtkTutor(char *sz)
     pwOK = DialogArea(pwTutorDialog, DA_OK);
     gtk_button_set_label(GTK_BUTTON(pwOK), _("Play Anyway"));
 
-    pwCancel = gtk_button_new_with_label(_("Rethink"));
-    pwEndTutor = gtk_button_new_with_label(_("End Tutor Mode"));
-    pwHint = gtk_button_new_with_label(_("Hint"));
-    pwButtons = DialogArea(pwTutorDialog, DA_BUTTONS);
+    pwCancel = gtk_dialog_add_button(
+        GTK_DIALOG(pwTutorDialog), _("Rethink"), 1);
+    pwEndTutor = gtk_dialog_add_button(
+        GTK_DIALOG(pwTutorDialog), _("End Tutor Mode"), 2);
+    pwHint = gtk_dialog_add_button(
+        GTK_DIALOG(pwTutorDialog), _("Hint"), 3);
 
-    gtk_container_add(GTK_CONTAINER(pwButtons), pwCancel);
     g_signal_connect(G_OBJECT(pwCancel), "clicked", G_CALLBACK(TutorRethink), (void *) &f);
-
-    gtk_container_add(GTK_CONTAINER(pwButtons), pwEndTutor);
     g_signal_connect(G_OBJECT(pwEndTutor), "clicked", G_CALLBACK(TutorEnd), (void *) &f);
-
-    gtk_container_add(GTK_CONTAINER(pwButtons), pwHint);
     g_signal_connect(G_OBJECT(pwHint), "clicked", G_CALLBACK(TutorHint), (void *) &f);
 
     pwPrompt = gtk_label_new(sz);
@@ -5704,12 +5701,12 @@ SetRollouts(gpointer UNUSED(p), guint UNUSED(n), GtkWidget * UNUSED(pwIgnore))
         pwDialog = GTKCreateDialog(_("GNU Backgammon - Rollouts"), DT_QUESTION,
                                    NULL, DIALOG_FLAG_MODAL, G_CALLBACK(SetRolloutsOK), &rw);
 
-        gtk_container_add(GTK_CONTAINER(DialogArea(pwDialog, DA_BUTTONS)),
-                          saveAsButton = gtk_button_new_with_label(_("Save As")));
+        saveAsButton = gtk_dialog_add_button(
+            GTK_DIALOG(pwDialog), _("Save As"), 1);
         g_signal_connect(saveAsButton, "clicked", G_CALLBACK(save_rollout_as_clicked), &rw);
 
-        gtk_container_add(GTK_CONTAINER(DialogArea(pwDialog, DA_BUTTONS)),
-                          loadRSButton = gtk_button_new_with_label(_("Load")));
+        loadRSButton = gtk_dialog_add_button(
+            GTK_DIALOG(pwDialog), _("Load"), 2);
         g_signal_connect(loadRSButton, "clicked", G_CALLBACK(load_rs_clicked), &rw);
 
         gtk_container_add(GTK_CONTAINER(DialogArea(pwDialog, DA_MAIN)), rw.RolloutNotebook = gtk_notebook_new());
@@ -7670,8 +7667,8 @@ GTKDumpStatcontext(int game)
     // pwStatDialog = GTKCreateDialog("", DT_INFO, NULL, DIALOG_FLAG_NONE, G_CALLBACK(gtk_widget_destroy), NULL);
 
     if (!fAutoDB) {
-        gtk_container_add(GTK_CONTAINER(DialogArea(pwStatDialog, DA_BUTTONS)),
-                        addToDbButton = gtk_button_new_with_label(_("Add to DB")));
+        addToDbButton = gtk_dialog_add_button(
+            GTK_DIALOG(pwStatDialog), _("Add to DB"), 1);
         g_signal_connect(addToDbButton, "clicked", G_CALLBACK(GtkRelationalAddMatch), pwStatDialog);
     }
 

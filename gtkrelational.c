@@ -18,7 +18,7 @@
 
 /*
  * 02/2023: Isaac Keslassy: introduced the "history plot" feature, together
- * with two ways of launching it graphically: 
+ * with two ways of launching it graphically:
  * a sub-menu command ("Analyze > Plot History"), and
  * a button in "Show Records".
  */
@@ -184,7 +184,7 @@ static double iToX (int i) {
     double x = ((double)matchCumMoves[i]) / ((double)matchCumMoves[0]);
 
     return xToX(x);
-}   
+}
 
 /* convert y in [0,1] to its Y plotting value */
 
@@ -222,12 +222,12 @@ DrawHistoryPlot (GtkWidget *widget, GdkEventExpose *event, gpointer UNUSED(user_
     /* Define a clipping zone to improve performance */
 
     cairo_rectangle_int_t crt = { event->area.x, event->area.y, event->area.width, event->area.height };
-    
+
     cairo_region_t * cairoRegion = cairo_region_create_rectangle(&crt);
-        
+
     GdkDrawingContext * drawingContext;
     drawingContext = gdk_window_begin_draw_frame(window, cairoRegion);
-            
+
     // say: "I want to start drawing"
     cairo_t *cr = gdk_drawing_context_get_cairo_context(drawingContext);
 #else
@@ -300,7 +300,7 @@ DrawHistoryPlot (GtkWidget *widget, GdkEventExpose *event, gpointer UNUSED(user_
             cairo_stroke_preserve(cr);
             cairo_fill(cr);
         }
-    
+
             /* +legend */
         cairo_set_source_rgb (cr, 1.0, 0.5, 0.0);
         cairo_set_dash(cr, dashed2, 0, 1); /*disable*/
@@ -364,7 +364,7 @@ DrawHistoryPlot (GtkWidget *widget, GdkEventExpose *event, gpointer UNUSED(user_
         cairo_move_to (cr, xToX(0.0), errorToY(matchAvg));
         cairo_line_to (cr, xToX(1.0), errorToY(matchAvg));
         cairo_stroke (cr);
-    
+
             /* +legend */
         cairo_move_to (cr, xToX(0.75), trueHistY(1.0+margin2y/2));
         cairo_line_to (cr, xToX(0.8), trueHistY(1.0+margin2y/2));
@@ -443,7 +443,7 @@ DrawHistoryPlot (GtkWidget *widget, GdkEventExpose *event, gpointer UNUSED(user_
             drawArrow(cr, iToX(i), trueHistY(0.86), iToX(i),
                 errorToY(matchErrorRate[i])-3*dy);
             cairo_stroke (cr);
-   
+
             /* text: match 1, match 2... */
             // int jTemp=0;
 
@@ -503,7 +503,7 @@ total number of non-trivial played decisions. Lower is better.\
 \n\n- The orange plot illustrates the weighted-average error rate over the past 5 matches. \
 It divides the total errors by the number of played decisions within these 5 matches.\
 \n\n- Some match examples are provided throughout the plot (blue arrows)."));
-    
+
     GTKRunDialog(pwInfoDialog);
 }
 
@@ -525,11 +525,17 @@ static void CreateHistoryWindow (void)  //GtkWidget* pwParent) {
 
     g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_widget_destroy), NULL);
 
-    gtk_container_add(GTK_CONTAINER(DialogArea(window, DA_BUTTONS)),
-		      helpButton = gtk_button_new_with_label(_("Explanations")));
-    gtk_widget_set_tooltip_text(helpButton,
-				_("Click to obtain more explanations on this History plot"));
-    g_signal_connect(helpButton, "clicked", G_CALLBACK(HistoryPlotInfo), window);
+    helpButton = gtk_button_new_with_label(_("Explanations"));
+
+    gtk_widget_set_tooltip_text(
+        helpButton,
+        _("Click to obtain more explanations on this History plot"));
+
+    gtk_dialog_add_action_widget(
+        GTK_DIALOG(window), helpButton, GTK_RESPONSE_NONE);
+
+    g_signal_connect(
+        helpButton, "clicked", G_CALLBACK(HistoryPlotInfo), window);
 
     da = gtk_drawing_area_new();
     gtk_container_add(GTK_CONTAINER(DialogArea(window, DA_MAIN)), da);
@@ -558,7 +564,7 @@ static void initHistoryArrays(void) {
     numRecords = NUM_PLOT;
 }
 
-extern void ComputeHistory(int usePlayerName) 
+extern void ComputeHistory(int usePlayerName)
 {
     /* let's re-initialize all the static values and recompute the History */
     // if (numRecords<NUM_PLOT+1) {
@@ -583,7 +589,7 @@ extern void ComputeHistory(int usePlayerName)
     //     listName = GetSelectedPlayer();
     //     // needToFreeListName=TRUE;
     // }
-    
+
     // if (fTriggeredByRecordList && listName) {
     //     sprintf(playerName, "%s", listName);
     //     // g_message("using listName:%s",listName);
@@ -605,10 +611,10 @@ extern void ComputeHistory(int usePlayerName)
     //     //     return;
     //     // }
     // }
- 
+
     if (!usePlayerName) {
         if (!ap[1].szName[0]) {
-                GTKMessage(_("No player name. Please open a match, or open the database records and select one."), 
+                GTKMessage(_("No player name. Please open a match, or open the database records and select one."),
                     DT_INFO);
                 return;
             }
@@ -628,13 +634,13 @@ extern void ComputeHistory(int usePlayerName)
     // g_message("userID=%d",userID);
     FreeRowset(rs);
 
-    sprintf(szRequest, 
+    sprintf(szRequest,
                     // "matchstat_id,"
                     "unforced_moves," /*moves[0]*/
                     "close_cube_decisions," /*moves[1]*/
                     "cube_error_total_normalised," /* stats[0]*/
                     "chequer_error_total_normalised," /* stats[1]*/
-                    "player_id0, player_id1 " 
+                    "player_id0, player_id1 "
                     "FROM matchstat NATURAL JOIN player NATURAL JOIN session "
                     "WHERE name = '%s' "
                     "ORDER BY date DESC, matchstat_id DESC "
@@ -656,7 +662,7 @@ extern void ComputeHistory(int usePlayerName)
 
     // <= ?
     for (j = 1; j < rs2->rows; ++j) {
-	RowSet *rs3;
+        RowSet *rs3;
 
         for (int i = 0; i < 2; ++i)
             moves[i] = (int) strtol(rs2->data[j][i], NULL, 0);
@@ -684,7 +690,7 @@ extern void ComputeHistory(int usePlayerName)
         // int userID=(int) strtol(rs2->data[1][0], NULL, 0);
         // g_message("opponent name=%s",opponentNames[j-1]);
 
-    }   
+    }
     numRecords=MIN(j-1,NUM_PLOT);
     // g_message("numRecords=%d",numRecords);
 
@@ -705,10 +711,10 @@ extern void ComputeHistory(int usePlayerName)
             matchAvgErrorRate[i]=Ratio((matchCumErrors[i]-matchCumErrors[i+PLOT_WINDOW]),
                     (matchCumMoves[i]-matchCumMoves[i+PLOT_WINDOW]));
             // g_message("matchAvgErrorRate[%d]=%f",i,matchAvgErrorRate[i]);
-        }    
-    }    
+        }
+    }
 
-    if(numRecords>1) 
+    if(numRecords>1)
         CreateHistoryWindow();
     else
         GTKMessage(_("Error, not enough datapoints for a plot."), DT_INFO);
@@ -725,7 +731,7 @@ extern void ComputeHistory(int usePlayerName)
 /* creating this placeholder function with all the inputs needed when
  * pressing a button; the real function above doesn't have all these inputs
  */
-static void 
+static void
 PlotHistoryTrigger(GtkWidget * UNUSED(pw), gpointer UNUSED(p))
 {
     char *listName = NULL;
@@ -758,7 +764,7 @@ PlotHistoryTrigger(GtkWidget * UNUSED(pw), gpointer UNUSED(p))
     }
     //gtk_widget_destroy(pwr);
 
-    ComputeHistory(TRUE); 
+    ComputeHistory(TRUE);
 }
 
 static GtkTreeModel *
@@ -904,7 +910,7 @@ do_list_store(void)
     treeview = gtk_tree_view_new_with_model(model);
     g_object_unref(model);
 #if GTK_CHECK_VERSION(3,14,0)
-    /* 
+    /*
      * This should not be hard coded but set from the theme.
      * Explicit deprecation starts at 3.14 but it may
      * not work in earlier gtk3 as well.
@@ -1559,7 +1565,7 @@ extern void
 GtkShowRelational(gpointer UNUSED(p), guint UNUSED(n), GtkWidget * UNUSED(pw))
 {
     GtkWidget *pwRun,
-    	*pwHbox2, *pwVbox2,
+        *pwHbox2, *pwVbox2,
         *pwPlayerFrame, *pwUpdate, *pwPaned, *pwVbox, *pwErase, *pwOpen,
         *pwn, *pwLabel, *pwScrolled, *pwHbox, *histButton;
     DBProvider *pdb;
@@ -1575,7 +1581,7 @@ GtkShowRelational(gpointer UNUSED(p), guint UNUSED(n), GtkWidget * UNUSED(pw))
     pdb->Disconnect();
 
     /* We had the following bug: in an unexplained way, this window became a black hole: we
-    could not relaunch it after closing it. 
+    could not relaunch it after closing it.
     V1: we make it modal. But then, if we click on a plot window and close the two windows
     successively, gnubg crashes.
     V2: it turns out that we need to first check that gnubg does not think there is an open
