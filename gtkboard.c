@@ -2840,7 +2840,6 @@ board_animate(Board * board, int move[8], int player)
 
     animate_move_list = move;
     animate_player = player;
-
     animation_finished = FALSE;
 
 #if defined(USE_BOARD3D)
@@ -2852,16 +2851,16 @@ board_animate(Board * board, int move[8], int player)
         }
     }
 #endif
+
     if (animGUI == ANIMATE_BLINK)
         g_timeout_add(0x300 >> nGUIAnimSpeed, board_blink_timeout, board);
     else                        /* ANIMATE_SLIDE */
         g_timeout_add(0x100 >> nGUIAnimSpeed, board_slide_timeout, board);
 
-    while (!animation_finished) {
-        GTKSuspendInput();
+    GTKSuspendInput();
+    while (!animation_finished)
         gtk_main_iteration();
-        GTKResumeInput();
-    }
+    GTKResumeInput();
 }
 
 extern void
