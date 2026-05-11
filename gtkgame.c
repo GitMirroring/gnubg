@@ -1402,32 +1402,59 @@ TextPopped(GtkWidget * UNUSED(pw), guint UNUSED(id), gchar * text, void *UNUSED(
 extern int
 GetPanelSize(void)
 {
-    if (!fFullScreen && fX && gtk_widget_get_realized(pwMain)) {
+    if (!fFullScreen && fX && gtk_widget_get_realized(hpaned)) {
         int pos = gtk_paned_get_position(GTK_PANED(hpaned));
         GtkAllocation allocation;
-        gtk_widget_get_allocation(pwMain, &allocation);
+        gtk_widget_get_allocation(hpaned, &allocation);
         return allocation.width - pos;
     } else
         return panelSize;
+}
+
+static int
+ClampPanelSize(int size, int paned_width)
+{
+    return CLAMP(size, 0, (int)(paned_width * .8));
 }
 
 extern void
 SetPanelWidth(int size)
 {
     panelSize = size;
-    if (gtk_widget_get_realized(pwMain)) {
+
+    if (gtk_widget_get_realized(hpaned)) {
         GtkAllocation allocation;
-        gtk_widget_get_allocation(pwMain, &allocation);
-        if (panelSize > allocation.width * .8)
-            panelSize = (int) (allocation.width * .8);
+        gtk_widget_get_allocation(hpaned, &allocation);
+        panelSize = ClampPanelSize(panelSize, allocation.width);
     }
+}
+
+/**
+ * panelSize is the desired width of the right-hand panel.
+ *
+ * GtkPaned position is the divider's position with respect to the
+ * left-hand board area.
+ */
+static gboolean
+ApplyPanelWidth(gpointer UNUSED(data))
+{
+    GtkAllocation allocation;
+
+    if (gtk_widget_get_visible(hpaned) && gtk_widget_get_realized(hpaned)) {
+        int size;
+
+        gtk_widget_get_allocation(hpaned, &allocation);
+        size = ClampPanelSize(panelSize, allocation.width);
+
+        gtk_paned_set_position(GTK_PANED(hpaned), allocation.width - size);
+    }
+
+    return FALSE;
 }
 
 extern void
 SwapBoardToPanel(int ToPanel, int updateEvents)
 {                               /* Show/Hide panel on right of screen */
-    GtkAllocation allocation;
-    gtk_widget_get_allocation(pwMain, &allocation);
     if (ToPanel) {
 #if GTK_CHECK_VERSION(3,0,0)
         g_object_ref(pwEventBox);
@@ -1441,17 +1468,8 @@ SwapBoardToPanel(int ToPanel, int updateEvents)
         if (updateEvents)
             ProcessEvents();
         gtk_widget_hide(pwGameBox);
-        gtk_paned_set_position(GTK_PANED(hpaned), allocation.width - panelSize);
 
-#if ! GTK_CHECK_VERSION(3,0,0)
-        {                       /* Hack to sort out widget positions - may be removed if works in later version of gtk */
-            GtkAllocation temp = allocation;
-            temp.height++;
-            gtk_widget_size_allocate(pwMain, &temp);
-            temp.height--;
-            gtk_widget_size_allocate(pwMain, &temp);
-        }
-#endif
+        g_idle_add(ApplyPanelWidth, NULL);
     } else {
         /* Need to hide these, as handle box seems to be buggy and gets confused */
         gtk_widget_hide(gtk_widget_get_parent(pwMenuBar));
@@ -1553,10 +1571,10 @@ GTKTextToClipboard(const char *text)
 }
 
 static gboolean
-configure_event(GtkWidget * UNUSED(widget), GdkEventConfigure * eCon, void *UNUSED(null))
+configure_event(GtkWidget * UNUSED(widget), GdkEventConfigure * UNUSED(eCon), void *UNUSED(null))
 {                               /* Maintain panel size */
     if (DockedPanelsShowing())
-        gtk_paned_set_position(GTK_PANED(hpaned), eCon->width - GetPanelSize());
+        g_idle_add(ApplyPanelWidth, NULL);
 
     return FALSE;
 }
@@ -4124,7 +4142,7 @@ CreateMainWindow(void)
 #else
     pwPanelHbox = gtk_hbox_new(FALSE, 0);
 #endif
-    gtk_paned_pack2(GTK_PANED(hpaned), pwPanelHbox, TRUE, FALSE);
+    gtk_paned_pack2(GTK_PANED(hpaned), pwPanelHbox, FALSE, TRUE);
 #if GTK_CHECK_VERSION(3,0,0)
     pwPanelVbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1);
 #else
