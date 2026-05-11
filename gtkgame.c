@@ -4294,13 +4294,21 @@ ApplyDefaultCss(void)
 {
     GtkCssProvider *cssProvider;
     char *cssPath;
+    GError *error = NULL;
 
     cssProvider = gtk_css_provider_new();
     if (cssProvider == NULL)
         return;
 
     cssPath = BuildFilename("gnubg.css");
-    gtk_css_provider_load_from_path(cssProvider, cssPath, NULL);
+
+    if (!gtk_css_provider_load_from_path(cssProvider, cssPath, &error)) {
+        g_warning("Failed to load CSS from %s: %s",
+                  cssPath,
+                  error ? error->message : "unknown error");
+        g_clear_error(&error);
+    }
+
     gtk_style_context_add_provider_for_screen(gtk_window_get_screen(GTK_WINDOW(pwMain)),
                                               GTK_STYLE_PROVIDER(cssProvider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
