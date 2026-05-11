@@ -1,3 +1,7 @@
+2026-05-10  Nikolas Nyby  <nikolas@gnu.org>
+
+	* Added various fixes for the gtk3 build.
+
 2026-03-28  Philippe Michel  <philippe.michel7@free.fr>
 
 	* po/pt_BR, configure.ac, gtkgame.c, flags/brazil.png:
