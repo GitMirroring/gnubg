@@ -4047,6 +4047,12 @@ CreateMainWindow(void)
     GtkActionGroup *action_group;
 
     pwMain = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+
+#if GTK_CHECK_VERSION(3,0,0)
+    gtk_style_context_add_class(
+        gtk_widget_get_style_context(pwMain), "gnubg-main");
+#endif
+
     gtk_window_maximize(GTK_WINDOW(pwMain));
     SetPanelWidget(WINDOW_MAIN, pwMain);
     gtk_window_set_role(GTK_WINDOW(pwMain), "main");

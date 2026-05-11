@@ -19,7 +19,7 @@
  * Default size was fine initially but becomes a bit small
  * for today (2025) typical 1920x1080 screen.
  */
-* {
+.gnubg-main {
     font-size: 16px;
 }
 
