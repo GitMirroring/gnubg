@@ -100,7 +100,7 @@ SetColourF(float arColour[4], const char *sz)
     char *pch;
     unsigned char anColour[3];
 
-    if ((pch = strchr(sz, ';')))
+    if ((pch = (char *)strchr(sz, ';')))
         *pch = 0;
 
     if (!SetColour(sz, anColour)) {
@@ -132,7 +132,7 @@ SetMaterialCommon(Material * pMat, const char *sz, const char **arg)
         return -1;
     sz += strlen(sz) + 1;
 
-    if ((pch = strchr(sz, ';')))
+    if ((pch = (char *)strchr(sz, ';')))
         *pch = 0;
 
     if (*sz)
@@ -142,7 +142,7 @@ SetMaterialCommon(Material * pMat, const char *sz, const char **arg)
 
     sz += strlen(sz) + 1;
 
-    if ((pch = strchr(sz, ';')))
+    if ((pch = (char *)strchr(sz, ';')))
         *pch = 0;
 
     if (*sz)
