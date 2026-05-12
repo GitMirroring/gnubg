@@ -406,7 +406,7 @@ ToolbarAddButton(GtkToolbar *pwToolbar, char *icon_name, char *label, const char
     g_object_set_data(G_OBJECT(btn), "stored_label", (gpointer)pwLabel);
     g_object_set_data(G_OBJECT(btn), "stored_icon", (gpointer)pwImage);
 
-    if (!GTK_IS_TOOL_BUTTON(btn)) {
+    if (!btn) {
         g_warning("Failed to create GtkToolButton");
         return NULL;
     }
@@ -441,7 +441,7 @@ ToolbarAddIconButton(
     GtkWidget *pwImage = gtk_image_new_from_icon_name(icon_name, GTK_ICON_SIZE_LARGE_TOOLBAR);
     GtkToolItem *btn = gtk_tool_button_new(pwImage, label);
 
-    if (!GTK_IS_TOOL_BUTTON(btn)) {
+    if (!btn) {
         g_warning("Failed to create GtkToolButton");
         return NULL;
     }
