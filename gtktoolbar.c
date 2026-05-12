@@ -47,6 +47,7 @@ typedef struct {
     GtkWidget *pwResign;        /* button for "Resign" */
     GtkWidget *pwEndGame;       /* button for "play game" */
     GtkWidget *pwHint;          /* button for "Hint" */
+
     GtkWidget *pwPrevMarked;    /* button for "Previous Marked" */
     GtkWidget *pwPrevCMarked;   /* button for "Previous CMarked" */
     GtkWidget *pwPrev;          /* button for "Previous Roll" */
@@ -54,7 +55,8 @@ typedef struct {
     GtkWidget *pwNextGame;      /* button for "Next Game" */
     GtkWidget *pwNext;          /* button for "Next Roll" */
     GtkWidget *pwNextCMarked;   /* button for "Next CMarked" */
-    GtkWidget *pwNextMarked;    /* button for "Next CMarked" */
+    GtkWidget *pwNextMarked;    /* button for "Next Marked" */
+
     GtkWidget *pwReset;         /* button for "Reset" */
     GtkWidget *pwAnalyzeCurrent;        /* button for "Analyze Current" */
     GtkWidget *pwAnalyzeFile;	/* button for "Analyze File" */
@@ -372,6 +374,7 @@ ToolbarUpdate(GtkWidget * pwToolbar,
     gtk_widget_set_sensitive(ptw->pwSave, plGame != NULL && !fAnalysisRunning);
     gtk_widget_set_sensitive(ptw->pwResign, fPlaying && !fEdit && !fAnalysisRunning);
     gtk_widget_set_sensitive(ptw->pwHint, fPlaying && !fEdit && !fAnalysisRunning);
+
     gtk_widget_set_sensitive(ptw->pwPrevMarked, fPlaying && !fEdit);
     gtk_widget_set_sensitive(ptw->pwPrevCMarked, fPlaying && !fEdit);
     gtk_widget_set_sensitive(ptw->pwPrev, fPlaying && !fEdit);
@@ -380,6 +383,7 @@ ToolbarUpdate(GtkWidget * pwToolbar,
     gtk_widget_set_sensitive(ptw->pwNext, fPlaying && !fEdit);
     gtk_widget_set_sensitive(ptw->pwNextCMarked, fPlaying && !fEdit);
     gtk_widget_set_sensitive(ptw->pwNextMarked, fPlaying && !fEdit);
+
     gtk_widget_set_sensitive(ptw->pwEndGame, fPlaying && !fEdit);
     gtk_widget_set_sensitive(ptw->pwEdit, !fAnalysisRunning);
     gtk_widget_set_sensitive(ptw->pwOpen, !fAnalysisRunning);
@@ -420,6 +424,41 @@ ToolbarAddButton(GtkToolbar *pwToolbar, char *icon_name, char *label, const char
 
     if (callback)
         g_signal_connect(G_OBJECT(btn), "clicked", callback, data);
+
+    return GTK_WIDGET(btn);
+}
+
+/*
+ * These buttons are always icons, regardless of user setting. They
+ * should convert to text out of necessity when overflowed into a
+ * menu.
+ */
+static GtkWidget *
+ToolbarAddIconButton(
+    GtkToolbar *pwToolbar, gchar *icon_name, gchar *label, const char *tooltip,
+    GCallback callback, void *data)
+{
+    GtkWidget *pwImage = gtk_image_new_from_icon_name(icon_name, GTK_ICON_SIZE_LARGE_TOOLBAR);
+    GtkToolItem *btn = gtk_tool_button_new(pwImage, label);
+
+    if (!GTK_IS_TOOL_BUTTON(btn)) {
+        g_warning("Failed to create GtkToolButton");
+        return NULL;
+    }
+
+    g_object_set_data(G_OBJECT(btn), "always_icon", GINT_TO_POINTER(TRUE));
+
+    //gtk_tool_button_set_label(GTK_TOOL_BUTTON(btn), label);
+    gtk_tool_button_set_use_underline(GTK_TOOL_BUTTON(btn), FALSE);
+    gtk_tool_button_set_label_widget(GTK_TOOL_BUTTON(btn), NULL);
+    gtk_tool_item_set_homogeneous(btn, FALSE);
+
+    gtk_tool_item_set_tooltip_text(btn, tooltip);
+    gtk_toolbar_insert(GTK_TOOLBAR(pwToolbar), btn, -1);
+
+    if (callback) {
+        g_signal_connect(btn, "clicked", callback, data);
+    }
 
     return GTK_WIDGET(btn);
 }
@@ -547,46 +586,38 @@ ToolbarNew(void)
     gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(ti), FALSE);
     gtk_toolbar_insert(GTK_TOOLBAR(pwtb), ti, -1);
 
-    ptw->pwPrevCMarked = ToolbarAddButton(
+    ptw->pwPrevMarked = ToolbarAddIconButton(
         GTK_TOOLBAR(pwtb), "go_prev_marked_24",
         _("Previous Marked"), _("Go to Previous Marked"),
         G_CALLBACK(ButtonClicked), "previous marked");
-    gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(ptw->pwPrevCMarked), FALSE);
-    ptw->pwPrevMarked = ToolbarAddButton(
+    ptw->pwPrevCMarked = ToolbarAddIconButton(
         GTK_TOOLBAR(pwtb), "go_prev_cmarked_24",
         _("Previous CMarked"), _("Go to Previous CMarked"),
         G_CALLBACK(ButtonClicked), "previous cmarked");
-    gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(ptw->pwPrevMarked), FALSE);
-    ptw->pwPrev = ToolbarAddButton(
+    ptw->pwPrev = ToolbarAddIconButton(
         GTK_TOOLBAR(pwtb), "go_prev_24",
         _("Previous Roll"), _("Go to Previous Roll"),
         G_CALLBACK(ButtonClicked), "previous roll");
-    gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(ptw->pwPrev), FALSE);
-    ptw->pwPrevGame = ToolbarAddButton(
+    ptw->pwPrevGame = ToolbarAddIconButton(
         GTK_TOOLBAR(pwtb), "go_prev_game_24",
         _("Previous Game"), _("Go to Previous Game"),
         G_CALLBACK(ButtonClicked), "previous game");
-    gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(ptw->pwPrevGame), FALSE);
-    ptw->pwNextGame = ToolbarAddButton(
+    ptw->pwNextGame = ToolbarAddIconButton(
         GTK_TOOLBAR(pwtb), "go_next_game_24",
         _("Next Game"), _("Go to Next Game"),
         G_CALLBACK(ButtonClicked), "next game");
-    gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(ptw->pwNextGame), FALSE);
-    ptw->pwNext = ToolbarAddButton(
+    ptw->pwNext = ToolbarAddIconButton(
         GTK_TOOLBAR(pwtb), "go_next_24",
         _("Next Roll"), _("Go to Next Roll"),
         G_CALLBACK(ButtonClicked), "next roll");
-    gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(ptw->pwNext), FALSE);
-    ptw->pwNextCMarked = ToolbarAddButton(
+    ptw->pwNextCMarked = ToolbarAddIconButton(
         GTK_TOOLBAR(pwtb), "go_next_cmarked_24",
         _("Next CMarked"), _("Go to Next CMarked"),
         G_CALLBACK(ButtonClicked), "next cmarked");
-    gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(ptw->pwNextCMarked), FALSE);
-    ptw->pwNextMarked = ToolbarAddButton(
+    ptw->pwNextMarked = ToolbarAddIconButton(
         GTK_TOOLBAR(pwtb), "go_next_marked_24",
         _("Next Marked"), _("Go to Next Marked"),
         G_CALLBACK(ButtonClicked), "next marked");
-    gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(ptw->pwNextMarked), FALSE);
 
     g_object_set_data(G_OBJECT(pwtb), "toolbarwidget", ptw);
     g_object_set_data(G_OBJECT(pwtb), "vbox", vbox_toolbar);
@@ -690,6 +721,10 @@ SetToolbarStyle(int value)
     int num = gtk_toolbar_get_n_items(GTK_TOOLBAR(pwtb));
     for (int i = 0; i < num; ++i) {
         GtkToolItem *item = gtk_toolbar_get_nth_item(GTK_TOOLBAR(pwtb), i);
+
+        if (g_object_get_data(G_OBJECT(item), "always_icon")) {
+            continue;
+        }
 
         if (GTK_IS_TOOL_BUTTON(item)) {
             button_set_style(GTK_BIN(item), value);
