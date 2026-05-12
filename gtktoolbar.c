@@ -448,7 +448,6 @@ ToolbarAddIconButton(
 
     g_object_set_data(G_OBJECT(btn), "always_icon", GINT_TO_POINTER(TRUE));
 
-    //gtk_tool_button_set_label(GTK_TOOL_BUTTON(btn), label);
     gtk_tool_button_set_use_underline(GTK_TOOL_BUTTON(btn), FALSE);
     gtk_tool_button_set_label_widget(GTK_TOOL_BUTTON(btn), NULL);
     gtk_tool_item_set_homogeneous(btn, FALSE);
