@@ -495,6 +495,9 @@ CreateMoveListTools(hintdata * phd)
     gtk_style_context_add_class(gtk_widget_get_style_context(pwCopy), "gnubg-analysis-button");
     gtk_style_context_add_class(gtk_widget_get_style_context(pwTempMap), "gnubg-analysis-button");
     gtk_style_context_add_class(gtk_widget_get_style_context(pwCmark), "gnubg-analysis-button");
+    gtk_style_context_add_class(gtk_widget_get_style_context(pwScoreMap), "gnubg-analysis-button");
+    if (pwDetails != NULL)
+        gtk_style_context_add_class(gtk_widget_get_style_context(pwDetails), "gnubg-analysis-button");
 #endif
 
     /* toolbox on the left with buttons for eval, rollout and more */
