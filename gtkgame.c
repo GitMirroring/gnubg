@@ -1171,7 +1171,9 @@ SetAnnotation(moverecord * pmr)
 
             /* luck */
 
-            pch = sz + sprintf(sz, _("Rolled %u%u"), pmr->anDice[0], pmr->anDice[1]);
+            pch = sz + sprintf(sz, _("Rolled %u%u"),
+                                   MAX(pmr->anDice[0], pmr->anDice[1]),
+                                   MIN(pmr->anDice[0], pmr->anDice[1]));
 
             if (pmr->rLuck != ERR_VAL) {
                 if (fOutputMWC && ms.nMatchTo)
