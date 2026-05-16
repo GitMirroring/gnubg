@@ -98,6 +98,7 @@ ParseSetDate(char *szFilename)
     }
 #endif
     /* date could not be parsed, use date of last modification */
+    // cppcheck-suppress knownConditionTrueFalse
     if (matchdate == NULL) {
         if (g_stat(szFilename, &filestat) == 0) {
             matchdate = localtime((time_t *) & filestat.st_mtime);
@@ -3232,7 +3233,7 @@ WritePartyGame(FILE * fp, char *gameStr, int ns)
         char buf[100];
         char *moveStr = NULL;
         side = (move[0] == '2');
-        if ((side == 0) || (moveNum == 1 && side == 1)) {
+        if ((side == 0) || (moveNum == 1)) {
             fprintf(fp, "%3d) ", moveNum);
             if (moveNum == 1 && side == 1)
                 fprintf(fp, "%28s", " ");
