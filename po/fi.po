@@ -917,51 +917,51 @@ msgid "Clear initialized cube action and dice roll"
 msgstr "Poista siirtovuoron kaikki toimenpiteet"
 
 #: commands.inc:197
-msgid "Records a log of the game in .gam format"
+msgid "Save the current game in .gam format"
 msgstr "Tallenna pelin lokitiedosto .gam -muodossa"
 
 #: commands.inc:199
-msgid "Records a log of the game in Snowie .txt format"
+msgid "Save the current game in Snowie .txt format"
 msgstr "Tallenna pelin lokitiedosto Snowie .txt -muodossa"
 
 #: commands.inc:201
-msgid "Records a log of the game in HTML format"
+msgid "Save the current game in HTML format"
 msgstr "Tallenna pelin lokitiedosto HTML -muodossa"
 
 #: commands.inc:203
-msgid "Records a log of the game in LaTeX format"
+msgid "Save the current game in LaTeX format"
 msgstr "Tallenna pelin lokitiedosto LaTeX -muodossa"
 
 #: commands.inc:205
-msgid "Records a log of the game in PDF format"
+msgid "Save the current game in PDF format"
 msgstr "Tallenna pelin lokitiedosto PDF -muodossa"
 
 #: commands.inc:207
-msgid "Records a log of the game in PS format"
-msgstr "Tallenna pelin lokitiedosto PS -muodossa"
+msgid "Save the current game in PostScript format"
+msgstr "Tallenna pelin lokitiedosto PostScript -muodossa"
 
 #: commands.inc:209
-msgid "Export a log of the game in text format"
+msgid "Save the current game in text format"
 msgstr "Vie pelin lokitiedosto tekstimuodossa"
 
 #: commands.inc:213
-msgid "Records a log of the match in .mat format"
+msgid "Save the current match in .mat format"
 msgstr "Tallenna ottelun lokitiedosto .mat -muodossa"
 
 #: commands.inc:215
-msgid "Records a log of the match in Snowie .txt format"
+msgid "Save the current match in Snowie .txt format"
 msgstr "Tallenna ottelun lokitiedosto Snowie .txt -muodossa"
 
 #: commands.inc:217
-msgid "Records a log of the match in HTML format"
+msgid "Save the current match in HTML format"
 msgstr "Tallenna ottelun lokitiedosto HTML -muodossa"
 
 #: commands.inc:220
-msgid "Records a log of the match in LaTeX format"
+msgid "Save the current match in LaTeX format"
 msgstr "Tallenna ottelun lokitiedosto LaTeX -muodossa"
 
 #: commands.inc:223
-msgid "Records a log of the match in text format"
+msgid "Save the current match in text format"
 msgstr "Tallenna ottelun lokitiedosto tekstimuodossa"
 
 #: commands.inc:225
@@ -969,8 +969,8 @@ msgid "Save the current match in PDF format"
 msgstr "Tallenna nykyinen ottelu PDF -muodossa"
 
 #: commands.inc:227
-msgid "Save the current match in PS format"
-msgstr "Tallenna nykyinen ottelu PS -muodossa"
+msgid "Save the current match in PostScript format"
+msgstr "Tallenna nykyinen ottelu PostScript -muodossa"
 
 #: commands.inc:232
 msgid ""
@@ -1001,8 +1001,8 @@ msgid "Save the current position in HTML format"
 msgstr "Tallenna nykyinen peliasema HTML -muodossa"
 
 #: commands.inc:251
-msgid "Save the current position in Portable Network Graphics (PNG) format"
-msgstr "Tallenna nykyinen peliasema Portable Network Graphics (PNG) -muodossa"
+msgid "Save the current position in PNG format"
+msgstr "Tallenna nykyinen peliasema PNG -muodossa"
 
 #: commands.inc:254
 msgid "Save the current position in .pos format"
@@ -1017,19 +1017,19 @@ msgid "Save the current position in text format"
 msgstr "Tallenna nykyinen peliasema tekstimuodossa"
 
 #: commands.inc:265
-msgid "Records a log of the session in HTML format"
+msgid "Save the current session in HTML format"
 msgstr "Tallenna session lokitiedosto HTML -muodossa"
 
 #: commands.inc:267
-msgid "Records a log of the session in LaTeX format"
+msgid "Save the current session in LaTeX format"
 msgstr "Tallenna session lokitiedosto LaTeX -muodossa"
 
 #: commands.inc:270
-msgid "Records a log of the session in text format"
+msgid "Save the current session in text format"
 msgstr "Tallenna session lokitiedosto tekstimuodossa"
 
 #: commands.inc:274 commands.inc:383
-msgid "Record a log of the game so far to a file"
+msgid "Save the current game to a file"
 msgstr "Tallenna pelin lokitiedosto valittuun tiedostoon"
 
 #: commands.inc:276
@@ -1037,7 +1037,7 @@ msgid "Generate images to be used by the HTML export commands"
 msgstr "Luo kuvat HTML vientikomentoja varten"
 
 #: commands.inc:278 commands.inc:386
-msgid "Record a log of the match so far to a file"
+msgid "Save the current match to a file"
 msgstr "Tallenna ottelun lokitiedosto valittuun tiedostoon"
 
 #: commands.inc:280
@@ -1045,7 +1045,7 @@ msgid "Write the current position to a file"
 msgstr "Tallenna nykyinen peliasema valittuun tiedostoon"
 
 #: commands.inc:282
-msgid "Record a log of the session so far to a file"
+msgid "Save the current session to a file"
 msgstr "Tallenna session lokitiedosto valittuun tiedostoon"
 
 #: commands.inc:287
@@ -1193,7 +1193,7 @@ msgid "Test connexion to the external relational database"
 msgstr "Testaa yhteys ulkoiseen relaatiotietokantaan"
 
 #: commands.inc:388
-msgid "Record the current board position to a file"
+msgid "Save the current position to a file"
 msgstr "Tallenna nykyinen peliasema tiedostoon"
 
 #: commands.inc:390

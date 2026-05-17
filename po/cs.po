@@ -1030,9 +1030,8 @@ msgid "Records a log of the session in HTML format"
 msgstr ""
 
 #: commands.inc:267
-#, fuzzy
 msgid "Records a log of the session in LaTeX format"
-msgstr "Desky se budou zobrazovat v syrovém formátu.\n"
+msgstr ""
 
 #: commands.inc:270
 msgid "Records a log of the session in text format"

@@ -929,51 +929,51 @@ msgid "Clear initialized cube action and dice roll"
 msgstr "キューブアクションを初期化してダイスを振る"
 
 #: commands.inc:198
-msgid "Records a log of the game in .gam format"
+msgid "Save the current game in .gam format"
 msgstr "ゲームの棋譜を.gam形式で記録"
 
 #: commands.inc:200
-msgid "Records a log of the game in Snowie .txt format"
+msgid "Save the current game in Snowie .txt format"
 msgstr "ゲームの棋譜をSnowie .txt形式で記録"
 
 #: commands.inc:202
-msgid "Records a log of the game in HTML format"
+msgid "Save the current game in HTML format"
 msgstr "ゲームの棋譜をHTML形式で記録"
 
 #: commands.inc:204
-msgid "Records a log of the game in LaTeX format"
+msgid "Save the current game in LaTeX format"
 msgstr "ゲームの棋譜をLaTeX形式で記録"
 
 #: commands.inc:206
-msgid "Records a log of the game in PDF format"
+msgid "Save the current game in PDF format"
 msgstr "ゲームの棋譜をPDF形式で記録"
 
 #: commands.inc:208
-msgid "Records a log of the game in PS format"
+msgid "Save the current game in PostScript format"
 msgstr "ゲームの棋譜をPostScript形式で記録"
 
 #: commands.inc:210
-msgid "Export a log of the game in text format"
+msgid "Save the current game in text format"
 msgstr "ゲームの棋譜をテキスト形式でエクスポート"
 
 #: commands.inc:214
-msgid "Records a log of the match in .mat format"
+msgid "Save the current match in .mat format"
 msgstr "マッチの棋譜を.mat形式で記録"
 
 #: commands.inc:216
-msgid "Records a log of the match in Snowie .txt format"
+msgid "Save the current match in Snowie .txt format"
 msgstr "マッチの棋譜をSnowie .txt形式で記録"
 
 #: commands.inc:218
-msgid "Records a log of the match in HTML format"
+msgid "Save the current match in HTML format"
 msgstr "マッチの棋譜をHTML形式で記録"
 
 #: commands.inc:221
-msgid "Records a log of the match in LaTeX format"
+msgid "Save the current match in LaTeX format"
 msgstr "マッチの棋譜をLaTeX形式で記録する"
 
 #: commands.inc:224
-msgid "Records a log of the match in text format"
+msgid "Save the current match in text format"
 msgstr "マッチの棋譜をテキスト形式で記録"
 
 #: commands.inc:226
@@ -981,17 +981,17 @@ msgid "Save the current match in PDF format"
 msgstr "現在のポジションをPDF形式で保存"
 
 #: commands.inc:228
-msgid "Save the current match in PS format"
+msgid "Save the current match in PostScript format"
 msgstr "現在のマッチをPostScript形式で保存"
 
 #: commands.inc:233
 msgid ""
 "Copy the current position in HTML format to clipboard (special for BGonline)"
-msgstr "現在のポジションをHTML形式でクリップボードにコピー(GammOnLine 向け)"
+msgstr "現在のポジションをHTML形式でクリップボードにコピー(BGonline 向け)"
 
 #: commands.inc:237
 msgid "Save the current position in HTML format (special for BGonline)"
-msgstr "現在のポジションをHTML形式で保存(GammOnLine 向け)"
+msgstr "現在のポジションをHTML形式で保存(BGonline 向け)"
 
 #: commands.inc:241
 msgid "Save the current position in PostScript format"
@@ -1010,8 +1010,8 @@ msgid "Save the current position in HTML format"
 msgstr "現在のポジションをHTML形式で保存"
 
 #: commands.inc:252
-msgid "Save the current position in Portable Network Graphics (PNG) format"
-msgstr "現在のポジションをPNG(Portable Nerwork Graphics)形式で保存"
+msgid "Save the current position in PNG format"
+msgstr "現在のポジションをPNG形式で保存"
 
 #: commands.inc:255
 msgid "Save the current position in .pos format"
@@ -1026,19 +1026,19 @@ msgid "Save the current position in text format"
 msgstr "現在のポジションをテキスト形式で保存"
 
 #: commands.inc:266
-msgid "Records a log of the session in HTML format"
+msgid "Save the current session in HTML format"
 msgstr "セッションの棋譜をHTML形式で記録"
 
 #: commands.inc:268
-msgid "Records a log of the session in LaTeX format"
+msgid "Save the current session in LaTeX format"
 msgstr "セッションの棋譜をLaTeX形式で記録"
 
 #: commands.inc:271
-msgid "Records a log of the session in text format"
+msgid "Save the current session in text format"
 msgstr "セッションの棋譜をテキスト形式で記録"
 
 #: commands.inc:275 commands.inc:384
-msgid "Record a log of the game so far to a file"
+msgid "Save the current game to a file"
 msgstr "ここまでのゲームの棋譜をファイルに記録"
 
 #: commands.inc:277
@@ -1046,7 +1046,7 @@ msgid "Generate images to be used by the HTML export commands"
 msgstr "HTMLエクスポートコマンドで使用される画像を生成"
 
 #: commands.inc:279 commands.inc:387
-msgid "Record a log of the match so far to a file"
+msgid "Save the current match to a file"
 msgstr "ここまでのマッチの棋譜をファイルに記録"
 
 #: commands.inc:281
@@ -1054,7 +1054,7 @@ msgid "Write the current position to a file"
 msgstr "現在のポジションをファイルに書き込む"
 
 #: commands.inc:283
-msgid "Record a log of the session so far to a file"
+msgid "Save the current session to a file"
 msgstr "ここまでのセッションの棋譜をファイルに記録"
 
 #: commands.inc:288
@@ -1203,7 +1203,7 @@ msgstr "外部のリレーショナルデータベースへの接続をテスト
 
 # save positionの説明
 #: commands.inc:389
-msgid "Record the current board position to a file"
+msgid "Save the current position to a file"
 msgstr "現在のポジションをファイルに記録する"
 
 # save settingsの説明

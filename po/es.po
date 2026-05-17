@@ -1040,9 +1040,8 @@ msgid "Records a log of the session in HTML format"
 msgstr ""
 
 #: commands.inc:267
-#, fuzzy
-msgid "Records a log of the session in LaTeX format"
-msgstr "Los tableros se mostrarán en formato simple.\n"
+msgid "Record a log of the session in LaTeX format"
+msgstr ""
 
 #: commands.inc:270
 msgid "Records a log of the session in text format"
@@ -1061,9 +1060,8 @@ msgid "Record a log of the match so far to a file"
 msgstr ""
 
 #: commands.inc:280
-#, fuzzy
 msgid "Write the current position to a file"
-msgstr "Posición actual"
+msgstr ""
 
 #: commands.inc:282
 msgid "Record a log of the session so far to a file"

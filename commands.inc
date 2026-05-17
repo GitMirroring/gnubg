@@ -195,38 +195,38 @@ static command acAnnotateRoll[] = {
     N_("Clear initialized cube action and dice roll"), NULL, NULL },
   { NULL, NULL, NULL, NULL, NULL }
 }, acExportGame[] = {
-    { "gam", CommandExportGameGam, N_("Records a log of the game in .gam "
+    { "gam", CommandExportGameGam, N_("Save the current game in .gam "
       "format"), szFILENAME, &cFilename },
-    { "snowietxt", CommandExportGameSnowieTxt, N_("Records a log of the game in Snowie .txt format"), szFILENAME, &cFilename },
+    { "snowietxt", CommandExportGameSnowieTxt, N_("Save the current game in Snowie .txt format"), szFILENAME, &cFilename },
     { "html", CommandExportGameHtml,
-      N_("Records a log of the game in HTML format"), szFILENAME,
+      N_("Save the current game in HTML format"), szFILENAME,
       &cFilename },
-    { "latex", CommandExportGameLaTeX, N_("Records a log of the game in LaTeX "
+    { "latex", CommandExportGameLaTeX, N_("Save the current game in LaTeX "
       "format"), szFILENAME, &cFilename },
-    { "pdf", CommandExportGamePDF, N_("Records a log of the game in PDF "
+    { "pdf", CommandExportGamePDF, N_("Save the current game in PDF "
       "format"), szFILENAME, &cFilename },
-    { "ps", CommandExportGamePS, N_("Records a log of the game in PS "
+    { "ps", CommandExportGamePS, N_("Save the current game in PostScript "
       "format"), szFILENAME, &cFilename },
-    { "text", CommandExportGameText, N_("Export a log of the game in text format"),
+    { "text", CommandExportGameText, N_("Save the current game in text format"),
       szFILENAME, &cFilename },
     { NULL, NULL, NULL, NULL, NULL }
 }, acExportMatch[] = {
-    { "mat", CommandExportMatchMat, N_("Records a log of the match in .mat "
+    { "mat", CommandExportMatchMat, N_("Save the current match in .mat "
       "format"), szFILENAME, &cFilename },
-    { "snowietxt", CommandExportMatchSnowieTxt, N_("Records a log of the match in Snowie .txt format"), szFILENAME, &cFilename },
+    { "snowietxt", CommandExportMatchSnowieTxt, N_("Save the current match in Snowie .txt format"), szFILENAME, &cFilename },
     { "html", CommandExportMatchHtml,
-      N_("Records a log of the match in HTML format"), szFILENAME,
+      N_("Save the current match in HTML format"), szFILENAME,
       &cFilename },
     { "latex", CommandExportMatchLaTeX,
-      N_("Records a log of the match in LaTeX "
+      N_("Save the current match in LaTeX "
       "format"), szFILENAME, &cFilename },
     { "text", CommandExportMatchText,
-      N_("Records a log of the match in text format"),
+      N_("Save the current match in text format"),
       szFILENAME, &cFilename },
     { "pdf", CommandExportMatchPDF, N_("Save the current match in "
       "PDF format"), szFILENAME, &cFilename },
     { "ps", CommandExportMatchPS, N_("Save the current match in "
-      "PS format"), szFILENAME, &cFilename },
+      "PostScript format"), szFILENAME, &cFilename },
     { NULL, NULL, NULL, NULL, NULL }
 }, acExportPosition[] = {
     { "bgo2clipboard", CommandExportPositionGOL2Clipboard,
@@ -250,7 +250,7 @@ static command acAnnotateRoll[] = {
       szFILENAME, &cFilename },
 #if defined(HAVE_LIBPNG)
     { "png", CommandExportPositionPNG, N_("Save the current position in "
-      "Portable Network Graphics (PNG) format"), szFILENAME, &cFilename },
+      "PNG format"), szFILENAME, &cFilename },
 #endif /* HAVE_LIBPNG */
     { "pos", CommandExportPositionJF, N_("Save the current position in .pos "
       "format"), szFILENAME, &cFilename },
@@ -262,32 +262,32 @@ static command acAnnotateRoll[] = {
       szFILENAME, &cFilename },
     { NULL, NULL, NULL, NULL, NULL }
 }, acExportSession[] = {
-    { "mat", CommandExportMatchMat, N_("Records a log of the session in .mat "
+    { "mat", CommandExportMatchMat, N_("Save the current session in .mat "
       "format"), szFILENAME, &cFilename },
-    { "snowietxt", CommandExportMatchSnowieTxt, N_("Records a log of the session in Snowie .txt format"), szFILENAME, &cFilename },
+    { "snowietxt", CommandExportMatchSnowieTxt, N_("Save the current session in Snowie .txt format"), szFILENAME, &cFilename },
     { "html", CommandExportMatchHtml,
-      N_("Records a log of the session in HTML format"), szFILENAME,
+      N_("Save the current session in HTML format"), szFILENAME,
       &cFilename },
-    { "latex", CommandExportMatchLaTeX, N_("Records a log of the session in "
+    { "latex", CommandExportMatchLaTeX, N_("Save the current session in "
       "LaTeX format"), szFILENAME, &cFilename },
     { "text", CommandExportMatchText,
-      N_("Records a log of the session in text format"),
+      N_("Save the current session in text format"),
       szFILENAME, &cFilename },
     { "pdf", CommandExportMatchPDF, N_("Save the current session in "
       "PDF format"), szFILENAME, &cFilename },
     { "ps", CommandExportMatchPS, N_("Save the current session in "
-      "PS format"), szFILENAME, &cFilename },
+      "PostScript format"), szFILENAME, &cFilename },
     { NULL, NULL, NULL, NULL, NULL }
 }, acExport[] = {
-    { "game", NULL, N_("Record a log of the game so far to a file"), NULL,
+    { "game", NULL, N_("Save the current game to a file"), NULL,
       acExportGame },
     { "htmlimages", CommandExportHTMLImages, N_("Generate images to be used "
       "by the HTML export commands"), szFILENAME, &cFilename },
-    { "match", NULL, N_("Record a log of the match so far to a file"), NULL,
+    { "match", NULL, N_("Save the current match to a file"), NULL,
       acExportMatch },
     { "position", NULL, N_("Write the current position to a file"), NULL,
       acExportPosition },
-    { "session", NULL, N_("Record a log of the session so far to a file"),
+    { "session", NULL, N_("Save the current session to a file"),
       NULL, acExportSession },
     { NULL, NULL, NULL, NULL, NULL }
 }, acFirst[] = {
@@ -388,15 +388,15 @@ static command acAnnotateRoll[] = {
       N_("Test connexion to the external relational database"), NULL, NULL },
     { NULL, NULL, NULL, NULL, NULL }
 }, acSave[] = {
-    { "game", CommandSaveGame, N_("Record a log of the game so far to a "
+    { "game", CommandSaveGame, N_("Save the current game to a "
       "file"), szFILENAME, &cFilename },
     { "match", CommandSaveMatch,
-      N_("Record a log of the match so far to a file"),
+      N_("Save the current match to a file"),
       szFILENAME, &cFilename },
-    { "position", CommandSavePosition, N_("Record the current board position "
+    { "position", CommandSavePosition, N_("Save the current position "
       "to a file"), szFILENAME, &cFilename },
     { "session", CommandSaveMatch,
-      N_("Record a log of the session so far to a file"),
+      N_("Save the current session to a file"),
       szFILENAME, &cFilename },
     { "settings", CommandSaveSettings, N_("Use the current settings in future "
       "sessions"), NULL, NULL },
