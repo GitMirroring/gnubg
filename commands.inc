@@ -262,6 +262,9 @@ static command acAnnotateRoll[] = {
       szFILENAME, &cFilename },
     { NULL, NULL, NULL, NULL, NULL }
 }, acExportSession[] = {
+    { "mat", CommandExportMatchMat, N_("Records a log of the session in .mat "
+      "format"), szFILENAME, &cFilename },
+    { "snowietxt", CommandExportMatchSnowieTxt, N_("Records a log of the session in Snowie .txt format"), szFILENAME, &cFilename },
     { "html", CommandExportMatchHtml,
       N_("Records a log of the session in HTML format"), szFILENAME,
       &cFilename },
@@ -270,6 +273,10 @@ static command acAnnotateRoll[] = {
     { "text", CommandExportMatchText,
       N_("Records a log of the session in text format"),
       szFILENAME, &cFilename },
+    { "pdf", CommandExportMatchPDF, N_("Save the current session in "
+      "PDF format"), szFILENAME, &cFilename },
+    { "ps", CommandExportMatchPS, N_("Save the current session in "
+      "PS format"), szFILENAME, &cFilename },
     { NULL, NULL, NULL, NULL, NULL }
 }, acExport[] = {
     { "game", NULL, N_("Record a log of the game so far to a file"), NULL,
@@ -388,6 +395,9 @@ static command acAnnotateRoll[] = {
       szFILENAME, &cFilename },
     { "position", CommandSavePosition, N_("Record the current board position "
       "to a file"), szFILENAME, &cFilename },
+    { "session", CommandSaveMatch,
+      N_("Record a log of the session so far to a file"),
+      szFILENAME, &cFilename },
     { "settings", CommandSaveSettings, N_("Use the current settings in future "
       "sessions"), NULL, NULL },
     { NULL, NULL, NULL, NULL, NULL }
