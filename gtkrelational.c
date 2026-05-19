@@ -1312,9 +1312,11 @@ AddDBClicked(GtkButton * UNUSED(button), gpointer dbList)
                 gtk_tree_model_get(model, &iter, 0, &sz, -1);
                 if (g_ascii_strcasecmp(dbName, sz) == 0) {
                     gtk_label_set_text(GTK_LABEL(helptext), _("Failed to create, database exists!"));
+                    g_free(sz);
                     g_free(dbName);
                     return;
                 }
+                g_free(sz);
             } while (gtk_tree_model_iter_next(model, &iter));
 
         if (pdb)
