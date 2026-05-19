@@ -95,6 +95,8 @@ static void ToolbarStyle(guint iType, guint iActionID, GtkRadioAction * action,
 
 static char *newLang;
 
+static guint apply_panel_width_idle = 0;
+
 /* Hack this for now to stop re-entering - should be fixed when menu switched to actions */
 int inCallback = FALSE;
 
@@ -1440,9 +1442,10 @@ SetPanelWidth(int size)
 static gboolean
 ApplyPanelWidth(gpointer UNUSED(data))
 {
-    GtkAllocation allocation;
+    apply_panel_width_idle = 0;
 
     if (gtk_widget_get_visible(hpaned) && gtk_widget_get_realized(hpaned)) {
+        GtkAllocation allocation;
         int size;
 
         gtk_widget_get_allocation(hpaned, &allocation);
@@ -1451,7 +1454,14 @@ ApplyPanelWidth(gpointer UNUSED(data))
         gtk_paned_set_position(GTK_PANED(hpaned), allocation.width - size);
     }
 
-    return FALSE;
+    return G_SOURCE_REMOVE;
+}
+
+static void
+QueueApplyPanelWidth(void)
+{
+    if (!apply_panel_width_idle && hpaned)
+        apply_panel_width_idle = g_idle_add(ApplyPanelWidth, NULL);
 }
 
 extern void
@@ -1471,7 +1481,7 @@ SwapBoardToPanel(int ToPanel, int updateEvents)
             ProcessEvents();
         gtk_widget_hide(pwGameBox);
 
-        g_idle_add(ApplyPanelWidth, NULL);
+        QueueApplyPanelWidth();
     } else {
         /* Need to hide these, as handle box seems to be buggy and gets confused */
         gtk_widget_hide(gtk_widget_get_parent(pwMenuBar));
@@ -1576,7 +1586,7 @@ static gboolean
 configure_event(GtkWidget * UNUSED(widget), GdkEventConfigure * UNUSED(eCon), void *UNUSED(null))
 {                               /* Maintain panel size */
     if (DockedPanelsShowing())
-        g_idle_add(ApplyPanelWidth, NULL);
+        QueueApplyPanelWidth();
 
     return FALSE;
 }
