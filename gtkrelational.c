@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2006-2008 Christian Anthon <anthon@kiku.dk>
- * Copyright (C) 2006-2024 the AUTHORS
+ * Copyright (C) 2006-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1298,7 +1298,9 @@ DBListSelected(GtkTreeView * treeview, gpointer UNUSED(userdata))
 static void
 AddDBClicked(GtkButton * UNUSED(button), gpointer dbList)
 {
-    char *dbName = GTKGetInput(_("Add Database"), _("Database Name:"), NULL);
+    GtkWidget *parent = gtk_widget_get_toplevel(GTK_WIDGET(dbList));
+    char *dbName = GTKGetInput(_("Add Database"), _("Database Name:"), parent);
+
     if (dbName) {
         DBProvider *pdb = GetSelectedDBType();
         int con = 0;
@@ -1319,10 +1321,13 @@ AddDBClicked(GtkButton * UNUSED(button), gpointer dbList)
                 g_free(sz);
             } while (gtk_tree_model_iter_next(model, &iter));
 
-        if (pdb)
-            con =
-                pdb->Connect(dbName, gtk_entry_get_text(GTK_ENTRY(user)), gtk_entry_get_text(GTK_ENTRY(password)),
-                             gtk_entry_get_text(GTK_ENTRY(hostname)));
+        if (pdb) {
+            con = pdb->Connect(
+                dbName,
+                gtk_entry_get_text(GTK_ENTRY(user)),
+                gtk_entry_get_text(GTK_ENTRY(password)),
+                gtk_entry_get_text(GTK_ENTRY(hostname)));
+        }
 
         if (con > 0 || ((pdb) && CreateDatabase(pdb))) {
             gtk_list_store_append(GTK_LIST_STORE(dbStore), &iter);
@@ -1330,8 +1335,9 @@ AddDBClicked(GtkButton * UNUSED(button), gpointer dbList)
             gtk_tree_selection_select_iter(gtk_tree_view_get_selection(GTK_TREE_VIEW(dbList)), &iter);
             pdb->Disconnect();
             CheckDatabase(dbName);
-        } else
+        } else {
             gtk_label_set_text(GTK_LABEL(helptext), _("Failed to create database!"));
+        }
 
         g_free(dbName);
     }
