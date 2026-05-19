@@ -1346,7 +1346,10 @@ AddDBClicked(GtkButton * UNUSED(button), gpointer dbList)
 static void
 DelDBClicked(GtkButton * UNUSED(button), gpointer dbList)
 {
+    GtkWidget *parent = gtk_widget_get_toplevel(GTK_WIDGET(dbList));
     char *db = GetSelectedDB(GTK_TREE_VIEW(dbList));
+    GTKSetCurrentParent(parent);
+
     if (db && GetInputYN(_("Are you sure you want to delete all the matches in this database?"))) {
         DBProvider *pdb = GetSelectedDBType();
 
