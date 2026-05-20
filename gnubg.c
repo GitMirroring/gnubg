@@ -1170,6 +1170,9 @@ HandleCommand(char *sz, command * ac)
     char *pch;
     size_t cch;
 
+    if (sz == NULL)
+        return;
+
     if (ac == acTop) {
         outputnew();
 
@@ -3687,7 +3690,7 @@ ProcessInput(char *sz)
 
         history_expand(sz, &pchExpanded);
 
-        if (*pchExpanded)
+        if (pchExpanded && *pchExpanded)
             add_history(pchExpanded);
 
         if (fX)
@@ -4235,7 +4238,7 @@ get_readline(void)
     MT_SafeSet(&fInterrupt, FALSE);
     history_expand(sz, &pchExpanded);
     g_free(sz);
-    if (*pchExpanded)
+    if (pchExpanded && *pchExpanded)
         add_history(pchExpanded);
     return pchExpanded;
 }
@@ -4353,10 +4356,16 @@ setup_readline(void)
     int i;
     gnubg_histfile = g_build_filename(szHomeDirectory, "history", NULL);
     rl_readline_name = "gnubg";
+#if defined(__APPLE__) && (RL_READLINE_VERSION == 0x0402)
+    /* readline from MacOSX SDK (wrapper around libedit) */
+    rl_basic_word_break_characters = szCommandSeparators;
+    rl_completion_entry_function = NULL;
+#else
+    /* standard GNU readline, possibly from homebrew or macports on MacOSX */
     rl_basic_word_break_characters = rl_filename_quote_characters = szCommandSeparators;
-    rl_completer_quote_characters = "\"";
-    /* assume readline 4.2 or later */
     rl_completion_entry_function = NullGenerator;
+#endif
+    rl_completer_quote_characters = "\"";
     rl_attempted_completion_function = CompleteKeyword;
     /* setup history */
     read_history(gnubg_histfile);
