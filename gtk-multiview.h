@@ -43,9 +43,6 @@ typedef struct {
 
 GType gtk_multiview_get_type(void);
 GtkWidget *gtk_multiview_new(void);
-void gtk_multiview_prepend_child(GtkMultiview * multiview, GtkWidget * child);
-void gtk_multiview_insert_child(GtkMultiview * multiview, GtkWidget * back_child, GtkWidget * child);
-void gtk_multiview_append_child(GtkMultiview * multiview, GtkWidget * child);
 void gtk_multiview_set_current(GtkMultiview * multiview, GtkWidget * child);
 
 #endif                          /* GTK_MULTIVIEW_H */

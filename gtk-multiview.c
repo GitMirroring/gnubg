@@ -21,7 +21,6 @@
 
 #include "config.h"
 #include "common.h"
-#include "gtklocdefs.h"
 #include <gtk/gtk.h>
 #include "gtk-multiview.h"
 
@@ -50,6 +49,11 @@ static void
 gtk_multiview_add(GtkContainer * container, GtkWidget * child);
 static void
 gtk_multiview_remove(GtkContainer * container, GtkWidget * child);
+static void
+gtk_multiview_insert_child(GtkMultiview * multiview, GtkWidget * back_child, GtkWidget * child);
+static void
+gtk_multiview_append_child(GtkMultiview * multiview, GtkWidget * child);
+
 
 static void
 gtk_multiview_init(GtkMultiview * multiview)
@@ -263,18 +267,7 @@ gtk_multiview_new(void)
     return g_object_new(GTK_TYPE_MULTIVIEW, NULL);
 }
 
-void
-gtk_multiview_prepend_child(GtkMultiview * multiview, GtkWidget * child)
-{
-    g_return_if_fail(multiview != NULL);
-    g_return_if_fail(GTK_IS_MULTIVIEW(multiview));
-    g_return_if_fail(child != NULL);
-    g_return_if_fail(GTK_IS_WIDGET(child));
-
-    gtk_multiview_insert_child(multiview, NULL, child);
-}
-
-void
+static void
 gtk_multiview_insert_child(GtkMultiview * multiview, GtkWidget * back_child, GtkWidget * child)
 {
     GList *list;
@@ -313,7 +306,7 @@ gtk_multiview_insert_child(GtkMultiview * multiview, GtkWidget * back_child, Gtk
         gtk_multiview_set_current(multiview, child);
 }
 
-void
+static void
 gtk_multiview_append_child(GtkMultiview * multiview, GtkWidget * child)
 {
     GList *list;
