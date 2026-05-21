@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2003 Gary Wong <gtw@gnu.org>
- * Copyright (C) 2001-2025 the AUTHORS
+ * Copyright (C) 2001-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3366,6 +3366,10 @@ SetPlayers(gpointer UNUSED(p), guint UNUSED(n), GtkWidget * UNUSED(pw))
     playerswidget plw;
 
     memcpy(apTemp, ap, sizeof ap);
+
+    g_strlcpy(apTemp[0].szName, default_names[0], MAX_NAME_LEN);
+    g_strlcpy(apTemp[1].szName, default_names[1], MAX_NAME_LEN);
+
     plw.ap = apTemp;
     plw.pfOK = &fOK;
 
