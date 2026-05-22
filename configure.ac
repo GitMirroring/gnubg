@@ -331,7 +331,7 @@ AC_ARG_ENABLE( gtkdeprecated, [  --enable-gtkdeprecated  enable deprecated gtk f
 if test "x$gtkdeprecated" = "xno"; then
 	AC_DEFINE(GTK_DISABLE_DEPRECATED, 1, Define if you want to disable deprecated gtk functions)
 fi
-AC_MSG_RESULT($gtkprecated)
+AC_MSG_RESULT($gtkdeprecated)
 
 dnl
 dnl Check for gtk and gtkglext
