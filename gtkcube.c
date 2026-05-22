@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2002-2003 Joern Thyssen <jthyssen@dk.ibm.com>
  * Copyright (C) 2021 Aaron Tikuisis and Isaac Keslassy (MoneyEval)
- * Copyright (C) 2002-2023 the AUTHORS
+ * Copyright (C) 2002-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1494,10 +1494,10 @@ CubeAnalysisCopy(GtkWidget * UNUSED(pw), cubehintdata * pchd)
 }
 
 static void
-CubeAnalysisTempMap(GtkWidget * UNUSED(pw), cubehintdata * pchd)
+CubeAnalysisTempMap(GtkWidget * pw, cubehintdata * pchd)
 {
 /* Called by GTK when the temp map button is clicked.  */
-
+    GTKSetCurrentParent(pw);
     gchar *sz = g_strdup("show temperaturemap =cube");
     cubeTempMapAtMoney = pchd->evalAtMoney;
     if (cubeTempMapAtMoney)
@@ -1508,11 +1508,11 @@ CubeAnalysisTempMap(GtkWidget * UNUSED(pw), cubehintdata * pchd)
 }
 
 static void
-CubeAnalysisScoreMap(GtkWidget * UNUSED(pw), cubehintdata * UNUSED(pchd))
+CubeAnalysisScoreMap(GtkWidget * pw, cubehintdata * UNUSED(pchd))
 {
 /* Called by GTK when the score map button is clicked.
 */
-
+    GTKSetCurrentParent(pw);
     UserCommand("show scoremap"); //cf keyword -> gtkgame.c: CMD_SHOW_SCORE_MAP_CUBE
 
 }

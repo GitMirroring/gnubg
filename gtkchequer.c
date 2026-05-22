@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2002-2003 Joern Thyssen <jthyssen@dk.ibm.com>
- * Copyright (C) 2002-2023 the AUTHORS
+ * Copyright (C) 2002-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
