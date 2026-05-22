@@ -368,7 +368,11 @@ GTKGetInput(char *title, char *prompt, GtkWidget * parent)
     pwDialog = GTKCreateDialog(title, DT_QUESTION, parent, DIALOG_FLAG_MODAL, G_CALLBACK(GetInputOk), pwEntry);
 
 #if GTK_CHECK_VERSION(3,0,0)
-    pwHbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    pwHbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+    gtk_widget_set_margin_top(pwHbox, 8);
+    gtk_widget_set_margin_bottom(pwHbox, 8);
+    gtk_widget_set_margin_start(pwHbox, 8);
+    gtk_widget_set_margin_end(pwHbox, 8);
 #else
     pwHbox = gtk_hbox_new(FALSE, 0);
 #endif
@@ -376,6 +380,13 @@ GTKGetInput(char *title, char *prompt, GtkWidget * parent)
 
     gtk_box_pack_start(GTK_BOX(pwHbox), gtk_label_new(prompt), FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(pwHbox), pwEntry, FALSE, FALSE, 0);
+
+#if GTK_CHECK_VERSION(3,0,0)
+    gtk_widget_set_valign(pwEntry, GTK_ALIGN_CENTER);
+    gtk_widget_set_vexpand(pwEntry, FALSE);
+    gtk_widget_set_hexpand(pwEntry, TRUE);
+#endif
+
     gtk_entry_set_activates_default(GTK_ENTRY(pwEntry), TRUE);
     gtk_widget_grab_focus(pwEntry);
 
