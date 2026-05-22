@@ -3725,14 +3725,17 @@ AddLangWidgets(GtkWidget * cont)
 static void
 SetLanguage(gpointer UNUSED(p), guint UNUSED(n), GtkWidget * UNUSED(w))
 {
-    GList *pl;
-
     pwLangDialog = GTKCreateDialog(NULL, DT_QUESTION, NULL, DIALOG_FLAG_MODAL, SetLangOk, NULL);
 
-    pl = gtk_container_get_children(GTK_CONTAINER(DialogArea(pwLangDialog, DA_BUTTONS)));
-    SetWidgetLabelLang(GTK_WIDGET(pl->data), N_("Cancel"));
-    SetWidgetLabelLang(GTK_WIDGET(pl->next->data), N_("OK"));
-    g_list_free(pl);
+    SetWidgetLabelLang(
+        gtk_dialog_get_widget_for_response(
+            GTK_DIALOG(pwLangDialog), GTK_RESPONSE_CANCEL),
+        N_("Cancel"));
+
+    SetWidgetLabelLang(
+        gtk_dialog_get_widget_for_response(
+            GTK_DIALOG(pwLangDialog), GTK_RESPONSE_OK),
+        N_("OK"));
 
     curSel = NULL;
     newLang = NULL;
