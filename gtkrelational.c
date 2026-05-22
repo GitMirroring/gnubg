@@ -988,8 +988,9 @@ GtkRelationalShowStats(void)
 }
 
 extern void
-GtkRelationalAddMatch(gpointer UNUSED(p), guint UNUSED(n), GtkWidget * UNUSED(pw))
+GtkRelationalAddMatch(gpointer UNUSED(p), guint UNUSED(n), GtkWidget * pw)
 {
+    GTKSetCurrentParent(pw);
     CommandRelationalAddMatch(NULL);
     outputx();
 }
