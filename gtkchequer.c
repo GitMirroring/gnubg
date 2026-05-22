@@ -196,13 +196,13 @@ MoveListTempMapClicked(GtkWidget * pw, hintdata * phd)
 }
 
 static void
-MoveListScoreMapClicked(GtkWidget * UNUSED(pw), hintdata * UNUSED(phd))
+MoveListScoreMapClicked(GtkWidget * pw, hintdata * UNUSED(phd))
 {
+    GTKSetCurrentParent(pw);
 
     char *sz = g_strdup("show scoremap =move"); //cf keyword -> gtkgame.c: CMD_SHOW_SCORE_MAP_MOVE
     UserCommand(sz);
     g_free(sz);
-
 }
 
 static void
