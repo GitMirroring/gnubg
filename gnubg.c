@@ -2545,7 +2545,7 @@ PromptForExit(void)
     write_history(gnubg_histfile);
 #endif                          /* HAVE_LIB_READLINE */
 
-#if defined(USE_GTK)
+#if defined(USE_GTK) && !GTK_CHECK_VERSION(4,0,0)
     if (gtk_main_level() == 1)
         gtk_main_quit();
     else
@@ -4092,8 +4092,13 @@ CallbackProgress(void)
         if (fInProgress)
             GTKSuspendInput();
 
+#if GTK_CHECK_VERSION(4,0,0)
+        while (g_main_context_pending(NULL))
+            g_main_context_iteration(NULL, FALSE);
+#else
         while (gtk_events_pending())
             gtk_main_iteration();
+#endif
 
         if (fInProgress)
             GTKResumeInput();
@@ -4639,7 +4644,7 @@ main(int argc, char *argv[])
     /* parse command-line options */
     context = g_option_context_new("[file.sgf]");
     g_option_context_add_main_entries(context, ao, PACKAGE);
-#if defined(USE_GTK)
+#if defined(USE_GTK) && !GTK_CHECK_VERSION(4,0,0)
     g_option_context_add_group(context, gtk_get_option_group(FALSE));
 #endif
 
@@ -5558,8 +5563,13 @@ ProcessEvents(void)
 {
 #if defined(USE_GTK)
     if (fX) {
+#if GTK_CHECK_VERSION(4,0,0)
+        while (g_main_context_pending(NULL))
+            g_main_context_iteration(NULL, FALSE);
+#else
         while (gtk_events_pending())
             gtk_main_iteration();
+#endif
     } else
 #endif
     {

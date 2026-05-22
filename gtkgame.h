@@ -27,10 +27,16 @@
 
 #define TOOLBAR_ACTION_OFFSET 10000
 
+#if !GTK_CHECK_VERSION(4,0,0)
 extern GtkUIManager *puim;
+#endif
 
+#if GTK_CHECK_VERSION(4,0,0)
+extern GdkRGBA wlCol;
+#else
 extern GdkColor wlCol;
 extern GtkAccelGroup *pagMain;
+#endif
 
 extern GtkWidget *pwAnalysis;
 extern GtkWidget *pwBoard;
@@ -58,7 +64,9 @@ extern moverecord *pmrCurAnn;
 
 extern char *ReturnHits(TanBoard anBoard);
 extern gboolean ShowGameWindow(void);
+#if !GTK_CHECK_VERSION(4,0,0)
 extern gint MoveListClearSelection(GtkWidget * pw, GdkEventSelection * pes, hintdata * phd);
+#endif
 extern gint NextTurnNotify(gpointer p);
 extern GList *MoveListGetSelectionList(const hintdata * phd);
 extern GtkWidget *GetPanelWidget(gnubgwindow window);
@@ -82,7 +90,9 @@ extern void DisplayWindows(void);
 extern void DockPanels(void);
 extern void FullScreenMode(int state);
 extern void GetFullscreenWindowSettings(int *panels, int *ids, int *maxed);
+#if !GTK_CHECK_VERSION(4,0,0)
 extern void GetStyleFromRCFile(GtkStyle ** ppStyle, const char *name, GtkStyle * psBase);
+#endif
 extern void GL_SetNames(void);
 extern void GTKAddGame(moverecord * pmr);
 extern void GTKAddMoveRecord(moverecord * pmr);
@@ -167,8 +177,13 @@ extern void ToggleEdit(GtkWidget *widget, gpointer user_data);
 extern void ToggleEdit(GtkToggleAction * action, gpointer user_data);
 #endif
 
+#if GTK_CHECK_VERSION(4,0,0)
+extern void ToggleClockwise(GtkWidget *widget, gpointer user_data);
+extern void ToggleDockPanels(GtkWidget *widget, gpointer user_data);
+#else
 extern void ToggleClockwise(GtkToggleAction * action, gpointer user_data);
 extern void ToggleDockPanels(GtkToggleAction * action, gpointer user_data);
+#endif
 
 extern void GTKUndo(void);
 extern void ShowToolbar(void);

@@ -914,8 +914,13 @@ PythonUpdateUI(PyObject * UNUSED(self), PyObject * UNUSED(args))
 {
 #if defined(USE_GTK)
     if (fX) {
+#if GTK_CHECK_VERSION(4,0,0)
+        while (g_main_context_pending(NULL))
+            g_main_context_iteration(NULL, FALSE);
+#else
         while (gtk_events_pending())
             gtk_main_iteration();
+#endif
     }
 #endif
 

@@ -64,6 +64,7 @@
 #include "sound.h"
 #include "gtkoptions.h"
 #include "gtktoolbar.h"
+#include "gtkutil.h"
 #include "format.h"
 #include "formatgs.h"
 #include "renderprefs.h"
@@ -1144,7 +1145,7 @@ SetAnnotation(moverecord * pmr)
             pwAnalysis = gtk_vbox_new(FALSE, 0);
             pwBox = gtk_table_new(2, 3, TRUE);
 #endif
-            gtk_box_pack_start(GTK_BOX(pwAnalysis), pwBox, FALSE, FALSE, 4);
+            box_append_compat(GTK_BOX(pwAnalysis), pwBox, FALSE, FALSE, 4);
 
             ms.fMove = ms.fTurn = pmr->fPlayer;
 
@@ -1219,7 +1220,7 @@ SetAnnotation(moverecord * pmr)
                 /* notebook with analysis */
                 pw = gtk_notebook_new();
 
-                gtk_box_pack_start(GTK_BOX(pwAnalysis), pw, TRUE, TRUE, 0);
+                box_append_compat(GTK_BOX(pwAnalysis), pw, TRUE, TRUE, 0);
 
                 gtk_notebook_append_page(GTK_NOTEBOOK(pw), pwCubeAnalysis, gtk_label_new(_("Cube decision")));
 
@@ -1230,9 +1231,9 @@ SetAnnotation(moverecord * pmr)
                 if (IsPanelDocked(WINDOW_ANALYSIS))
                     gtk_widget_set_size_request(GTK_WIDGET(pwMoveAnalysis), 0, 200);
 
-                gtk_box_pack_start(GTK_BOX(pwAnalysis), pwMoveAnalysis, TRUE, TRUE, 0);
+                box_append_compat(GTK_BOX(pwAnalysis), pwMoveAnalysis, TRUE, TRUE, 0);
             } else if (pwCubeAnalysis)
-                gtk_box_pack_start(GTK_BOX(pwAnalysis), pwCubeAnalysis, TRUE, TRUE, 0);
+                box_append_compat(GTK_BOX(pwAnalysis), pwCubeAnalysis, TRUE, TRUE, 0);
 
             if (!g_list_first(pl = gtk_container_get_children(GTK_CONTAINER(GTK_BOX(pwAnalysis))))) {
                 gtk_widget_destroy(pwAnalysis);
@@ -1256,19 +1257,19 @@ SetAnnotation(moverecord * pmr)
             pwBox = gtk_vbox_new(FALSE, 0);
 #endif
 
-            gtk_box_pack_start(GTK_BOX(pwBox), gtk_label_new(Q_(aszDoubleTypes[dt])), FALSE, FALSE, 2);
-            gtk_box_pack_start(GTK_BOX(pwBox), skill_label(pmr->stCube), FALSE, FALSE, 2);
-            gtk_box_pack_start(GTK_BOX(pwAnalysis), pwBox, FALSE, FALSE, 0);
+            box_append_compat(GTK_BOX(pwBox), gtk_label_new(Q_(aszDoubleTypes[dt])), FALSE, FALSE, 2);
+            box_append_compat(GTK_BOX(pwBox), skill_label(pmr->stCube), FALSE, FALSE, 2);
+            box_append_compat(GTK_BOX(pwAnalysis), pwBox, FALSE, FALSE, 0);
 
             if (dt == DT_NORMAL || dt == DT_BEAVER) {
 
                 if ((pw = CreateCubeAnalysis(pmr, &ms, TRUE, -1, TRUE)))
-                    gtk_box_pack_start(GTK_BOX(pwAnalysis), pw, FALSE, FALSE, 0);
+                    box_append_compat(GTK_BOX(pwAnalysis), pw, FALSE, FALSE, 0);
 
             } else
-                gtk_box_pack_start(GTK_BOX(pwAnalysis),
-                                   gtk_label_new(_("GNU Backgammon cannot "
-                                                   "analyse neither beavers " "nor raccoons yet")), FALSE, FALSE, 0);
+                box_append_compat(GTK_BOX(pwAnalysis),
+                                  gtk_label_new(_("GNU Backgammon cannot "
+                                                  "analyse neither beavers " "nor raccoons yet")), FALSE, FALSE, 0);
             break;
 
         case MOVE_TAKE:
@@ -1284,18 +1285,18 @@ SetAnnotation(moverecord * pmr)
             pwBox = gtk_vbox_new(FALSE, 0);
 #endif
 
-            gtk_box_pack_start(GTK_BOX(pwBox),
-                               gtk_label_new(pmr->mt == MOVE_TAKE ? _("Take") : _("Drop")), FALSE, FALSE, 2);
-            gtk_box_pack_start(GTK_BOX(pwBox), skill_label(pmr->stCube), FALSE, FALSE, 2);
-            gtk_box_pack_start(GTK_BOX(pwAnalysis), pwBox, FALSE, FALSE, 0);
+            box_append_compat(GTK_BOX(pwBox),
+                              gtk_label_new(pmr->mt == MOVE_TAKE ? _("Take") : _("Drop")), FALSE, FALSE, 2);
+            box_append_compat(GTK_BOX(pwBox), skill_label(pmr->stCube), FALSE, FALSE, 2);
+            box_append_compat(GTK_BOX(pwAnalysis), pwBox, FALSE, FALSE, 0);
 
             if (tt <= TT_NORMAL) {
                 if ((pw = CreateCubeAnalysis(pmr, &ms, -1, pmr->mt == MOVE_TAKE, TRUE)))
-                    gtk_box_pack_start(GTK_BOX(pwAnalysis), pw, FALSE, FALSE, 0);
+                    box_append_compat(GTK_BOX(pwAnalysis), pw, FALSE, FALSE, 0);
             } else
-                gtk_box_pack_start(GTK_BOX(pwAnalysis),
-                                   gtk_label_new(_("GNU Backgammon cannot "
-                                                   "analyse neither beavers " "nor raccoons yet")), FALSE, FALSE, 0);
+                box_append_compat(GTK_BOX(pwAnalysis),
+                                  gtk_label_new(_("GNU Backgammon cannot "
+                                                  "analyse neither beavers " "nor raccoons yet")), FALSE, FALSE, 0);
 
             break;
 
@@ -1309,7 +1310,7 @@ SetAnnotation(moverecord * pmr)
             /* equities for resign */
 
             if ((pw = ResignAnalysis(pmr->r.arResign, pmr->r.nResigned, &pmr->r.esResign)))
-                gtk_box_pack_start(GTK_BOX(pwAnalysis), pw, FALSE, FALSE, 0);
+                box_append_compat(GTK_BOX(pwAnalysis), pw, FALSE, FALSE, 0);
 
             /* skill for resignation */
 
@@ -1317,14 +1318,14 @@ SetAnnotation(moverecord * pmr)
             pwBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
             gtk_widget_set_halign(pwBox, GTK_ALIGN_CENTER);
             gtk_widget_set_valign(pwBox, GTK_ALIGN_CENTER);
-            gtk_box_pack_start(GTK_BOX(pwBox), gtk_label_new(_("Resign")), FALSE, FALSE, 2);
-            gtk_box_pack_start(GTK_BOX(pwAnalysis), pwBox, FALSE, FALSE, 0);
+            box_append_compat(GTK_BOX(pwBox), gtk_label_new(_("Resign")), FALSE, FALSE, 2);
+            box_append_compat(GTK_BOX(pwAnalysis), pwBox, FALSE, FALSE, 0);
 #else
             pwBox = gtk_hbox_new(FALSE, 0);
             pwAlign = gtk_alignment_new(0.5f, 0.5f, 0.0f, 0.0f);
             gtk_container_add(GTK_CONTAINER(pwAlign), pwBox);
-            gtk_box_pack_start(GTK_BOX(pwBox), gtk_label_new(_("Resign")), FALSE, FALSE, 2);
-            gtk_box_pack_start(GTK_BOX(pwAnalysis), pwAlign, FALSE, FALSE, 0);
+            box_append_compat(GTK_BOX(pwBox), gtk_label_new(_("Resign")), FALSE, FALSE, 2);
+            box_append_compat(GTK_BOX(pwAnalysis), pwAlign, FALSE, FALSE, 0);
 #endif
 
             /* skill for accept */
@@ -1333,14 +1334,14 @@ SetAnnotation(moverecord * pmr)
             pwBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
             gtk_widget_set_halign(pwBox, GTK_ALIGN_CENTER);
             gtk_widget_set_valign(pwBox, GTK_ALIGN_CENTER);
-            gtk_box_pack_start(GTK_BOX(pwBox), gtk_label_new(_("Accept")), FALSE, FALSE, 2);
-            gtk_box_pack_start(GTK_BOX(pwAnalysis), pwBox, FALSE, FALSE, 0);
+            box_append_compat(GTK_BOX(pwBox), gtk_label_new(_("Accept")), FALSE, FALSE, 2);
+            box_append_compat(GTK_BOX(pwAnalysis), pwBox, FALSE, FALSE, 0);
 #else
             pwBox = gtk_hbox_new(FALSE, 0);
             pwAlign = gtk_alignment_new(0.5f, 0.5f, 0.0f, 0.0f);
             gtk_container_add(GTK_CONTAINER(pwAlign), pwBox);
-            gtk_box_pack_start(GTK_BOX(pwBox), gtk_label_new(_("Accept")), FALSE, FALSE, 2);
-            gtk_box_pack_start(GTK_BOX(pwAnalysis), pwAlign, FALSE, FALSE, 0);
+            box_append_compat(GTK_BOX(pwBox), gtk_label_new(_("Accept")), FALSE, FALSE, 2);
+            box_append_compat(GTK_BOX(pwAnalysis), pwAlign, FALSE, FALSE, 0);
 #endif
 
             break;
@@ -1356,7 +1357,7 @@ SetAnnotation(moverecord * pmr)
     if (!IsPanelDocked(WINDOW_ANALYSIS))
         gtk_paned_pack1(GTK_PANED(pwParent), pwAnalysis, TRUE, FALSE);
     else
-        gtk_box_pack_start(GTK_BOX(pwParent), pwAnalysis, TRUE, TRUE, 0);
+        box_append_compat(GTK_BOX(pwParent), pwAnalysis, TRUE, TRUE, 0);
 
     gtk_widget_show_all(pwAnalysis);
 
@@ -2448,7 +2449,7 @@ ShowDetailedAnalysis(GtkWidget * button, AnalysisDetails * pDetails)
     gtk_container_add(GTK_CONTAINER(DialogArea(pwDialog, DA_MAIN)), hbox);
 
     pwFrame = gtk_frame_new(_("Chequer play"));
-    gtk_box_pack_start(GTK_BOX(hbox), pwFrame, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(hbox), pwFrame, TRUE, TRUE, 0);
     gtk_container_set_border_width(GTK_CONTAINER(pwFrame), 4);
 
     gtk_container_add(GTK_CONTAINER(pwFrame),
@@ -2456,7 +2457,7 @@ ShowDetailedAnalysis(GtkWidget * button, AnalysisDetails * pDetails)
                                                        NULL, pDetails->mfChequer != NULL));
 
     pwFrame = gtk_frame_new(_("Cube decisions"));
-    gtk_box_pack_start(GTK_BOX(hbox), pwFrame, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(hbox), pwFrame, TRUE, TRUE, 0);
     gtk_container_set_border_width(GTK_CONTAINER(pwFrame), 4);
 
 #if GTK_CHECK_VERSION(3,0,0)
@@ -2466,9 +2467,9 @@ ShowDetailedAnalysis(GtkWidget * button, AnalysisDetails * pDetails)
 #endif
     gtk_container_add(GTK_CONTAINER(pwFrame), pwvbox);
 
-    gtk_box_pack_start(GTK_BOX(pwvbox),
-                       pDetails->pwCube = EvalWidget(pDetails->esCube, (movefilter *) & pDetails->mfCube[9],
-                                                     NULL, pDetails->mfCube != NULL), FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwvbox),
+                      pDetails->pwCube = EvalWidget(pDetails->esCube, (movefilter *) & pDetails->mfCube[9],
+                                                    NULL, pDetails->mfCube != NULL), FALSE, FALSE, 0);
 
     if (pDetails->cubeDisabled)
         gtk_widget_set_sensitive(pDetails->pwCube, FALSE);
@@ -2527,7 +2528,7 @@ AddLevelSettings(GtkWidget * pwFrame, AnalysisDetails * pAnalDetails)
 #else
     pw2 = gtk_vbox_new(FALSE, 4);
 #endif
-    gtk_box_pack_start(GTK_BOX(vbox), pw2, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(vbox), pw2, FALSE, FALSE, 0);
 
     /* option menu with selection of predefined settings */
 
@@ -2546,8 +2547,8 @@ AddLevelSettings(GtkWidget * pwFrame, AnalysisDetails * pAnalDetails)
 #else
     hbox = gtk_hbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(hbox), pwAdvanced, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(hbox), pwAdvanced, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(vbox), hbox, FALSE, FALSE, 4);
     UpdateSummaryEvalMenuSetting(pAnalDetails);
     return vboxSpacer;          /* Container */
 }
@@ -2799,8 +2800,8 @@ AddText(GtkWidget* pwBox, char* Text)
     pwHBox = gtk_hbox_new(FALSE, 0);
 #endif
 
-    gtk_box_pack_start(GTK_BOX(pwBox), pwHBox, FALSE, FALSE, 4);
-    gtk_box_pack_start(GTK_BOX(pwHBox), pwText, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwBox), pwHBox, FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pwHBox), pwText, FALSE, FALSE, 0);
 }
 
 
@@ -2824,7 +2825,7 @@ BuildRadioButtons(GtkWidget* pwvbox, GtkWidget* apwScoreMapFrame[], const char* 
     AddText(pwvbox, _(frameTitle));
 
 //     pwFrame = gtk_frame_new(_(frameTitle));
-//     gtk_box_pack_start(GTK_BOX(pwScoreMapBox), pwFrame, vAlignExpand, FALSE, 0);
+//     box_append_compat(GTK_BOX(pwScoreMapBox), pwFrame, vAlignExpand, FALSE, 0);
 //     gtk_widget_set_tooltip_text(pwFrame, _(frameToolTip));
 //     gtk_widget_set_sensitive(pwFrame, sensitive);
 
@@ -2835,7 +2836,7 @@ BuildRadioButtons(GtkWidget* pwvbox, GtkWidget* apwScoreMapFrame[], const char* 
 #endif
 //     gtk_container_add(GTK_CONTAINER(pwFrame), pwh2);
 
-    gtk_box_pack_start(GTK_BOX(pwvbox), pwh2, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwvbox), pwh2, FALSE, FALSE, 0);
 
     AddText(pwh2, ("   "));
 
@@ -2844,7 +2845,7 @@ BuildRadioButtons(GtkWidget* pwvbox, GtkWidget* apwScoreMapFrame[], const char* 
             apwScoreMapFrame[0] = gtk_radio_button_new_with_label(NULL, _(labelStrings[0])); // First radio button
         else
             apwScoreMapFrame[i] = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(apwScoreMapFrame[0]), _(labelStrings[i])); // Associate this to the other radio buttons
-        gtk_box_pack_start(GTK_BOX(pwh2), apwScoreMapFrame[i], FALSE, FALSE, 0);
+        box_append_compat(GTK_BOX(pwh2), apwScoreMapFrame[i], FALSE, FALSE, 0);
         gtk_widget_set_tooltip_text(apwScoreMapFrame[i], _(frameToolTip));
         pi = (int*)g_malloc(sizeof(int));
         *pi = (int)i; // here use "=(int)labelEnum[i];" and put it in the input of the function if needed, while
@@ -2894,11 +2895,11 @@ append_scoremap_options(analysiswidget* paw)
 // #else
 //     pwScoreMapBox = gtk_hbox_new(FALSE, 0);
 // #endif
-//     gtk_box_pack_start(GTK_BOX(pwvbox), pwScoreMapBox, FALSE, FALSE, 0);
+//     box_append_compat(GTK_BOX(pwvbox), pwScoreMapBox, FALSE, FALSE, 0);
     // AddText(pwvbox, _(frameTitle));
 
     pwFrame = gtk_frame_new(_("Default ScoreMap settings"));
-    gtk_box_pack_start(GTK_BOX(pwvbox), pwFrame, vAlignExpand, FALSE, 0);
+    box_append_compat(GTK_BOX(pwvbox), pwFrame, vAlignExpand, FALSE, 0);
     gtk_widget_set_tooltip_text(pwFrame, _("Select the settings with which to initialize each new ScoreMap window"));
     gtk_widget_set_sensitive(pwFrame, TRUE);
 
@@ -2966,21 +2967,21 @@ append_analysis_options(analysiswidget * paw)
     pwPage = gtk_hbox_new(FALSE, 6);
 #endif
     gtk_container_set_border_width(GTK_CONTAINER(pwPage), 8);
-    gtk_box_pack_start(GTK_BOX(pwvbox), pwPage, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwvbox), pwPage, FALSE, FALSE, 0);
 
 #if GTK_CHECK_VERSION(3,0,0)
     vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 #else
     vbox1 = gtk_vbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(pwPage), vbox1, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pwPage), vbox1, TRUE, TRUE, 0);
 
 #if GTK_CHECK_VERSION(3,0,0)
     hboxTop = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 #else
     hboxTop = gtk_hbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(vbox1), hboxTop, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(vbox1), hboxTop, TRUE, TRUE, 0);
 #if GTK_CHECK_VERSION(3,0,0)
     hboxMid = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     hboxBottom = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -2988,11 +2989,11 @@ append_analysis_options(analysiswidget * paw)
     hboxMid = gtk_hbox_new(FALSE, 0);
     hboxBottom = gtk_hbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(vbox1), hboxMid, TRUE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(pwvbox), hboxBottom, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(vbox1), hboxMid, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pwvbox), hboxBottom, TRUE, TRUE, 0);
 
     pwFrame = gtk_frame_new(_("Analysis"));
-    gtk_box_pack_start(GTK_BOX(hboxTop), pwFrame, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(hboxTop), pwFrame, TRUE, TRUE, 0);
     gtk_container_set_border_width(GTK_CONTAINER(pwFrame), 4);
 
 #if GTK_CHECK_VERSION(3,0,0)
@@ -3003,26 +3004,26 @@ append_analysis_options(analysiswidget * paw)
     gtk_container_add(GTK_CONTAINER(pwFrame), vbox2);
 
     paw->pwMoves = gtk_check_button_new_with_label(_("Chequer play"));
-    gtk_box_pack_start(GTK_BOX(vbox2), paw->pwMoves, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(vbox2), paw->pwMoves, FALSE, FALSE, 0);
 
     paw->pwCube = gtk_check_button_new_with_label(_("Cube decisions"));
-    gtk_box_pack_start(GTK_BOX(vbox2), paw->pwCube, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(vbox2), paw->pwCube, FALSE, FALSE, 0);
 
     paw->pwLuck = gtk_check_button_new_with_label(_("Luck"));
-    gtk_box_pack_start(GTK_BOX(vbox2), paw->pwLuck, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(vbox2), paw->pwLuck, FALSE, FALSE, 0);
 
     for (i = 0; i < 2; ++i) {
 
         gchar *sz = g_strdup_printf(_("Analyse player %s"), ap[i].szName);
 
         paw->apwAnalysePlayers[i] = gtk_check_button_new_with_label(sz);
-        gtk_box_pack_start(GTK_BOX(vbox2), paw->apwAnalysePlayers[i], FALSE, FALSE, 0);
+        box_append_compat(GTK_BOX(vbox2), paw->apwAnalysePlayers[i], FALSE, FALSE, 0);
         g_free(sz);
 
     }
 
     pwFrame = gtk_frame_new(_("Skill thresholds"));
-    gtk_box_pack_start(GTK_BOX(hboxMid), pwFrame, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(hboxMid), pwFrame, TRUE, TRUE, 0);
     gtk_container_set_border_width(GTK_CONTAINER(pwFrame), 4);
 
 #if GTK_CHECK_VERSION(3,0,0)
@@ -3062,7 +3063,7 @@ append_analysis_options(analysiswidget * paw)
     }
 
     pwFrame = gtk_frame_new(_("Luck thresholds"));
-    gtk_box_pack_start(GTK_BOX(hboxMid), pwFrame, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(hboxMid), pwFrame, TRUE, TRUE, 0);
     gtk_container_set_border_width(GTK_CONTAINER(pwFrame), 4);
 
 #if GTK_CHECK_VERSION(3,0,0)
@@ -3109,8 +3110,8 @@ append_analysis_options(analysiswidget * paw)
 #else
     vbox1 = gtk_vbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(hboxTop), vbox1, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox1), pwFrame, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(hboxTop), vbox1, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(vbox1), pwFrame, FALSE, FALSE, 0);
 
     /*giving a name to be able to g_free it later*/
     paw->pAnalDetailSettings1 = CreateEvalSettings(pwFrame, _("Analysis settings"),
@@ -3119,9 +3120,9 @@ append_analysis_options(analysiswidget * paw)
 //                                              &aw.esChequer.ec, (movefilter *) & aw.aamf, &aw.esCube.ec, NULL, FALSE);
 
 #if GTK_CHECK_VERSION(3,0,0)
-    gtk_box_pack_start(GTK_BOX(pwPage), gtk_separator_new(GTK_ORIENTATION_VERTICAL), TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pwPage), gtk_separator_new(GTK_ORIENTATION_VERTICAL), TRUE, TRUE, 0);
 #else
-    gtk_box_pack_start(GTK_BOX(pwPage), gtk_vseparator_new(), TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pwPage), gtk_vseparator_new(), TRUE, TRUE, 0);
 #endif
 
     pwFrame = gtk_frame_new(_("Eval Hint/Tutor Level"));
@@ -3131,8 +3132,8 @@ append_analysis_options(analysiswidget * paw)
 #else
     vbox2 = gtk_vbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(vbox2), pwFrame, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(pwPage), vbox2, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(vbox2), pwFrame, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwPage), vbox2, FALSE, FALSE, 0);
 
 #if GTK_CHECK_VERSION(3,0,0)
     vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -3149,8 +3150,8 @@ append_analysis_options(analysiswidget * paw)
 #else
     hbox = gtk_hbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(hbox), paw->pwHintSame, FALSE, FALSE, 8);
-    gtk_box_pack_start(GTK_BOX(vbox1), hbox, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(hbox), paw->pwHintSame, FALSE, FALSE, 8);
+    box_append_compat(GTK_BOX(vbox1), hbox, FALSE, FALSE, 0);
 
     paw->pAnalDetailSettings2 = CreateEvalSettings(vbox1, _("Hint/Tutor settings"),
                                               &paw->esEvalChequer.ec, (movefilter *) &paw->aaEvalmf, &paw->esEvalCube.ec,
@@ -3170,10 +3171,10 @@ append_analysis_options(analysiswidget * paw)
     vbox3 = gtk_vbox_new(FALSE, 0); //gtk_vbox_new (gboolean homogeneous, gint spacing);
 #endif
 
-    gtk_box_pack_start(GTK_BOX(hboxBottom), vbox3, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(hboxBottom), vbox3, TRUE, TRUE, 0);
 
     paw->pwAutoDB= gtk_check_button_new_with_label(_("Automatically add analysis to database"));
-    gtk_box_pack_start(GTK_BOX(vbox3), paw->pwAutoDB, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(vbox3), paw->pwAutoDB, FALSE, FALSE, 0);
     gtk_widget_set_tooltip_text(paw->pwAutoDB,
                                 _("Whenever the analysis of a game or match is complete, automatically "
                                   "add it to the database. The database needs to have been defined in "
@@ -3181,7 +3182,7 @@ append_analysis_options(analysiswidget * paw)
 
 
     paw->pwBackgroundAnalysis= gtk_check_button_new_with_label(_("Allow background analysis (experimental) "));
-    gtk_box_pack_start(GTK_BOX(vbox3), paw->pwBackgroundAnalysis, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(vbox3), paw->pwBackgroundAnalysis, FALSE, FALSE, 0);
     gtk_widget_set_tooltip_text(paw->pwBackgroundAnalysis,
                                 _("Allow browsing a match and its early analysis results while "
                                 "analysis is still running in the background. Some features may be "
@@ -3384,8 +3385,8 @@ SetPlayers(gpointer UNUSED(p), guint UNUSED(n), GtkWidget * UNUSED(pw))
 #endif
 
     gtk_container_add(GTK_CONTAINER(DialogArea(pwDialog, DA_MAIN)), pwHBox);
-    gtk_box_pack_start(GTK_BOX(pwHBox), PlayersPage(&plw, 0, _("Player 0")), FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(pwHBox), PlayersPage(&plw, 1, _("Player 1")), FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwHBox), PlayersPage(&plw, 0, _("Player 0")), FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwHBox), PlayersPage(&plw, 1, _("Player 1")), FALSE, FALSE, 0);
     PlayerTypeToggled(NULL, &plw);
 
     GTKRunDialog(pwDialog);
@@ -3603,13 +3604,13 @@ GetFlagWidget(char *language, char *langCode, const char *flagfilename)
             outputerrf(_("Failed to open flag image: %s\n"), file);
         else {
             GtkWidget *image = gtk_image_new_from_pixbuf(pixbuf);
-            gtk_box_pack_start(GTK_BOX(vbox), image, FALSE, FALSE, 0);
+            box_append_compat(GTK_BOX(vbox), image, FALSE, FALSE, 0);
         }
         g_free(file);
     }
     lab1 = gtk_label_new(NULL);
     gtk_widget_set_size_request(lab1, 80, -1);
-    gtk_box_pack_start(GTK_BOX(vbox), lab1, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(vbox), lab1, FALSE, FALSE, 0);
     g_object_set_data(G_OBJECT(lab1), "lang", language);
 
     g_signal_connect(G_OBJECT(eb), "button_press_event", G_CALLBACK(FlagClicked), NULL);
@@ -3673,8 +3674,8 @@ AddLangWidgets(GtkWidget * cont)
     SetWidgetLabelLang(pwLangRadio1, N_("System default"));
     pwLangRadio2 = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(pwLangRadio1), "");
     SetWidgetLabelLang(pwLangRadio2, N_("Select language"));
-    gtk_box_pack_start(GTK_BOX(pwVbox), pwLangRadio1, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(pwVbox), pwLangRadio2, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwVbox), pwLangRadio1, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwVbox), pwLangRadio2, FALSE, FALSE, 0);
 
     numLangs = 0;
     while (*aaszLang[numLangs])
@@ -3708,8 +3709,8 @@ AddLangWidgets(GtkWidget * cont)
 #else
     pwHbox = gtk_hbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(pwVbox), pwHbox, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(pwHbox), pwLangTable, FALSE, FALSE, 20);
+    box_append_compat(GTK_BOX(pwVbox), pwHbox, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwHbox), pwLangTable, FALSE, FALSE, 20);
 
     if (selLang == NULL)
         defclick(0, 0, pwLangTable);
@@ -4127,7 +4128,7 @@ CreateMainWindow(void)
 #else
     pwHandle = gtk_vbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(pwVbox), pwHandle, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwVbox), pwHandle, FALSE, FALSE, 0);
     pwMenuBar = gtk_ui_manager_get_widget(puim, "/MainMenu");
     gtk_container_add(GTK_CONTAINER(pwHandle), pwMenuBar);
 
@@ -4136,7 +4137,7 @@ CreateMainWindow(void)
 #else
     pwHandle = gtk_vbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(pwVbox), pwHandle, FALSE, TRUE, 0);
+    box_append_compat(GTK_BOX(pwVbox), pwHandle, FALSE, TRUE, 0);
     gtk_container_add(GTK_CONTAINER(pwHandle), pwToolbar = ToolbarNew());
     SetToolbarStyle(nToolbarStyle);
 
@@ -4145,13 +4146,13 @@ CreateMainWindow(void)
 #else
     pwGameBox = gtk_hbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(pwVbox), pwGameBox, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pwVbox), pwGameBox, TRUE, TRUE, 0);
 #if GTK_CHECK_VERSION(3,0,0)
     hpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
 #else
     hpaned = gtk_hpaned_new();
 #endif
-    gtk_box_pack_start(GTK_BOX(pwVbox), hpaned, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pwVbox), hpaned, TRUE, TRUE, 0);
 
 #if GTK_CHECK_VERSION(3,0,0)
     pwPanelGameBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -4177,7 +4178,7 @@ CreateMainWindow(void)
 #else
     pwPanelVbox = gtk_vbox_new(FALSE, 1);
 #endif
-    gtk_box_pack_start(GTK_BOX(pwPanelHbox), pwPanelVbox, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pwPanelHbox), pwPanelVbox, TRUE, TRUE, 0);
 
     /* Do this so that the menu is packed now instead of in the idle loop */
     gtk_ui_manager_ensure_update(puim);
@@ -4193,7 +4194,7 @@ CreateMainWindow(void)
 #endif
     gtk_box_pack_end(GTK_BOX(pwVbox), pwHbox, FALSE, FALSE, 0);
 
-    gtk_box_pack_start(GTK_BOX(pwHbox), pwStatus = gtk_statusbar_new(), TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pwHbox), pwStatus = gtk_statusbar_new(), TRUE, TRUE, 0);
 
     gtk_statusbar_set_has_resize_grip(GTK_STATUSBAR(pwStatus), FALSE);
     /* It's a bit naughty to access pwStatus->label, but its default alignment
@@ -4222,7 +4223,7 @@ CreateMainWindow(void)
     g_signal_connect(G_OBJECT(menu_item), "activate", G_CALLBACK(PasteIDs), NULL);
 
     pwIDBox = gtk_event_box_new();
-    gtk_box_pack_start(GTK_BOX(pwHbox), pwIDBox, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwHbox), pwIDBox, FALSE, FALSE, 0);
 
 #if GTK_CHECK_VERSION(3,0,0)
     pwHbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -4231,9 +4232,9 @@ CreateMainWindow(void)
 #endif
     gtk_container_add(GTK_CONTAINER(pwIDBox), pwHbox2);
 
-    gtk_box_pack_start(GTK_BOX(pwHbox2), gtk_label_new("GNUbg ID:"), FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwHbox2), gtk_label_new("GNUbg ID:"), FALSE, FALSE, 0);
     pwFrame = gtk_frame_new(NULL);
-    gtk_box_pack_start(GTK_BOX(pwHbox2), pwFrame, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwHbox2), pwFrame, FALSE, FALSE, 0);
 
     pwGnubgID = gtk_label_new("");
     gtk_container_add(GTK_CONTAINER(pwFrame), pwGnubgID);
@@ -4248,13 +4249,13 @@ CreateMainWindow(void)
     gtk_container_add(GTK_CONTAINER(pwStop), pwStopButton);
     gtk_container_add(GTK_CONTAINER(pwStopButton),
                       gtk_image_new_from_icon_name("process-stop", GTK_ICON_SIZE_SMALL_TOOLBAR));
-    gtk_box_pack_start(GTK_BOX(pwHbox), pwStop, FALSE, FALSE, 2);
+    box_append_compat(GTK_BOX(pwHbox), pwStop, FALSE, FALSE, 2);
     g_signal_connect(G_OBJECT(pwStop), "button-press-event", G_CALLBACK(StopNotButton), NULL);
     g_signal_connect(G_OBJECT(pwStopButton), "button-press-event", G_CALLBACK(Stop), NULL);
     gtk_widget_set_sensitive(pwStop, FALSE);
     pwGrab = pwStop;
 
-    gtk_box_pack_start(GTK_BOX(pwHbox), pwProgress = gtk_progress_bar_new(), FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwHbox), pwProgress = gtk_progress_bar_new(), FALSE, FALSE, 0);
     gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(pwProgress), 0.0);
 #if GTK_CHECK_VERSION(3,0,0)
     gtk_progress_bar_set_show_text(GTK_PROGRESS_BAR(pwProgress), TRUE);
@@ -4857,7 +4858,7 @@ NewWidget(newwidget * pnw)
     gtk_toolbar_set_style(GTK_TOOLBAR(pwToolbar2), GTK_TOOLBAR_ICONS);
     gtk_toolbar_set_show_arrow(GTK_TOOLBAR(pwToolbar2), FALSE);
     pwFrame = gtk_frame_new(_("Shortcut buttons"));
-    gtk_box_pack_start(GTK_BOX(pwVbox), pwFrame, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pwVbox), pwFrame, TRUE, TRUE, 0);
     gtk_container_add(GTK_CONTAINER(pwFrame), pwToolbar2);
     gtk_container_set_border_width(GTK_CONTAINER(pwToolbar2), 4);
 
@@ -4932,8 +4933,8 @@ NewWidget(newwidget * pnw)
     pnw->pwML = gtk_spin_button_new_with_range(0, MAXSCORE, 1);
     gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(pnw->pwML), TRUE);
 
-    gtk_box_pack_start(GTK_BOX(pwHbox), pwLabel, FALSE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(pwHbox), pnw->pwML, FALSE, TRUE, 0);
+    box_append_compat(GTK_BOX(pwHbox), pwLabel, FALSE, TRUE, 0);
+    box_append_compat(GTK_BOX(pwHbox), pnw->pwML, FALSE, TRUE, 0);
     gtk_container_add(GTK_CONTAINER(pwFrame), pwHbox);
     gtk_container_add(GTK_CONTAINER(pwVbox), pwFrame);
 
@@ -4952,13 +4953,13 @@ NewWidget(newwidget * pnw)
     gtk_container_add(GTK_CONTAINER(pwHbox), pwVbox2);
 
     pnw->pwCPS = gtk_radio_button_new_with_label(NULL, _("Current player settings"));
-    gtk_box_pack_start(GTK_BOX(pwVbox2), pnw->pwCPS, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwVbox2), pnw->pwCPS, FALSE, FALSE, 0);
 
     pnw->pwGNUvsHuman =
         gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(pnw->pwCPS), _("GNU Backgammon vs. Human"));
     pnw->pwHumanHuman = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(pnw->pwCPS), _("Human vs. Human"));
-    gtk_box_pack_start(GTK_BOX(pwVbox2), pnw->pwGNUvsHuman, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(pwVbox2), pnw->pwHumanHuman, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwVbox2), pnw->pwGNUvsHuman, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwVbox2), pnw->pwHumanHuman, FALSE, FALSE, 0);
 
     pwButtons = gtk_button_new_with_label(_("Modify player settings..."));
     gtk_container_set_border_width(GTK_CONTAINER(pwButtons), 10);
@@ -4978,8 +4979,8 @@ NewWidget(newwidget * pnw)
     pnw->pwManualDice = gtk_check_button_new_with_label(_("Manual dice"));
     pnw->pwTutorMode = gtk_check_button_new_with_label(_("Tutor mode"));
 
-    gtk_box_pack_start(GTK_BOX(pwVbox2), pnw->pwManualDice, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(pwVbox2), pnw->pwTutorMode, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwVbox2), pnw->pwManualDice, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwVbox2), pnw->pwTutorMode, FALSE, FALSE, 0);
     gtk_container_add(GTK_CONTAINER(pwFrame), pwHbox);
     gtk_container_add(GTK_CONTAINER(pwVbox), pwFrame);
 
@@ -5328,10 +5329,10 @@ RolloutPageGeneral(rolloutpagegeneral * prpw, rolloutwidget * prw)
 #else
     pwh = gtk_hbox_new(FALSE, 8);
 #endif
-    gtk_box_pack_start(GTK_BOX(pwPage), pwh, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwPage), pwh, FALSE, FALSE, 0);
 
-    gtk_box_pack_start(GTK_BOX(pwh), pwLabel = gtk_label_new(_("Seed:")), FALSE, FALSE, 4);
-    gtk_box_pack_start(GTK_BOX(pwh), gtk_spin_button_new(prpw->padjSeed, 1, 0), FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pwh), pwLabel = gtk_label_new(_("Seed:")), FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pwh), gtk_spin_button_new(prpw->padjSeed, 1, 0), FALSE, FALSE, 4);
 
     gtk_widget_set_tooltip_text(pwLabel,
                                 _("The seed is a number used to initialise the dice rolls generator. Reusing the same seed allows to reproduce the rollout results. 0 is a special value that leaves GNU Backgammon use a random value."));
@@ -5343,7 +5344,7 @@ RolloutPageGeneral(rolloutpagegeneral * prpw, rolloutwidget * prw)
                                 _("The number of games to play out; the standard deviation of the results decreases like the square root of the trials number. It is recommended to use a multiple of 36 or 1296."));
 
     pwFrame = gtk_frame_new(_("Truncation"));
-    gtk_box_pack_start(GTK_BOX(pwPage), pwFrame, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwPage), pwFrame, FALSE, FALSE, 0);
 
     gtk_widget_set_tooltip_text(pwFrame,
                                 _("Truncated rollouts are rollouts played to a certain number of moves as opposed to the end of the game or a double/pass cube action. " "They are faster and their results have a lower variance than full rollouts, but their accuracy depends on that of the static evaluation at the truncation point."));
@@ -5357,7 +5358,7 @@ RolloutPageGeneral(rolloutpagegeneral * prpw, rolloutwidget * prw)
     gtk_container_add(GTK_CONTAINER(pwFrame), pwh);
 
     prpw->pwDoTrunc = gtk_check_button_new_with_label(_("Truncate Rollouts"));
-    gtk_box_pack_start(GTK_BOX(pwh), prpw->pwDoTrunc, FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pwh), prpw->pwDoTrunc, FALSE, FALSE, 4);
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prpw->pwDoTrunc), prw->rcRollout.fDoTruncate);
     g_signal_connect(G_OBJECT(prpw->pwDoTrunc), "toggled", G_CALLBACK(TruncEnableToggled), prw);
 
@@ -5374,7 +5375,7 @@ RolloutPageGeneral(rolloutpagegeneral * prpw, rolloutwidget * prw)
 
 
     pwFrame = gtk_frame_new(_("Evaluation for later plies"));
-    gtk_box_pack_start(GTK_BOX(pwPage), pwFrame, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwPage), pwFrame, FALSE, FALSE, 0);
 
     gtk_widget_set_tooltip_text(pwFrame,
                                 _("It can be useful to use a different (higher) level of evaluation for the first few plies if one thinks that the current position is complex but will quickly evolve into simpler ones that will be adequately handled by a lower level."));
@@ -5388,7 +5389,7 @@ RolloutPageGeneral(rolloutpagegeneral * prpw, rolloutwidget * prw)
     gtk_container_add(GTK_CONTAINER(pwFrame), pwh);
 
     prpw->pwDoLate = gtk_check_button_new_with_label(_("Enable separate evaluations "));
-    gtk_box_pack_start(GTK_BOX(pwh), prpw->pwDoLate, FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pwh), prpw->pwDoLate, FALSE, FALSE, 4);
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prw->prwGeneral->pwDoLate), prw->rcRollout.fLateEvals);
     g_signal_connect(G_OBJECT(prw->prwGeneral->pwDoLate), "toggled", G_CALLBACK(LateEvalToggled), prw);
 
@@ -5405,7 +5406,7 @@ RolloutPageGeneral(rolloutpagegeneral * prpw, rolloutwidget * prw)
 
 
     pwFrame = gtk_frame_new(_("Stop when result is accurate"));
-    gtk_box_pack_start(GTK_BOX(pwPage), pwFrame, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwPage), pwFrame, FALSE, FALSE, 0);
 
     /* an hbox for the frame */
 #if GTK_CHECK_VERSION(3,0,0)
@@ -5417,7 +5418,7 @@ RolloutPageGeneral(rolloutpagegeneral * prpw, rolloutwidget * prw)
     gtk_container_add(GTK_CONTAINER(pwFrame), pwh);
 
     prpw->pwDoSTDStop = gtk_check_button_new_with_label(_("Stop when SE is small enough "));
-    gtk_box_pack_start(GTK_BOX(pwh), prpw->pwDoSTDStop, FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pwh), prpw->pwDoSTDStop, FALSE, FALSE, 4);
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prw->prwGeneral->pwDoSTDStop), prw->rcRollout.fStopOnSTD);
     g_signal_connect(G_OBJECT(prw->prwGeneral->pwDoSTDStop), "toggled", G_CALLBACK(STDStopToggled), prw);
     gtk_widget_set_tooltip_text(prpw->pwDoSTDStop,
@@ -5440,7 +5441,7 @@ RolloutPageGeneral(rolloutpagegeneral * prpw, rolloutwidget * prw)
 #else
     prpw->pwAdjMinGames = pwHBox = gtk_hbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(pwv), pwHBox, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pwv), pwHBox, TRUE, TRUE, 0);
 
     prpw->padjMinGames = GTK_ADJUSTMENT(gtk_adjustment_new(prw->rcRollout.nMinimumGames, 1, 36 * 1296 * 1296, 36, 36, 0));
     prpw->pwMinGames = gtk_spin_button_new(prpw->padjMinGames, 1, 0);
@@ -5461,7 +5462,7 @@ RolloutPageGeneral(rolloutpagegeneral * prpw, rolloutwidget * prw)
 
 
     pwFrame = gtk_frame_new(_("Stop when result is clear"));
-    gtk_box_pack_start(GTK_BOX(pwPage), pwFrame, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwPage), pwFrame, FALSE, FALSE, 0);
 
     /* an hbox for the frame */
 #if GTK_CHECK_VERSION(3,0,0)
@@ -5473,7 +5474,7 @@ RolloutPageGeneral(rolloutpagegeneral * prpw, rolloutwidget * prw)
     gtk_container_add(GTK_CONTAINER(pwFrame), pwh);
 
     prpw->pwJsdDoStop = gtk_check_button_new_with_label(_("Stop when JSD margin is high enough"));
-    gtk_box_pack_start(GTK_BOX(pwh), prpw->pwJsdDoStop, FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pwh), prpw->pwJsdDoStop, FALSE, FALSE, 4);
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prw->prwGeneral->pwJsdDoStop), prw->rcRollout.fStopOnJsd);
     g_signal_connect(G_OBJECT(prw->prwGeneral->pwJsdDoStop), "toggled", G_CALLBACK(JsdStopToggled), prw);
     gtk_widget_set_tooltip_text(prpw->pwJsdDoStop,
@@ -5497,7 +5498,7 @@ RolloutPageGeneral(rolloutpagegeneral * prpw, rolloutwidget * prw)
 #else
     prpw->pwJsdAdjMinGames = pwHBox = gtk_hbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(pwv), pwHBox, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pwv), pwHBox, TRUE, TRUE, 0);
 
     prpw->padjJsdMinGames =
         GTK_ADJUSTMENT(gtk_adjustment_new(prw->rcRollout.nMinimumJsdGames, 1, 36 * 1296 * 1296, 36, 36, 0));
@@ -5519,7 +5520,7 @@ RolloutPageGeneral(rolloutpagegeneral * prpw, rolloutwidget * prw)
 
 
     pwFrame = gtk_frame_new(_("Bearoff Truncation"));
-    gtk_box_pack_start(GTK_BOX(pwPage), pwFrame, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwPage), pwFrame, FALSE, FALSE, 0);
 
     gtk_widget_set_tooltip_text(pwFrame,
         _("Truncating the rollouts when reaching the bearoff databases slightly improves the speed and decrease their variance. " "The first option is totally accurate and should be selected for practical use; the second one can be slightly inaccurate but is useful on average and its use is recommended."));
@@ -5535,12 +5536,12 @@ RolloutPageGeneral(rolloutpagegeneral * prpw, rolloutwidget * prw)
     prpw->pwTruncBearoff2 =
         gtk_check_button_new_with_label(_("Truncate cubeless and cubeful money at exact bearoff database"));
 
-    gtk_box_pack_start(GTK_BOX(pwv), prpw->pwTruncBearoff2, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwv), prpw->pwTruncBearoff2, FALSE, FALSE, 0);
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prpw->pwTruncBearoff2), prw->rcRollout.fTruncBearoff2);
 
     prpw->pwTruncBearoffOS = gtk_check_button_new_with_label(_("Truncate cubeless at one-sided bearoff database"));
 
-    gtk_box_pack_start(GTK_BOX(pwv), prpw->pwTruncBearoffOS, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwv), prpw->pwTruncBearoffOS, FALSE, FALSE, 0);
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prpw->pwTruncBearoffOS), prw->rcRollout.fTruncBearoffOS);
 
 #if GTK_CHECK_VERSION(3,0,0)
@@ -5786,10 +5787,10 @@ SetRollouts(gpointer UNUSED(p), guint UNUSED(n), GtkWidget * UNUSED(pwIgnore))
 
 #if GTK_CHECK_VERSION(3,0,0)
         pwGrid = gtk_grid_new();
-        gtk_box_pack_start(GTK_BOX(pwVBox), pwGrid, FALSE, FALSE, 0);
+        box_append_compat(GTK_BOX(pwVBox), pwGrid, FALSE, FALSE, 0);
 #else
         pwTable = gtk_table_new(3, 2, FALSE);
-        gtk_box_pack_start(GTK_BOX(pwVBox), pwTable, FALSE, FALSE, 0);
+        box_append_compat(GTK_BOX(pwVBox), pwTable, FALSE, FALSE, 0);
 #endif
 
         rw.analysisDetails[0] = RolloutPage(rw.prpwPages[0], _("First Play (0) "), TRUE, &rw.frame[0]);
@@ -5879,18 +5880,18 @@ SetRollouts(gpointer UNUSED(p), guint UNUSED(n), GtkWidget * UNUSED(pwIgnore))
 #endif
 
         RPGeneral.pwPlayersAreSame = gtk_check_button_new_with_label(_("Use same settings for both players"));
-        gtk_box_pack_start(GTK_BOX(pwVBox), RPGeneral.pwPlayersAreSame, FALSE, FALSE, 0);
+        box_append_compat(GTK_BOX(pwVBox), RPGeneral.pwPlayersAreSame, FALSE, FALSE, 0);
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(RPGeneral.pwPlayersAreSame), rw.fPlayersAreSame);
         g_signal_connect(G_OBJECT(RPGeneral.pwPlayersAreSame), "toggled", G_CALLBACK(PlayersSameToggled), &rw);
 
         RPGeneral.pwCubeEqualChequer =
             gtk_check_button_new_with_label(_("Cube decisions use same settings as chequer play"));
-        gtk_box_pack_start(GTK_BOX(pwVBox), RPGeneral.pwCubeEqualChequer, FALSE, FALSE, 0);
+        box_append_compat(GTK_BOX(pwVBox), RPGeneral.pwCubeEqualChequer, FALSE, FALSE, 0);
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(RPGeneral.pwCubeEqualChequer), rw.fCubeEqualChequer);
         g_signal_connect(G_OBJECT(RPGeneral.pwCubeEqualChequer), "toggled", G_CALLBACK(CubeEqCheqToggled), &rw);
 
         RPGeneral.pwTruncEqualPlayer0 = gtk_check_button_new_with_label(_("Use player 0 setting for truncation point"));
-        gtk_box_pack_start(GTK_BOX(pwVBox), RPGeneral.pwTruncEqualPlayer0, FALSE, FALSE, 0);
+        box_append_compat(GTK_BOX(pwVBox), RPGeneral.pwTruncEqualPlayer0, FALSE, FALSE, 0);
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(RPGeneral.pwTruncEqualPlayer0), rw.fTruncEqualPlayer0);
         g_signal_connect(G_OBJECT(RPGeneral.pwTruncEqualPlayer0), "toggled", G_CALLBACK(TruncEqualPlayer0Toggled), &rw);
 
@@ -6117,7 +6118,11 @@ GTKTextWindow(const char *szOutput, const char *title, const dialogtype type, Gt
     gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, szOutput, -1, "monospace", NULL);
     gtk_text_view_set_buffer(GTK_TEXT_VIEW(pwText), buffer);
 
+#if GTK_CHECK_VERSION(4,0,0)
+    sw = gtk_scrolled_window_new();
+#else
     sw = gtk_scrolled_window_new(NULL, NULL);
+#endif
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
     gtk_container_add(GTK_CONTAINER(sw), pwText);
 
@@ -6138,14 +6143,14 @@ GTKTextWindow(const char *szOutput, const char *title, const dialogtype type, Gt
     pwh = gtk_hbox_new(FALSE, 0);
     pwv = gtk_vbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(pwh), pwv, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pwh), pwv, TRUE, TRUE, 0);
 
-    gtk_box_pack_start(GTK_BOX(pwv), sw, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pwv), sw, TRUE, TRUE, 0);
     gtk_box_pack_end(GTK_BOX(pwv), notice, FALSE, FALSE, 0);
 
     gtk_window_set_default_size(GTK_WINDOW(pwDialog), -1, MIN(500, req.height + 200));
 
-    gtk_box_pack_start(GTK_BOX(DialogArea(pwDialog, DA_MAIN)), pwh, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(DialogArea(pwDialog, DA_MAIN)), pwh, TRUE, TRUE, 0);
 
     gtk_window_set_modal(GTK_WINDOW(pwDialog), TRUE);
     gtk_window_set_transient_for(GTK_WINDOW(pwDialog), GTK_WINDOW(pwMain));
@@ -6563,7 +6568,7 @@ GTKShowScoreSheet(void)
     gtk_tree_view_append_column(GTK_TREE_VIEW(view), column);
 
     gtk_container_add(GTK_CONTAINER(pwScrolled), view);
-    gtk_box_pack_start(GTK_BOX(hbox), pwScrolled, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(hbox), pwScrolled, TRUE, TRUE, 0);
 
     GTKRunDialog(pwDialog);
 }
@@ -6611,7 +6616,7 @@ GTKShowVersion(void)
 #else
     gtk_misc_set_padding(GTK_MISC(image), 8, 8);
 #endif
-    gtk_box_pack_start(GTK_BOX(DialogArea(pwDialog, DA_MAIN)), image, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(DialogArea(pwDialog, DA_MAIN)), image, FALSE, FALSE, 0);
 
     /* Buttons on right side */
 #if GTK_CHECK_VERSION(3,0,0)
@@ -6619,25 +6624,25 @@ GTKShowVersion(void)
 #else
     pwButtonBox = gtk_vbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(DialogArea(pwDialog, DA_MAIN)), pwButtonBox, FALSE, FALSE, 8);
+    box_append_compat(GTK_BOX(DialogArea(pwDialog, DA_MAIN)), pwButtonBox, FALSE, FALSE, 8);
 
-    gtk_box_pack_start(GTK_BOX(pwButtonBox), pwButton = gtk_button_new_with_label(_("Credits")), FALSE, FALSE, 8);
+    box_append_compat(GTK_BOX(pwButtonBox), pwButton = gtk_button_new_with_label(_("Credits")), FALSE, FALSE, 8);
     g_signal_connect(G_OBJECT(pwButton), "clicked", G_CALLBACK(GTKCommandShowCredits), pwDialog);
 
-    gtk_box_pack_start(GTK_BOX(pwButtonBox), pwButton = gtk_button_new_with_label(_("Build Info")), FALSE, FALSE, 8);
+    box_append_compat(GTK_BOX(pwButtonBox), pwButton = gtk_button_new_with_label(_("Build Info")), FALSE, FALSE, 8);
     g_signal_connect(G_OBJECT(pwButton), "clicked", G_CALLBACK(GTKShowBuildInfo), pwDialog);
 
-    gtk_box_pack_start(GTK_BOX(pwButtonBox),
+    box_append_compat(GTK_BOX(pwButtonBox),
                        pwButton = gtk_button_new_with_label(_("Copying conditions")), FALSE, FALSE, 8);
     g_signal_connect(G_OBJECT(pwButton), "clicked", G_CALLBACK(GtkShowCopying), pwDialog);
 
-    gtk_box_pack_start(GTK_BOX(pwButtonBox), pwButton = gtk_button_new_with_label(_("Warranty")), FALSE, FALSE, 8);
+    box_append_compat(GTK_BOX(pwButtonBox), pwButton = gtk_button_new_with_label(_("Warranty")), FALSE, FALSE, 8);
     g_signal_connect(G_OBJECT(pwButton), "clicked", G_CALLBACK(GtkShowWarranty), NULL);
 
-    gtk_box_pack_start(GTK_BOX(pwButtonBox), pwButton = gtk_button_new_with_label(_("Report Bug")), FALSE, FALSE, 8);
+    box_append_compat(GTK_BOX(pwButtonBox), pwButton = gtk_button_new_with_label(_("Report Bug")), FALSE, FALSE, 8);
     g_signal_connect(G_OBJECT(pwButton), "clicked", G_CALLBACK(ReportBug), NULL);
 
-    gtk_box_pack_start(GTK_BOX(pwButtonBox),
+    box_append_compat(GTK_BOX(pwButtonBox),
                        pwButton = gtk_button_new_with_label(_("Evaluation Engine")), FALSE, FALSE, 8);
     g_signal_connect(G_OBJECT(pwButton), "clicked", G_CALLBACK(GtkShowEngine), pwDialog);
     GTKRunDialog(pwDialog);
@@ -6667,27 +6672,27 @@ GTKShowBuildInfo(GtkWidget * UNUSED(pw), GtkWidget * pwParent)
 
     gtk_container_add(GTK_CONTAINER(DialogArea(pwDialog, DA_MAIN)), pwBox);
 
-    gtk_box_pack_start(GTK_BOX(pwBox), SelectableLabel(pwDialog, VERSION_STRING), FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pwBox), SelectableLabel(pwDialog, VERSION_STRING), FALSE, FALSE, 4);
 
 #if GTK_CHECK_VERSION(3,0,0)
-    gtk_box_pack_start(GTK_BOX(pwBox), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pwBox), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), FALSE, FALSE, 4);
 #else
-    gtk_box_pack_start(GTK_BOX(pwBox), gtk_hseparator_new(), FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pwBox), gtk_hseparator_new(), FALSE, FALSE, 4);
 #endif
 
     while ((pch = GetBuildInfoString()))
-        gtk_box_pack_start(GTK_BOX(pwBox), gtk_label_new(gettext(pch)), FALSE, FALSE, 0);
+        box_append_compat(GTK_BOX(pwBox), gtk_label_new(gettext(pch)), FALSE, FALSE, 0);
 
 #if GTK_CHECK_VERSION(3,0,0)
-    gtk_box_pack_start(GTK_BOX(pwBox), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pwBox), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), FALSE, FALSE, 4);
 #else
-    gtk_box_pack_start(GTK_BOX(pwBox), gtk_hseparator_new(), FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pwBox), gtk_hseparator_new(), FALSE, FALSE, 4);
 #endif
 
-    gtk_box_pack_start(GTK_BOX(pwBox), gtk_label_new(_(aszCOPYRIGHT)), FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pwBox), gtk_label_new(_(aszCOPYRIGHT)), FALSE, FALSE, 4);
 
     pwPrompt = gtk_label_new(_(intro_string));
-    gtk_box_pack_start(GTK_BOX(pwBox), pwPrompt, FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pwBox), pwPrompt, FALSE, FALSE, 4);
     gtk_label_set_line_wrap(GTK_LABEL(pwPrompt), TRUE);
 
     GTKRunDialog(pwDialog);
@@ -6705,7 +6710,7 @@ AddName(GtkWidget * pwBox, char *name, const char *type)
     else
         strcpy(buf, name);
 
-    gtk_box_pack_start(GTK_BOX(pwBox), gtk_label_new(buf), FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwBox), gtk_label_new(buf), FALSE, FALSE, 0);
     ListInsert(&names, name);
 }
 
@@ -6755,7 +6760,7 @@ GTKCommandShowCredits(GtkWidget * UNUSED(pw), GtkWidget * pwParent)
 #else
     pwBox = gtk_vbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(pwMainHBox), pwBox, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwMainHBox), pwBox, FALSE, FALSE, 0);
     gtk_container_set_border_width(GTK_CONTAINER(pwBox), 8);
 
     while (credit->Title) {
@@ -6768,14 +6773,14 @@ GTKCommandShowCredits(GtkWidget * UNUSED(pw), GtkWidget * pwParent)
 #else
             pwHBox = gtk_hbox_new(FALSE, 0);
 #endif
-            gtk_box_pack_start(GTK_BOX(pwBox), pwHBox, TRUE, FALSE, 0);
+            box_append_compat(GTK_BOX(pwBox), pwHBox, TRUE, FALSE, 0);
         }
 #if GTK_CHECK_VERSION(3,0,0)
         pwVBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 #else
         pwVBox = gtk_vbox_new(FALSE, 0);
 #endif
-        gtk_box_pack_start(GTK_BOX(pwHBox), pwVBox, TRUE, FALSE, 0);
+        box_append_compat(GTK_BOX(pwHBox), pwVBox, TRUE, FALSE, 0);
 
         AddText(pwVBox, _(credit->Title));
 
@@ -6786,9 +6791,9 @@ GTKCommandShowCredits(GtkWidget * UNUSED(pw), GtkWidget * pwParent)
         }
         if (i == 1)
 #if GTK_CHECK_VERSION(3,0,0)
-            gtk_box_pack_start(GTK_BOX(pwBox), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), FALSE, FALSE, 4);
+            box_append_compat(GTK_BOX(pwBox), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), FALSE, FALSE, 4);
 #else
-            gtk_box_pack_start(GTK_BOX(pwBox), gtk_hseparator_new(), FALSE, FALSE, 4);
+            box_append_compat(GTK_BOX(pwBox), gtk_hseparator_new(), FALSE, FALSE, 4);
 #endif
         credit++;
         i++;
@@ -6799,7 +6804,7 @@ GTKCommandShowCredits(GtkWidget * UNUSED(pw), GtkWidget * pwParent)
 #else
     pwVBox = gtk_vbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(pwMainHBox), pwVBox, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwMainHBox), pwVBox, FALSE, FALSE, 0);
 
     AddText(pwVBox, _("Special thanks"));
 
@@ -6824,7 +6829,7 @@ GTKCommandShowCredits(GtkWidget * UNUSED(pw), GtkWidget * pwParent)
     while (names.plNext->p)
         ListDelete(names.plNext);
     gtk_container_set_border_width(GTK_CONTAINER(pwVBox), 8);
-    gtk_box_pack_start(GTK_BOX(pwVBox), pwScrolled, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pwVBox), pwScrolled, TRUE, TRUE, 0);
     gtk_widget_set_size_request(pwScrolled, 150, -1);
 #if GTK_CHECK_VERSION(3, 8, 0)
     gtk_container_add(GTK_CONTAINER(pwScrolled), treeview);
@@ -7048,12 +7053,12 @@ GTKBearoffProgress(int i)
         g_signal_connect(G_OBJECT(pwDialog), "destroy", G_CALLBACK(GTKBearoffProgressCancel), NULL);
 
 #if GTK_CHECK_VERSION(3,0,0)
-        gtk_box_pack_start(GTK_BOX(DialogArea(pwDialog, DA_MAIN)),
+        box_append_compat(GTK_BOX(DialogArea(pwDialog, DA_MAIN)),
                            pw = gtk_progress_bar_new(), TRUE, TRUE, 8);
         gtk_widget_set_halign(pw, GTK_ALIGN_FILL);
         gtk_widget_set_valign(pw, GTK_ALIGN_CENTER);
 #else
-        gtk_box_pack_start(GTK_BOX(DialogArea(pwDialog, DA_MAIN)),
+        box_append_compat(GTK_BOX(DialogArea(pwDialog, DA_MAIN)),
                            pwAlign = gtk_alignment_new(0.5, 0.5, 1, 0), TRUE, TRUE, 8);
         gtk_container_add(GTK_CONTAINER(pwAlign), pw = gtk_progress_bar_new());
 #endif
@@ -7516,7 +7521,7 @@ AddNavigation(GtkWidget * pvbox)
 #else
     phbox = gtk_hbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(pvbox), phbox, FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pvbox), phbox, FALSE, FALSE, 4);
 
 #if GTK_CHECK_VERSION(3,14,0)
     icon = gtk_image_new_from_icon_name("go_prev_game_24",
@@ -7528,7 +7533,7 @@ AddNavigation(GtkWidget * pvbox)
     pw = button_from_image(icon);
 
     g_signal_connect(G_OBJECT(pw), "clicked", G_CALLBACK(StatsPreviousGame), box);
-    gtk_box_pack_start(GTK_BOX(phbox), pw, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(phbox), pw, FALSE, FALSE, 0);
     gtk_widget_set_tooltip_text(pw, _("Move back to the previous game"));
 
 #if GTK_CHECK_VERSION(3,14,0)
@@ -7541,7 +7546,7 @@ AddNavigation(GtkWidget * pvbox)
     pw = button_from_image(icon);
 
     g_signal_connect(G_OBJECT(pw), "clicked", G_CALLBACK(StatsNextGame), box);
-    gtk_box_pack_start(GTK_BOX(phbox), pw, FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(phbox), pw, FALSE, FALSE, 4);
     gtk_widget_set_tooltip_text(pw, _("Move ahead to the next game"));
 
     gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(box), sz);
@@ -7556,7 +7561,7 @@ AddNavigation(GtkWidget * pvbox)
         gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(box), sz);
     }
     g_signal_connect(G_OBJECT(box), "changed", G_CALLBACK(StatsSelectGame), NULL);
-    gtk_box_pack_start(GTK_BOX(phbox), box, TRUE, TRUE, 4);
+    box_append_compat(GTK_BOX(phbox), box, TRUE, TRUE, 4);
 
     return box;
 }
@@ -7743,7 +7748,7 @@ GTKDumpStatcontext(int game)
 #else
     pvbox = gtk_vbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(pvbox), pwNotebook, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pvbox), pwNotebook, TRUE, TRUE, 0);
 
     gtk_notebook_append_page(GTK_NOTEBOOK(pwNotebook), statViews[FORMATGS_OVERALL] = CreateList(),
                              gtk_label_new(_("Overall")));
@@ -7763,7 +7768,7 @@ GTKDumpStatcontext(int game)
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(pswList), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
     gtk_container_add(GTK_CONTAINER(pswList), statView);
 
-    gtk_box_pack_start(GTK_BOX(pvbox), pswList, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(pvbox), pswList, TRUE, TRUE, 0);
 
     navi_combo = AddNavigation(pvbox);
     gtk_container_add(GTK_CONTAINER(DialogArea(pwStatDialog, DA_MAIN)), pvbox);
@@ -7793,7 +7798,7 @@ GTKDumpStatcontext(int game)
 
     pwUsePanels = gtk_check_button_new_with_label(_("Split statistics into panels"));
     gtk_widget_set_tooltip_text(pwUsePanels, _("Show data in a single list or split into several panels"));
-    gtk_box_pack_start(GTK_BOX(pvbox), pwUsePanels, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pvbox), pwUsePanels, FALSE, FALSE, 0);
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pwUsePanels), fGUIUseStatsPanel);
     g_signal_connect(G_OBJECT(pwUsePanels), "toggled", G_CALLBACK(toggle_fGUIUseStatsPanel), NULL);
 
@@ -8277,12 +8282,12 @@ GTKResign(gpointer UNUSED(p), guint UNUSED(n), GtkWidget * UNUSED(pw))
 #if GTK_CHECK_VERSION(3,14,0)
         icon = gtk_image_new_from_icon_name(resign_stocks[i], GTK_ICON_SIZE_LARGE_TOOLBAR);
         pwToolButton = gtk_tool_button_new(icon, NULL);
-        gtk_box_pack_start(GTK_BOX(pwHbox), GTK_WIDGET(pwToolButton), FALSE, FALSE, 0);
+        box_append_compat(GTK_BOX(pwHbox), GTK_WIDGET(pwToolButton), FALSE, FALSE, 0);
 #else
         icon = gtk_image_new_from_stock(resign_stocks[i], GTK_ICON_SIZE_LARGE_TOOLBAR);
-        gtk_box_pack_start(GTK_BOX(pwHbox), icon, FALSE, FALSE, 0);
+        box_append_compat(GTK_BOX(pwHbox), icon, FALSE, FALSE, 0);
 #endif
-        gtk_box_pack_start(GTK_BOX(pwHbox), gtk_label_new(_(asz[i])), TRUE, TRUE, 10);
+        box_append_compat(GTK_BOX(pwHbox), gtk_label_new(_(asz[i])), TRUE, TRUE, 10);
         gtk_container_add(GTK_CONTAINER(pwVbox), pwButtons);
         g_signal_connect(G_OBJECT(pwButtons), "clicked", G_CALLBACK(CallbackResign), GINT_TO_POINTER(i));
     }

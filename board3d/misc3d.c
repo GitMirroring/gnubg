@@ -1137,8 +1137,13 @@ RollDice3d(BoardData * bd, BoardData3d * bd3d, const renderdata * prd)
     } else {
         /* Show dice on board */
         gtk_widget_queue_draw(bd3d->drawing_area3d);
+#if GTK_CHECK_VERSION(4,0,0)
+        while (g_main_context_pending(NULL))
+            g_main_context_iteration(NULL, FALSE);
+#else
         while (gtk_events_pending())
             gtk_main_iteration();
+#endif
     }
     GTKResumeInput();
 }

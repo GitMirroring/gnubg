@@ -37,6 +37,7 @@
 #include "gtkgame.h"
 #include "gtk-multiview.h"
 #include "gtkprefs.h"
+#include "gtkutil.h"
 #include "positionid.h"
 #include "render.h"
 #include "renderprefs.h"
@@ -432,6 +433,9 @@ board_invalidate_rect(GtkWidget * drawing_area, int x, int y, int
     g_assert(GTK_IS_DRAWING_AREA(drawing_area));
 
     {
+#if GTK_CHECK_VERSION(4,0,0)
+        gtk_widget_queue_draw(drawing_area);
+#else
         GdkRectangle r;
 
         r.x = x;
@@ -441,6 +445,7 @@ board_invalidate_rect(GtkWidget * drawing_area, int x, int y, int
 
         if (gtk_widget_get_window(drawing_area))
             gdk_window_invalidate_rect(gtk_widget_get_window(drawing_area), &r, FALSE);
+#endif
     }
 }
 
@@ -1035,14 +1040,19 @@ board_drag(GtkWidget * UNUSED(widget), BoardData * bd, int x, int y)
     int old_x = bd->x_drag;
     int old_y = bd->y_drag;
 
+#if GTK_CHECK_VERSION(4,0,0)
+    gtk_widget_queue_draw(bd->drawing_area);
+#else
     // Invalidate (redraw) the old chequer area if it's valid
-    if (old_x >= 0 && old_y >= 0)
+    if (old_x >= 0 && old_y >= 0) {
         gtk_widget_queue_draw_area(bd->drawing_area,
             old_x - chequer_w/2, old_y - chequer_h/2, chequer_w, chequer_h);
+    }
 
     // Invalidate the new chequer area
     gtk_widget_queue_draw_area(bd->drawing_area,
         x - chequer_w/2, y - chequer_h/2, chequer_w, chequer_h);
+#endif
 
     // Update drag position
     bd->x_drag = x;
@@ -1670,6 +1680,7 @@ UpdateMove(BoardData * bd, TanBoard anBoard)
 
 }
 
+#if !GTK_CHECK_VERSION(4,0,0)
 static void
 ShowBoardPopup(GdkEventButton * event)
 {
@@ -1698,7 +1709,16 @@ ShowBoardPopup(GdkEventButton * event)
     gtk_menu_popup(GTK_MENU(boardMenu), NULL, NULL, NULL, NULL, event->button, event->time);
 #endif
 }
+#endif
 
+#if GTK_CHECK_VERSION(4,0,0)
+extern void
+board_button_press(
+    GtkGestureClick *gesture, int n_press, double x, double y, BoardData *bd)
+{
+    // TODO
+}
+#else
 extern gboolean
 board_button_press(GtkWidget * board, GdkEventButton * event, BoardData * bd)
 {
@@ -2028,7 +2048,16 @@ board_button_press(GtkWidget * board, GdkEventButton * event, BoardData * bd)
         return TRUE;
     }
 }
+#endif
 
+#if GTK_CHECK_VERSION(4,0,0)
+extern void
+board_button_release(
+    GtkGestureClick *gesture, int n_press, double x, double y, BoardData *bd)
+{
+    // TODO
+}
+#else
 /*! \brief callback for release of mouse button
  * \param board the GtkBoard
  * \param event the event containing the xy pos
@@ -2134,7 +2163,22 @@ board_button_release(GtkWidget * board, GdkEventButton * event, BoardData * bd)
 
     return TRUE;
 }
+#endif
 
+#if GTK_CHECK_VERSION(4,0,0)
+extern void
+board_motion_notify(
+    GtkEventControllerMotion *controller, double x, double y,
+    BoardData *bd)
+{
+    // TODO
+    GtkWidget *board;
+
+    board = gtk_event_controller_get_widget(GTK_EVENT_CONTROLLER(controller));
+
+    board_drag(board, bd, (int)x, (int)y);
+}
+#else
 extern gboolean
 board_motion_notify(GtkWidget * board, GdkEventMotion * event, BoardData * bd)
 {
@@ -2172,6 +2216,7 @@ board_motion_notify(GtkWidget * board, GdkEventMotion * event, BoardData * bd)
 
     return TRUE;
 }
+#endif
 
 static void UpdateCrawfordToggle(GtkWidget * pw, BoardData * bd);
 static void board_set_crawford(GtkWidget * pw, BoardData * bd); /* recursion
@@ -2430,8 +2475,8 @@ board_set(Board * board, gchar * board_text, const gint resigned, const gint cub
             bd->nchequers += bd->points[i];
 
     if (!editing) {
-        gtk_entry_set_text(GTK_ENTRY(bd->name0), bd->name_opponent);
-        gtk_entry_set_text(GTK_ENTRY(bd->name1), bd->name);
+        editable_set_text_compat(GTK_ENTRY(bd->name0), bd->name_opponent);
+        editable_set_text_compat(GTK_ENTRY(bd->name1), bd->name);
         gtk_label_set_text(GTK_LABEL(bd->lname0), bd->name_opponent);
         gtk_label_set_text(GTK_LABEL(bd->lname1), bd->name);
 
@@ -2858,8 +2903,13 @@ board_animate(Board * board, int move[8], int player)
         g_timeout_add(0x100 >> nGUIAnimSpeed, board_slide_timeout, board);
 
     GTKSuspendInput();
-    while (!animation_finished)
+    while (!animation_finished) {
+#if GTK_CHECK_VERSION(4, 0, 0)
+        g_main_context_iteration(NULL, FALSE);
+#else
         gtk_main_iteration();
+#endif
+    }
     GTKResumeInput();
 }
 
@@ -2886,7 +2936,7 @@ update_buttons(BoardData * bd)
 #endif
         ) {
         if (c == C_ROLLDOUBLE)
-            gtk_widget_show_all(bd->dice_area);
+            widget_set_visible_compat(bd->dice_area);
         else
             gtk_widget_hide(bd->dice_area);
 
@@ -3117,8 +3167,13 @@ DisplayCorrectBoardType(BoardData * bd, BoardData3d * UNUSED(bd3d), renderdata *
 }
 #endif
 
+#if GTK_CHECK_VERSION(4, 0, 0)
+static void
+board_size_allocate(GtkWidget *board, int width, int height, int baseline)
+#else
 static void
 board_size_allocate(GtkWidget * board, GtkAllocation * allocation)
+#endif
 {
 
     BoardData *bd = BOARD(board)->board_data;
@@ -3126,10 +3181,15 @@ board_size_allocate(GtkWidget * board, GtkAllocation * allocation)
     GtkAllocation child_allocation;
     GtkRequisition requisition;
 
-#if GTK_CHECK_VERSION(3,0,0)
+#if GTK_CHECK_VERSION(4,0,0)
+    GTK_WIDGET_CLASS(board_parent_class)->size_allocate(
+        board, width, height, baseline);
+#elif GTK_CHECK_VERSION(3,0,0)
     GTK_WIDGET_CLASS(board_parent_class)->size_allocate(board, allocation);
 #endif
+#if !GTK_CHECK_VERSION(4,0,0)
     gtk_widget_set_allocation(board, allocation);
+#endif
 
     /* position ID, match ID: just below toolbar */
 
@@ -3139,14 +3199,26 @@ board_size_allocate(GtkWidget * board, GtkAllocation * allocation)
 #else
         gtk_widget_get_child_requisition(bd->table, &requisition);
 #endif
+
+#if GTK_CHECK_VERSION(4,0,0)
+        child_allocation.height = height;
+        child_allocation.width = width;
+#else
         allocation->height -= requisition.height;
         child_allocation.x = allocation->x;
         child_allocation.y = allocation->y + allocation->height;
         child_allocation.width = allocation->width;
         child_allocation.height = requisition.height;
+#endif
+
+#if GTK_CHECK_VERSION(4,0,0)
+        gtk_widget_size_allocate(bd->table, &child_allocation, -1);
+#else
         gtk_widget_size_allocate(bd->table, &child_allocation);
+#endif
     }
 
+#if !GTK_CHECK_VERSION(4,0,0)
     /* ensure there is room for the dice area or the move, whichever is
      * bigger */
     if (bd->rd->fDiceArea
@@ -3154,14 +3226,16 @@ board_size_allocate(GtkWidget * board, GtkAllocation * allocation)
         && (display_is_2d(bd->rd))
 #endif
         ) {
-        new_size = MIN(allocation->width / BOARD_WIDTH, (allocation->height - 2) / (BOARD_HEIGHT + DIE_HEIGHT));        /* FIXME: is 89 correct? */
+        new_size = MIN(allocation->width / BOARD_WIDTH, (allocation->height - 2) / (BOARD_HEIGHT + DIE_HEIGHT));
+        /* FIXME: is 89 correct? */
 
         /* subtract pixels used */
         allocation->height -= new_size * DIE_HEIGHT + 2;
-
     } else {
         new_size = MIN(allocation->width / BOARD_WIDTH, (allocation->height - 2) / BOARD_HEIGHT);
     }
+#endif
+
     /* If the window manager honours our minimum size this won't happen, but... */
     if (new_size < 1)
         new_size = 1;
@@ -3175,15 +3249,27 @@ board_size_allocate(GtkWidget * board, GtkAllocation * allocation)
     child_allocation.height = allocation->height;
     child_allocation.x = allocation->x;
     child_allocation.y = allocation->y;
-    if (widget3dValid)
+    if (widget3dValid) {
+#if GTK_CHECK_VERSION(4,0,0)
+        gtk_widget_size_allocate(GetDrawingArea3d(bd->bd3d), &child_allocation, -1);
+#else
         gtk_widget_size_allocate(GetDrawingArea3d(bd->bd3d), &child_allocation);
+#endif
+    }
 #endif
 
     child_allocation.width = BOARD_WIDTH * bd->rd->nSize;
-    child_allocation.x = allocation->x + ((allocation->width - child_allocation.width) >> 1);
     child_allocation.height = BOARD_HEIGHT * bd->rd->nSize;
+
+#if GTK_CHECK_VERSION(4,0,0)
+    child_allocation.x = (width - child_allocation.width) >> 1;
+    child_allocation.y = (height - BOARD_HEIGHT * bd->rd->nSize) >> 1;
+#else
+    child_allocation.x = allocation->x + ((allocation->width - child_allocation.width) >> 1);
     child_allocation.y = allocation->y + ((allocation->height - BOARD_HEIGHT * bd->rd->nSize) >> 1);
-#if GTK_CHECK_VERSION(3,0,0)
+#endif
+
+#if GTK_CHECK_VERSION(3,0,0) && !GTK_CHECK_VERSION(4, 0, 0)
     {
         gint min_width, min_height;
         gtk_widget_get_preferred_width(bd->drawing_area, &min_width, NULL);
@@ -3192,7 +3278,11 @@ board_size_allocate(GtkWidget * board, GtkAllocation * allocation)
         g_assert(child_allocation.height >= min_height);
     }
 #endif
+#if GTK_CHECK_VERSION(4,0,0)
+    gtk_widget_size_allocate(bd->drawing_area, &child_allocation, -1);
+#else
     gtk_widget_size_allocate(bd->drawing_area, &child_allocation);
+#endif
 
     /* allocation for dice area */
 
@@ -3205,7 +3295,11 @@ board_size_allocate(GtkWidget * board, GtkAllocation * allocation)
         child_allocation.x += (BOARD_WIDTH - (2 * DIE_WIDTH + 1)) * bd->rd->nSize;
         child_allocation.height = DIE_HEIGHT * bd->rd->nSize;
         child_allocation.y += BOARD_HEIGHT * bd->rd->nSize + 1;
+#if GTK_CHECK_VERSION(4,0,0)
+        gtk_widget_size_allocate(bd->dice_area, &child_allocation, -1);
+#else
         gtk_widget_size_allocate(bd->dice_area, &child_allocation);
+#endif
     }
 }
 
@@ -3288,7 +3382,7 @@ static void
 board_show_child(GtkWidget * pwChild, BoardData * pbd)
 {
     if (pwChild != pbd->dice_area)
-        gtk_widget_show_all(pwChild);
+        widget_set_visible_compat(pwChild);
 
 }
 
@@ -3300,7 +3394,18 @@ board_show_all(GtkWidget * pw)
 
     BoardData *bd = BOARD(pw)->board_data;
 
+#if GTK_CHECK_VERSION(4, 0, 0)
+    if (bd->table)
+        board_show_child(bd->table, bd);
+
+    if (bd->drawing_area)
+        board_show_child(bd->drawing_area, bd);
+
+    /* Intentionally skip bd->dice_area. */
+#else
     gtk_container_foreach(GTK_CONTAINER(pw), (GtkCallback) board_show_child, bd);
+#endif
+
     gtk_widget_show(pw);
 }
 
@@ -3324,19 +3429,34 @@ UpdateCrawfordToggle(GtkWidget * UNUSED(pw), BoardData * bd)
 }
 
 static void
-match_change_val(GtkWidget * UNUSED(pw), BoardData * bd)
+match_change_val(GtkWidget *UNUSED(pw), BoardData *bd)
 {
     int nMatchLen = (int) gtk_adjustment_get_value(GTK_ADJUSTMENT(bd->amatch));
-    if (nMatchLen && gtk_widget_get_parent_window(GTK_WIDGET(bd->jacoby))) {
+
+    if (nMatchLen && gtk_widget_get_parent(GTK_WIDGET(bd->jacoby))) {
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(bd->jacoby), fJacoby);
+
+#if GTK_CHECK_VERSION(4, 0, 0)
+        gtk_box_remove(GTK_BOX(bd->pwvboxcnt), bd->jacoby);
+        gtk_box_append(GTK_BOX(bd->pwvboxcnt), bd->crawford);
+#else
         gtk_container_remove(GTK_CONTAINER(bd->pwvboxcnt), bd->jacoby);
         gtk_container_add(GTK_CONTAINER(bd->pwvboxcnt), bd->crawford);
+#endif
+
         gtk_widget_show(bd->crawford);
-    } else if (nMatchLen == 0 && gtk_widget_get_parent_window(GTK_WIDGET(bd->crawford))) {
+    } else if (nMatchLen == 0 && gtk_widget_get_parent(GTK_WIDGET(bd->crawford))) {
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(bd->crawford), FALSE);
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(bd->jacoby), fJacoby);
+
+#if GTK_CHECK_VERSION(4, 0, 0)
+        gtk_box_remove(GTK_BOX(bd->pwvboxcnt), bd->crawford);
+        gtk_box_append(GTK_BOX(bd->pwvboxcnt), bd->jacoby);
+#else
         gtk_container_remove(GTK_CONTAINER(bd->pwvboxcnt), bd->crawford);
         gtk_container_add(GTK_CONTAINER(bd->pwvboxcnt), bd->jacoby);
+#endif
+
         gtk_widget_show(bd->jacoby);
     }
 }
@@ -3420,8 +3540,13 @@ board_edit(BoardData * bd)
         if (bd->jacoby)
             jacoby = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(bd->jacoby));
 
+#if GTK_CHECK_VERSION(4,0,0)
+        pch0 = gtk_editable_get_text(GTK_EDITABLE(bd->name0));
+        pch1 = gtk_editable_get_text(GTK_EDITABLE(bd->name1));
+#else
         pch0 = gtk_entry_get_text(GTK_ENTRY(bd->name0));
         pch1 = gtk_entry_get_text(GTK_ENTRY(bd->name1));
+#endif
         anScoreNew[0] = (int) gtk_adjustment_get_value(gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(bd->score0)));
         anScoreNew[1] = (int) gtk_adjustment_get_value(gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(bd->score1)));
         nMatchToNew = (int) gtk_adjustment_get_value(gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(bd->match)));
@@ -3613,10 +3738,14 @@ key_press(GtkWidget * UNUSED(pw), GdkEvent * UNUSED(event), void *p)
 static GtkWidget *
 chequer_key_new(int iPlayer, Board * board)
 {
-
-    GtkWidget *pw = gtk_event_box_new(), *pwImage;
+    GtkWidget *pw, *pwImage;
     BoardData *bd = board->board_data;
     char sz[128];
+
+#if GTK_CHECK_VERSION(4, 0, 0)
+    pw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+#else
+    pw = gtk_event_box_new();
 
     gtk_event_box_set_visible_window(GTK_EVENT_BOX(pw), FALSE);
     bd->appmKey[iPlayer] = gtk_locdef_surface_create(GTK_WIDGET(board), 20, 20);
@@ -3631,6 +3760,7 @@ chequer_key_new(int iPlayer, Board * board)
 
     sprintf(sz, _("Set player %d on roll."), iPlayer);
     gtk_widget_set_tooltip_text(pw, sz);
+#endif
 
     return pw;
 }
@@ -3676,7 +3806,11 @@ init_game_info(Board *board, BoardData *bd)
     bd->lmatch = gtk_label_new(NULL);
     bd->crawford = gtk_check_button_new_with_label(_("Crawford game"));
     bd->jacoby = gtk_check_button_new_with_label(_("Jacoby"));
+#if GTK_CHECK_VERSION(4, 0, 0)
+    bd->pwvboxcnt = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+#else
     bd->pwvboxcnt = gtk_event_box_new();
+#endif
 
     /* Skip rendering when necessary */
     if (inPreviewWindow)
@@ -3684,21 +3818,30 @@ init_game_info(Board *board, BoardData *bd)
 
     /* Render game info section */
 
+#if GTK_CHECK_VERSION(4,0,0)
+    gtk_box_append(GTK_BOX(board), bd->table);
+#else
     gtk_box_pack_end(GTK_BOX(board), bd->table, FALSE, TRUE, 0);
+#endif
 
     /*
      * player 0
      */
 
     pwFrame = gtk_frame_new(NULL);
-    gtk_box_pack_start(GTK_BOX(bd->table), pwFrame, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(bd->table), pwFrame, TRUE, TRUE, 0);
 
 #if GTK_CHECK_VERSION(3,0,0)
     pwvbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 #else
     pwvbox = gtk_vbox_new(FALSE, 0);
 #endif
+
+#if GTK_CHECK_VERSION(4,0,0)
+    gtk_frame_set_child(GTK_FRAME(pwFrame), pwvbox);
+#else
     gtk_container_add(GTK_CONTAINER(pwFrame), pwvbox);
+#endif
 
     /* first row: picture of chequer + name of player */
 
@@ -3707,14 +3850,14 @@ init_game_info(Board *board, BoardData *bd)
 #else
     pw = gtk_hbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(pwvbox), pw, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwvbox), pw, FALSE, FALSE, 0);
 
     /* picture of chequer */
-    gtk_box_pack_start(GTK_BOX(pw), bd->key0, FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pw), bd->key0, FALSE, FALSE, 4);
 
     /* name of player */
 
-    gtk_box_pack_start(GTK_BOX(pw), bd->mname0, FALSE, FALSE, 8);
+    box_append_compat(GTK_BOX(pw), bd->mname0, FALSE, FALSE, 8);
     gtk_entry_set_max_length(GTK_ENTRY(bd->name0), MAX_NAME_LEN);
 
 #if GTK_CHECK_VERSION(3,0,0)
@@ -3723,8 +3866,12 @@ init_game_info(Board *board, BoardData *bd)
 #else
     gtk_misc_set_alignment(GTK_MISC(bd->lname0), 0, 0.5);
 #endif
+
+// TODO
+#if !GTK_CHECK_VERSION(4,0,0)
     gtk_container_add(GTK_CONTAINER(bd->mname0), bd->lname0);
     gtk_container_add(GTK_CONTAINER(bd->mname0), bd->name0);
+#endif
 
     /* second row: "Score" + score */
 
@@ -3733,21 +3880,24 @@ init_game_info(Board *board, BoardData *bd)
 #else
     pw = gtk_hbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(pwvbox), pw, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwvbox), pw, FALSE, FALSE, 0);
 
     /* score label */
 
-    gtk_box_pack_start(GTK_BOX(pw), gtk_label_new(_("Score:")), FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pw), gtk_label_new(_("Score:")), FALSE, FALSE, 4);
 
     /* score */
 
 
-    gtk_box_pack_start(GTK_BOX(pw), bd->mscore0, FALSE, FALSE, 8);
+    box_append_compat(GTK_BOX(pw), bd->mscore0, FALSE, FALSE, 8);
 
     gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(bd->score0), TRUE);
 
+// TODO
+#if !GTK_CHECK_VERSION(4,0,0)
     gtk_container_add(GTK_CONTAINER(bd->mscore0), bd->lscore0);
     gtk_container_add(GTK_CONTAINER(bd->mscore0), bd->score0);
+#endif
 
     /* third row: pip count and epc */
 
@@ -3756,11 +3906,11 @@ init_game_info(Board *board, BoardData *bd)
 #else
     pw = gtk_hbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(pwvbox), pw, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwvbox), pw, FALSE, FALSE, 0);
 
     /* pip count label */
 
-    gtk_box_pack_start(GTK_BOX(pw), bd->pipcountlabel0, FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pw), bd->pipcountlabel0, FALSE, FALSE, 4);
 
     /* pip count */
 
@@ -3768,7 +3918,7 @@ init_game_info(Board *board, BoardData *bd)
               probably because it contains only labels while the other
               has a an adjustment.
     */
-    gtk_box_pack_start(GTK_BOX(pw), bd->pipcount0, FALSE, FALSE, 8);
+    box_append_compat(GTK_BOX(pw), bd->pipcount0, FALSE, FALSE, 8);
 
 
     /*
@@ -3776,14 +3926,19 @@ init_game_info(Board *board, BoardData *bd)
      */
 
     pwFrame = gtk_frame_new(NULL);
-    gtk_box_pack_start(GTK_BOX(bd->table), pwFrame, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(bd->table), pwFrame, TRUE, TRUE, 0);
 
 #if GTK_CHECK_VERSION(3,0,0)
     pwvbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 #else
     pwvbox = gtk_vbox_new(FALSE, 0);
 #endif
+
+#if GTK_CHECK_VERSION(4, 0, 0)
+    gtk_frame_set_child(GTK_FRAME(pwFrame), pwvbox);
+#else
     gtk_container_add(GTK_CONTAINER(pwFrame), pwvbox);
+#endif
 
     /* first row: picture of chequer + name of player */
 
@@ -3792,15 +3947,15 @@ init_game_info(Board *board, BoardData *bd)
 #else
     pw = gtk_hbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(pwvbox), pw, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwvbox), pw, FALSE, FALSE, 0);
 
     /* picture of chequer */
 
-    gtk_box_pack_start(GTK_BOX(pw), bd->key1, FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pw), bd->key1, FALSE, FALSE, 4);
 
     /* name of player */
 
-    gtk_box_pack_start(GTK_BOX(pw), bd->mname1, FALSE, FALSE, 8);
+    box_append_compat(GTK_BOX(pw), bd->mname1, FALSE, FALSE, 8);
 
     gtk_entry_set_max_length(GTK_ENTRY(bd->name1), MAX_NAME_LEN);
 
@@ -3810,8 +3965,12 @@ init_game_info(Board *board, BoardData *bd)
 #else
     gtk_misc_set_alignment(GTK_MISC(bd->lname1), 0, 0.5);
 #endif
+
+// TODO
+#if !GTK_CHECK_VERSION(4,0,0)
     gtk_container_add(GTK_CONTAINER(bd->mname1), bd->lname1);
     gtk_container_add(GTK_CONTAINER(bd->mname1), bd->name1);
+#endif
 
     /* second row: "Score" + score */
 
@@ -3820,19 +3979,22 @@ init_game_info(Board *board, BoardData *bd)
 #else
     pw = gtk_hbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(pwvbox), pw, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwvbox), pw, FALSE, FALSE, 0);
 
     /* score label */
 
-    gtk_box_pack_start(GTK_BOX(pw), gtk_label_new(_("Score:")), FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pw), gtk_label_new(_("Score:")), FALSE, FALSE, 4);
 
     /* score */
 
-    gtk_box_pack_start(GTK_BOX(pw), bd->mscore1, FALSE, FALSE, 8);
+    box_append_compat(GTK_BOX(pw), bd->mscore1, FALSE, FALSE, 8);
     gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(bd->score1), TRUE);
 
+// TODO
+#if !GTK_CHECK_VERSION(4,0,0)
     gtk_container_add(GTK_CONTAINER(bd->mscore1), bd->lscore1);
     gtk_container_add(GTK_CONTAINER(bd->mscore1), bd->score1);
+#endif
 
     /* third row: pip count and epc */
 
@@ -3841,15 +4003,15 @@ init_game_info(Board *board, BoardData *bd)
 #else
     pw = gtk_hbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(pwvbox), pw, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwvbox), pw, FALSE, FALSE, 0);
 
     /* pip count label */
 
-    gtk_box_pack_start(GTK_BOX(pw), bd->pipcountlabel1, FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pw), bd->pipcountlabel1, FALSE, FALSE, 4);
 
     /* pip count */
 
-    gtk_box_pack_start(GTK_BOX(pw), bd->pipcount1, FALSE, FALSE, 8);
+    box_append_compat(GTK_BOX(pw), bd->pipcount1, FALSE, FALSE, 8);
 
 
     /*
@@ -3857,18 +4019,28 @@ init_game_info(Board *board, BoardData *bd)
      */
 
     pwFrame = gtk_frame_new(NULL);
+
+#if GTK_CHECK_VERSION(4,0,0)
+    gtk_box_append(GTK_BOX(bd->table), pwFrame);
+#else
     gtk_box_pack_end(GTK_BOX(bd->table), pwFrame, FALSE, FALSE, 0);
+#endif
 
 #if GTK_CHECK_VERSION(3,0,0)
     pwvbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 #else
     pwvbox = gtk_vbox_new(FALSE, 0);
 #endif
+
+#if GTK_CHECK_VERSION(4,0,0)
+    gtk_frame_set_child(GTK_FRAME(pwFrame), pwvbox);
+#else
     gtk_container_add(GTK_CONTAINER(pwFrame), pwvbox);
+#endif
 
     /* move string */
 
-    gtk_box_pack_start(GTK_BOX(pwvbox), bd->wmove, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwvbox), bd->wmove, FALSE, FALSE, 0);
     gtk_widget_set_name(bd->wmove, "gnubg-move-current");
 
     /* match length */
@@ -3878,17 +4050,23 @@ init_game_info(Board *board, BoardData *bd)
 #else
     pw = gtk_hbox_new(FALSE, 0);
 #endif
-    gtk_box_pack_start(GTK_BOX(pwvbox), pw, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwvbox), pw, FALSE, FALSE, 0);
 
-    gtk_box_pack_start(GTK_BOX(pw), gtk_label_new(_("Match:")), FALSE, FALSE, 4);
+    box_append_compat(GTK_BOX(pw), gtk_label_new(_("Match:")), FALSE, FALSE, 4);
 
-    gtk_box_pack_start(GTK_BOX(pw), bd->mmatch, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pw), bd->mmatch, FALSE, FALSE, 0);
 
+// TODO
+#if !GTK_CHECK_VERSION(4,0,0)
     gtk_container_add(GTK_CONTAINER(bd->mmatch), bd->lmatch);
+#endif
 
     g_signal_connect(G_OBJECT(bd->match), "value-changed", G_CALLBACK(match_change_val), bd);
 
+// TODO
+#if !GTK_CHECK_VERSION(4,0,0)
     gtk_container_add(GTK_CONTAINER(bd->mmatch), bd->match);
+#endif
 
     /* crawford and jacoby flag */
 
@@ -3898,12 +4076,15 @@ init_game_info(Board *board, BoardData *bd)
      * G_CALLBACK( board_set_jacoby ), bd );
      */
 
+// TODO
+#if !GTK_CHECK_VERSION(4,0,0)
     if (ms.nMatchTo)
         gtk_container_add(GTK_CONTAINER(bd->pwvboxcnt), bd->crawford);
     else
         gtk_container_add(GTK_CONTAINER(bd->pwvboxcnt), bd->jacoby);
+#endif
 
-    gtk_box_pack_start(GTK_BOX(pwvbox), bd->pwvboxcnt, FALSE, FALSE, 0);
+    box_append_compat(GTK_BOX(pwvbox), bd->pwvboxcnt, FALSE, FALSE, 0);
 
     g_object_ref(bd->jacoby);
     g_object_ref(bd->crawford);
@@ -3916,7 +4097,9 @@ static void
 board_init(Board * board)
 {
     BoardData *bd = g_malloc0(sizeof(*bd));
+#if !GTK_CHECK_VERSION(4, 0, 0)
     int signals;
+#endif
 
 #if GTK_CHECK_VERSION(3,0,0)
     gtk_orientable_set_orientation(GTK_ORIENTABLE(board), GTK_ORIENTATION_VERTICAL);
@@ -3942,22 +4125,25 @@ board_init(Board * board)
     /* gtk_widget_set_name(GTK_WIDGET(bd->drawing_area), "background"); */
     gtk_widget_set_size_request(bd->drawing_area, BOARD_WIDTH, BOARD_HEIGHT);
 
+#if !GTK_CHECK_VERSION(4, 0, 0)
     signals = GDK_EXPOSURE_MASK | GDK_STRUCTURE_MASK;
     if (!inPreviewWindow)
         signals |= GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_BUTTON_MOTION_MASK;
 
     gtk_widget_add_events(GTK_WIDGET(bd->drawing_area), signals);
+#endif
+
 #if GTK_CHECK_VERSION(3,0,0)
     gtk_widget_set_hexpand(bd->drawing_area, TRUE);
     gtk_widget_set_vexpand(bd->drawing_area, TRUE);
 #endif
-    gtk_box_pack_start(GTK_BOX(board), bd->drawing_area, TRUE, TRUE, 0);
+    box_append_compat(GTK_BOX(board), bd->drawing_area, TRUE, TRUE, 0);
 
 #if defined(USE_BOARD3D)
     /* 3d board drawing area */
     widget3dValid = widget3dValid ? CreateGLWidget(bd, !inPreviewWindow) : FALSE;
     if (widget3dValid) {
-        gtk_box_pack_start(GTK_BOX(board), GetDrawingArea3d(bd->bd3d), TRUE, TRUE, 0);
+        box_append_compat(GTK_BOX(board), GetDrawingArea3d(bd->bd3d), TRUE, TRUE, 0);
 #if GTK_CHECK_VERSION(3,0,0)
         gtk_widget_set_hexpand(GetDrawingArea3d(bd->bd3d), TRUE);
         gtk_widget_set_vexpand(GetDrawingArea3d(bd->bd3d), TRUE);
@@ -3971,10 +4157,17 @@ board_init(Board * board)
 
     /* dice drawing area */
 
+    // TODO
+#if !GTK_CHECK_VERSION(4,0,0)
     gtk_container_add(GTK_CONTAINER(board), bd->dice_area = gtk_drawing_area_new());
+#endif
+
     /* gtk_widget_set_name( GTK_WIDGET(bd->dice_area), "dice_area"); */
     gtk_widget_set_size_request(bd->dice_area, 2 * DIE_WIDTH + 1, DIE_HEIGHT);
+
+#if !GTK_CHECK_VERSION(4, 0, 0)
     gtk_widget_add_events(GTK_WIDGET(bd->dice_area), GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK | GDK_STRUCTURE_MASK);
+#endif
 
 #if GTK_CHECK_VERSION(3,0,0)
     g_signal_connect(G_OBJECT(bd->drawing_area), "draw", G_CALLBACK(board_draw), bd);
@@ -3999,22 +4192,53 @@ board_init(Board * board)
     UpdateCrawfordToggle(NULL, bd);
 }
 
+#if GTK_CHECK_VERSION(4, 0, 0)
 static void
-board_class_init(BoardClass * c)
+board_measure(
+    GtkWidget *widget, GtkOrientation orientation, int for_size,
+    int *minimum, int *natural, int *minimum_baseline, int *natural_baseline)
 {
+    GtkRequisition requisition;
+
+    board_size_request(widget, &requisition);
+
+    if (orientation == GTK_ORIENTATION_HORIZONTAL) {
+        *minimum = requisition.width;
+        *natural = requisition.width;
+    } else {
+        *minimum = requisition.height;
+        *natural = requisition.height;
+    }
+
+    if (minimum_baseline)
+        *minimum_baseline = -1;
+    if (natural_baseline)
+        *natural_baseline = -1;
+}
+#endif
+
+static void
+board_class_init(BoardClass *c)
+{
+    GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(c);
 
     parent_class = g_type_class_peek_parent(c);
     g_assert(parent_class);
 
-    ((GtkWidgetClass *) c)->size_allocate = board_size_allocate;
-#if GTK_CHECK_VERSION(3,0,0)
-    ((GtkWidgetClass *) c)->get_preferred_width = board_get_preferred_width;
-    ((GtkWidgetClass *) c)->get_preferred_height = board_get_preferred_height;
+    widget_class->size_allocate = board_size_allocate;
+
+#if GTK_CHECK_VERSION(4, 0, 0)
+    widget_class->measure = board_measure;
+#elif GTK_CHECK_VERSION(3, 0, 0)
+    widget_class->get_preferred_width = board_get_preferred_width;
+    widget_class->get_preferred_height = board_get_preferred_height;
+    widget_class->show_all = board_show_all;
 #else
-    ((GtkWidgetClass *) c)->size_request = board_size_request;
+    widget_class->size_request = board_size_request;
+    widget_class->show_all = board_show_all;
 #endif
-    ((GtkWidgetClass *) c)->realize = board_realize;
-    ((GtkWidgetClass *) c)->show_all = board_show_all;
+
+    widget_class->realize = board_realize;
 }
 
 
@@ -4078,7 +4302,11 @@ cube_widget_press(GtkWidget * cube, GdkEvent * UNUSED(event), BoardData * UNUSED
     else
         an[1] = 1;              /* bottom player */
 
+#if GTK_CHECK_VERSION(4,0,0)
+    gtk_window_destroy(GTK_WINDOW(pwTable));
+#else
     gtk_widget_destroy(pwTable);
+#endif
 
     return TRUE;
 }
@@ -4088,7 +4316,11 @@ DestroySetCube(GObject * UNUSED(po), GtkWidget * pw)
 {
     free(TTachCubeFaces);
     free(TTachCube);
+#if GTK_CHECK_VERSION(4,0,0)
+    gtk_window_destroy(GTK_WINDOW(pw));
+#else
     gtk_widget_destroy(pw);
+#endif
 }
 
 extern GtkWidget *
@@ -4136,7 +4368,9 @@ board_cube_widget(Board * board)
             pwCube = gtk_drawing_area_new();
             g_object_set_data(G_OBJECT(pwCube), "user_data", GINT_TO_POINTER((y * N_CUBES_IN_WIDGET + x)));
             gtk_widget_set_size_request(pwCube, CUBE_WIDTH * setSize, CUBE_HEIGHT * setSize);
+#if !GTK_CHECK_VERSION(4, 0, 0)
             gtk_widget_add_events(pwCube, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK | GDK_STRUCTURE_MASK);
+#endif
 #if GTK_CHECK_VERSION(3,0,0)
             g_signal_connect(G_OBJECT(pwCube), "draw", G_CALLBACK(cube_widget_draw), bd);
             gtk_grid_attach(GTK_GRID(pw), pwCube, x, y, 1, 1);
@@ -4155,7 +4389,15 @@ board_cube_widget(Board * board)
     gtk_table_set_row_spacings(GTK_TABLE(pw), 4 * setSize);
     gtk_table_set_col_spacings(GTK_TABLE(pw), 2 * setSize);
 #endif
+
+#if GTK_CHECK_VERSION(4,0,0)
+    gtk_widget_set_margin_top(pw, setSize);
+    gtk_widget_set_margin_bottom(pw, setSize);
+    gtk_widget_set_margin_start(pw, setSize);
+    gtk_widget_set_margin_end(pw, setSize);
+#else
     gtk_container_set_border_width(GTK_CONTAINER(pw), setSize);
+#endif
 
     return pw;
 }
@@ -4208,7 +4450,16 @@ dice_widget_press(GtkWidget * dice, GdkEvent * UNUSED(event), BoardData * UNUSED
     an[0] = n % 6 + 1;
     an[1] = n / 6 + 1;
 
+#if GTK_CHECK_VERSION(4,0,0)
+    {
+        GtkRoot *root = gtk_widget_get_root(dice);
+
+        if (GTK_IS_WINDOW(root))
+            gtk_window_destroy(GTK_WINDOW(root));
+    }
+#else
     gtk_widget_destroy(gtk_widget_get_toplevel(dice));
+#endif
 
     return TRUE;
 }
@@ -4223,7 +4474,18 @@ DestroySetDice(GtkWidget * po, void *data)
     free(sdd->TTachPip[1]);
     free(sdd->TTachGrayDice[0]);
     free(sdd->TTachGrayPip[0]);
+
+#if GTK_CHECK_VERSION(4,0,0)
+    {
+        GtkRoot *root = gtk_widget_get_root(po);
+
+        if (GTK_IS_WINDOW(root))
+            gtk_window_destroy(GTK_WINDOW(root));
+    }
+#else
     gtk_widget_destroy(gtk_widget_get_toplevel(po));
+#endif
+
     g_free(sdd);
 }
 
@@ -4301,7 +4563,9 @@ board_dice_widget(Board * board, manualDiceType mdt)
             label = gtk_label_new(str);
             g_free(str);
         }
+#if !GTK_CHECK_VERSION(4,0,0)
         gtk_label_set_angle(GTK_LABEL(label), 90);
+#endif
 #if GTK_CHECK_VERSION(3,0,0)
         gtk_grid_attach(GTK_GRID(main_table), label, 0, 1, 1, 1);
 #else
@@ -4348,7 +4612,9 @@ board_dice_widget(Board * board, manualDiceType mdt)
             pwDice = gtk_drawing_area_new();
             g_object_set_data(G_OBJECT(pwDice), "user_data", GINT_TO_POINTER((y * 6 + x)));
             gtk_widget_set_size_request(pwDice, 2 * DIE_WIDTH * setSize, DIE_HEIGHT * setSize);
+#if !GTK_CHECK_VERSION(4, 0, 0)
             gtk_widget_add_events(pwDice, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK | GDK_STRUCTURE_MASK);
+#endif
 #if GTK_CHECK_VERSION(3,0,0)
             g_signal_connect(G_OBJECT(pwDice), "draw", G_CALLBACK(setdice_widget_draw), sdd);
             gtk_grid_attach(GTK_GRID(pw), pwDice, x, y, 1, 1);
@@ -4367,7 +4633,15 @@ board_dice_widget(Board * board, manualDiceType mdt)
     gtk_table_set_row_spacings(GTK_TABLE(pw), 2 * setSize);
     gtk_table_set_col_spacings(GTK_TABLE(pw), 1 * setSize);
 #endif
+
+#if GTK_CHECK_VERSION(4,0,0)
+    gtk_widget_set_margin_top(pw, setSize);
+    gtk_widget_set_margin_bottom(pw, setSize);
+    gtk_widget_set_margin_start(pw, setSize);
+    gtk_widget_set_margin_end(pw, setSize);
+#else
     gtk_container_set_border_width(GTK_CONTAINER(pw), setSize);
+#endif
 
     g_signal_connect(G_OBJECT(main_table), "destroy", G_CALLBACK(DestroySetDice), sdd);
 

@@ -166,9 +166,19 @@ void UpdateTheoryData(BoardData * bd, int UpdateTypes, const TanBoard points);
 extern void read_board(BoardData * bd, TanBoard points);
 extern void update_pipcount(BoardData * bd, const TanBoard points);
 extern void InitBoardData(BoardData * bd);
+
+#if GTK_CHECK_VERSION(4,0,0)
+extern void board_button_press(
+    GtkGestureClick *gesture, int n_press, double x, double y, BoardData *bd);
+extern void board_motion_notify(
+    GtkEventControllerMotion *controller, double x, double y, BoardData *bd);
+extern void board_button_release(
+    GtkGestureClick *gesture, int n_press, double x, double y, BoardData *bd);
+#else
 extern gboolean board_button_press(GtkWidget * board, GdkEventButton * event, BoardData * bd);
 extern gboolean board_motion_notify(GtkWidget * board, GdkEventMotion * event, BoardData * bd);
 extern gboolean board_button_release(GtkWidget * board, GdkEventButton * event, BoardData * bd);
+#endif
 extern void RollDice2d(BoardData * bd);
 extern void DestroyPanel(gnubgwindow window);
 extern void

@@ -24,7 +24,7 @@
 #include <gtk/gtk.h>
 #include "gtk-multiview.h"
 
-G_DEFINE_TYPE(GtkMultiview, gtk_multiview, GTK_TYPE_CONTAINER)
+G_DEFINE_TYPE(GtkMultiview, gtk_multiview, GTK_MULTIVIEW_PARENT_TYPE)
 
 static void
 gtk_multiview_size_request(GtkWidget * widget, GtkRequisition * requisition);
@@ -150,7 +150,9 @@ gtk_multiview_size_allocate(GtkWidget * widget, GtkAllocation * allocation)
     g_return_if_fail(GTK_IS_MULTIVIEW(widget));
 
     multiview = GTK_MULTIVIEW(widget);
+#if !GTK_CHECK_VERSION(4,0,0)
     gtk_widget_set_allocation(widget, allocation);
+#endif
 
     tmp_list = multiview->children;
     while (tmp_list) {
@@ -159,7 +161,11 @@ gtk_multiview_size_allocate(GtkWidget * widget, GtkAllocation * allocation)
         tmp_list = tmp_list->next;
 
         if (gtk_widget_get_visible(child)) {
+#if GTK_CHECK_VERSION(4,0,0)
+            gtk_widget_size_allocate(child, allocation, -1);
+#else
             gtk_widget_size_allocate(child, allocation);
+#endif
         }
     }
 }

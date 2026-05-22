@@ -122,6 +122,28 @@ AC_PROG_YACC
 AM_YFLAGS='-d'
 AC_SUBST(AM_YFLAGS)
 
+dnl
+dnl Check for gtk options
+dnl
+
+no_gtk="yes"
+no_board3d="yes"
+AC_ARG_WITH(gtk,
+    AS_HELP_STRING([--with-gtk], [use GTK 2.0 (Default if found)]))
+AC_ARG_WITH(gtk3,
+    AS_HELP_STRING([--with-gtk3], [use GTK 3.0 (Disabled by default)]))
+AC_ARG_WITH(gtk4,
+    AS_HELP_STRING([--with-gtk4], [use GTK 4.0 (Experimental, disabled by default)]))
+AC_ARG_WITH(board3d,
+    AS_HELP_STRING([--with-board3d], [compile with 3D boards (Default if found)]))
+
+if test "x$with_gtk3" = "xyes" && \
+   test "x$with_gtk4" = "xyes"; then
+    AC_MSG_ERROR([GTK3 and GTK4 options are mutually exclusive])
+fi
+
+AS_IF([test "x$with_gtk4" = "xyes"], [with_gtk=yes])
+AS_IF([test "x$with_gtk3" = "xyes"], [with_gtk=yes])
 
 dnl
 dnl check for compiler support
@@ -149,7 +171,7 @@ else
     elif test "x$with_gtk" != "xno"; then
         if test "x$with_gtk3" = "xyes"; then
             PKG_CHECK_MODULES(CANBERRA, [libcanberra-gtk3], have_canberra="yes", AC_MSG_WARN([no libcanberra-gtk3 support]))
-        else
+        elif test "x$with_gtk4" != "xyes"; then
             PKG_CHECK_MODULES(CANBERRA, [libcanberra-gtk], have_canberra="yes", AC_MSG_WARN([no libcanberra-gtk support]))
         fi
     fi
@@ -158,14 +180,16 @@ else
 fi
 
 if test "x$with_gtk" != "xno"; then
-    if test "x$with_gtk3" = "xyes"; then
+    if test "x$with_gtk4" = "xyes"; then
+        PKG_CHECK_MODULES(GTK, [gtk4 >= 4.0], have_gtk="yes", AC_MSG_WARN([no gtk4 support]))
+    elif test "x$with_gtk3" = "xyes"; then
         PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= 3.22.0], have_gtk="yes", AC_MSG_WARN([no gtk3 support]))
     else
         PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= 2.20.0], have_gtk="yes", AC_MSG_WARN([no gtk2 support]))
     fi
 
     if test "x$with_board3d" != "xno"; then
-        if test "x$with_gtk3" = "xyes"; then
+        if test "x$with_gtk3" = "xyes" || test "x$with_gtk4" = "xyes"; then
             PKG_CHECK_MODULES(EPOXY, [epoxy], have_epoxy="yes", AC_MSG_WARN([no epoxy support]))
         else
             PKG_CHECK_MODULES(GTKGLEXT, [gtkglext-1.0 >= 1.0], have_gtkglext="yes" , AC_MSG_WARN([no gtkglext support]))
@@ -337,11 +361,6 @@ dnl
 dnl Check for gtk and gtkglext
 dnl
 
-no_gtk="yes"
-no_board3d="yes"
-AC_ARG_WITH(gtk,[  --with-gtk              use GTK+ 2.0 (Default if found)])
-AC_ARG_WITH(gtk3,[  --with-gtk3             use GTK+ 3.0 (Disabled by default)])
-AC_ARG_WITH(board3d,[  --with-board3d          compile with 3D boards (Default if found)])
 if test "$with_gtk" != "no" && test "x$have_gtk" = "xyes"; then
    AC_DEFINE(USE_GTK, 1, [Define if you want to use the gtk gui])
    no_gtk="no"
@@ -353,7 +372,8 @@ fi
 
 AC_CHECK_HEADERS(GL/glx.h)
 
-if test "$with_board3d" != "no" && test "$with_gtk3" = "yes"; then
+if test "$with_board3d" != "no" &&
+   test \( "x$with_gtk3" = "xyes" -o "x$with_gtk4" = "xyes" \); then
 	if test "x$have_gtk" = "xyes" && test "x$have_epoxy" = "xyes" && test "x$have_glu" = "xyes"; then
 		AC_DEFINE(USE_BOARD3D,1, [Define if you want to use the 3D boards])
 		no_board3d="no"
