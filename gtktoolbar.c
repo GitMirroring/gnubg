@@ -504,7 +504,10 @@ ToolbarNew(void)
     pwtb = gtk_toolbar_new();
     gtk_toolbar_set_icon_size(GTK_TOOLBAR(pwtb), GTK_ICON_SIZE_LARGE_TOOLBAR);
 
+#if !GTK_CHECK_VERSION(3,0,0)
     g_object_set(gtk_settings_get_default(), "gtk-toolbar-style", GTK_TOOLBAR_BOTH, NULL);
+#endif
+
     gtk_box_pack_start(GTK_BOX(vbox_toolbar), pwtb, FALSE, FALSE, 0);
 
     GtkIconTheme *theme = gtk_icon_theme_get_default();
