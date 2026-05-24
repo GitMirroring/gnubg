@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2004-2019 Jon Kinsey <jonkinsey@gmail.com>
- * Copyright (C) 2004-2018 the AUTHORS
+ * Copyright (C) 2004-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -238,6 +238,17 @@ GetStyleFromRCFile(GtkStyle ** ppStyle, const char *name, GtkStyle * psBase)
     g_object_unref(G_OBJECT(temp));
 }
 
+#if GTK_CHECK_VERSION(3,0,0)
+static void
+gdk_color_to_rgba(const GdkColor *color, GdkRGBA *rgba)
+{
+    rgba->red = color->red / 65535.0;
+    rgba->green = color->green / 65535.0;
+    rgba->blue = color->blue / 65535.0;
+    rgba->alpha = 1.0;
+}
+#endif
+
 static void
 RenderMoveString(GtkTreeViewColumn * tree_column, GtkCellRenderer * cell, GtkTreeModel * tree_model,
                  GtkTreeIter * iter, gpointer UNUSED(p))
@@ -253,8 +264,24 @@ RenderMoveString(GtkTreeViewColumn * tree_column, GtkCellRenderer * cell, GtkTre
         g_object_ref(style);
     }
 
-    g_object_set(cell, "text", moveString, "background-gdk", &style->base[GTK_STATE_NORMAL],
-                 "foreground-gdk", &style->fg[GTK_STATE_NORMAL], "font-desc", style->font_desc, NULL);
+#if GTK_CHECK_VERSION(3,0,0)
+    GdkRGBA bg;
+    GdkRGBA fg;
+
+    gdk_color_to_rgba(&style->base[GTK_STATE_NORMAL], &bg);
+    gdk_color_to_rgba(&style->fg[GTK_STATE_NORMAL], &fg);
+#endif
+
+    g_object_set(
+        cell, "text", moveString,
+#if GTK_CHECK_VERSION(3,0,0)
+        "background-rgba", &bg,
+        "foreground-rgba", &fg,
+#else
+        "background-gdk", &style->base[GTK_STATE_NORMAL],
+        "foreground-gdk", &style->fg[GTK_STATE_NORMAL],
+#endif
+        "font-desc", style->font_desc, NULL);
 
     if (moveString)
         g_free(moveString);
