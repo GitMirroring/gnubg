@@ -2101,10 +2101,8 @@ EvalRace(const TanBoard anBoard, float arOutput[], const bgvariation bgv, NNStat
     CalculateRaceInputs(anBoard, arInput);
 
 #if defined(USE_SIMD_INSTRUCTIONS)
-    // cppcheck-suppress duplicateExpression
     if (NeuralNetEvaluateSSE(&nnRace, arInput, arOutput, nnStates ? nnStates + (CLASS_RACE - CLASS_RACE) : NULL))
 #else
-    // cppcheck-suppress duplicateExpression
     if (NeuralNetEvaluate(&nnRace, arInput, arOutput, nnStates ? nnStates + (CLASS_RACE - CLASS_RACE) : NULL))
 #endif
         return -1;

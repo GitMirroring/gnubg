@@ -39,9 +39,7 @@ MT_CreateThreadLocalData(int id)
     ThreadLocalData *tld = (ThreadLocalData *) g_malloc(sizeof(ThreadLocalData));
     tld->id = id;
     tld->pnnState = (NNState *) g_malloc(sizeof(NNState) * 3);
-    // cppcheck-suppress duplicateExpression
     tld->pnnState[CLASS_RACE - CLASS_RACE].savedBase = g_malloc0(nnRace.cHidden * sizeof(float));
-    // cppcheck-suppress duplicateExpression
     tld->pnnState[CLASS_RACE - CLASS_RACE].savedIBase = g_malloc0(nnRace.cInput * sizeof(float));
     tld->pnnState[CLASS_CRASHED - CLASS_RACE].savedBase = g_malloc0(nnCrashed.cHidden * sizeof(float));
     tld->pnnState[CLASS_CRASHED - CLASS_RACE].savedIBase = g_malloc0(nnCrashed.cInput * sizeof(float));
