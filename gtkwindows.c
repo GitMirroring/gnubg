@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2006-2019 Jon Kinsey <jonkinsey@gmail.com>
- * Copyright (C) 2006-2019 the AUTHORS
+ * Copyright (C) 2006-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -166,7 +166,7 @@ GTKCreateDialog(const char *szTitle, const dialogtype dt,
 
     if (parent == NULL)
         parent = GTKGetCurrentParent();
-    if (!GTK_IS_WINDOW(parent))
+    if (parent && !GTK_IS_WINDOW(parent))
         parent = gtk_widget_get_toplevel(parent);
     if (parent && !gtk_widget_get_realized(parent))
         /* if parent isn't realized we should not present it. */
@@ -269,11 +269,16 @@ DialogArea(GtkWidget * pw, dialogarea da)
 /* Use to temporarily set the parent dialog for nested dialogs
  * Note that passing a control of a window is ok (and common) */
 static GtkWidget *pwCurrentParent = NULL;
+static GtkWidget *pwOutputParent = NULL;
 
 extern void
 GTKSetCurrentParent(GtkWidget * parent)
 {
-    pwCurrentParent = parent;
+    if (parent && !GTK_IS_WINDOW(parent))
+        parent = gtk_widget_get_toplevel(parent);
+
+    if (parent && GTK_IS_WINDOW(parent) && gtk_widget_get_realized(parent))
+        pwCurrentParent = parent;
 }
 
 extern GtkWidget *
@@ -285,6 +290,30 @@ GTKGetCurrentParent(void)
         return current;
     } else
         return pwMain;
+}
+
+extern void
+GTKSetOutputParent(GtkWidget *parent)
+{
+    if (parent && !GTK_IS_WINDOW(parent))
+        parent = gtk_widget_get_toplevel(parent);
+
+    if (parent && GTK_IS_WINDOW(parent) && gtk_widget_get_realized(parent))
+        pwOutputParent = parent;
+    else
+        pwOutputParent = NULL;
+}
+
+extern GtkWidget *
+GTKGetOutputParent(void)
+{
+    return pwOutputParent ? pwOutputParent : GTKGetCurrentParent();
+}
+
+extern void
+GTKClearOutputParent(void)
+{
+    pwOutputParent = NULL;
 }
 
 extern int
@@ -303,10 +332,13 @@ GTKMessage(const char *sz, dialogtype dt)
     GtkWidget *pwDialog, *pwText, *sw, *frame;
     GtkRequisition req;
     GtkTextBuffer *buffer;
+    GtkWidget *parent;
 
     g_return_val_if_fail(sz, FALSE);
 
-    pwDialog = GTKCreateDialog(gettext(aszTitle[dt]), dt, GTKGetCurrentParent(), DIALOG_FLAG_MODAL, NULL, &answer);
+    parent = GTKGetOutputParent();
+    pwDialog = GTKCreateDialog(
+        gettext(aszTitle[dt]), dt, parent, DIALOG_FLAG_MODAL, NULL, &answer);
 
     pwText = gtk_text_view_new();
     gtk_text_view_set_editable(GTK_TEXT_VIEW(pwText), FALSE);
@@ -508,6 +540,7 @@ GTKRunDialog(GtkWidget * dialog)
 {
     GTKDisallowStdin();
     gtk_widget_show_all(dialog);
+    gtk_window_present(GTK_WINDOW(dialog));
     gtk_main();
     GTKAllowStdin();
 }

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2006-2019 Jon Kinsey <jonkinsey@gmail.com>
- * Copyright (C) 2006-2018 the AUTHORS
+ * Copyright (C) 2006-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,9 @@ extern char *GTKGetInput(char *title, char *prompt, GtkWidget * parent);
 extern int GTKMessage(const char *sz, dialogtype dt);
 extern void GTKSetCurrentParent(GtkWidget * parent);
 extern GtkWidget *GTKGetCurrentParent(void);
+extern void GTKSetOutputParent(GtkWidget * parent);
+extern GtkWidget *GTKGetOutputParent(void);
+extern void GTKClearOutputParent();
 
 typedef enum {
     WARN_FULLSCREEN_EXIT = 0,

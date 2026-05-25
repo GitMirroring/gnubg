@@ -4770,8 +4770,14 @@ UpdatePlayerSettings(newwidget * pnw)
 static void
 SettingsPressed(GtkWidget * pw, gpointer UNUSED(data))
 {
-    GTKSetCurrentParent(pw);
+    GtkWidget *parent = gtk_widget_get_toplevel(pw);
+
+    GTKSetCurrentParent(parent);
+    GTKSetOutputParent(parent);
+
     SetPlayers(NULL, 0, NULL);
+
+    GTKClearOutputParent();
 }
 
 static void
