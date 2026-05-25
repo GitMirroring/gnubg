@@ -6932,6 +6932,7 @@ GTKHelp(char *sz)
 
 #if GTK_CHECK_VERSION(3,0,0)
     pwPaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
+    gtk_widget_set_hexpand(pwPaned, TRUE);
 #else
     pwPaned = gtk_vpaned_new();
 #endif
