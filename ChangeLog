@@ -1,3 +1,7 @@
+2026-05-25  Nikolas Nyby  <nikolas@gnu.org>
+
+	* Added new build option --with-gtk4.
+
 2026-05-10  Nikolas Nyby  <nikolas@gnu.org>
 
 	* Added various fixes for the gtk3 build.
