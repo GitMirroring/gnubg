@@ -2248,11 +2248,12 @@ PyMoveAnalysis(const movelist * pml, PyMatchState * ms)
             case EVAL_EVAL:
                 {
                     PyObject *m = PyMove(pmi->anMove);
-                    v = Py_BuildValue("{s:s,s:O,s:(fffff),s:f}",
+                    v = Py_BuildValue("{s:s,s:O,s:(fffff),s:f,s:i}",
                                       "type", "eval",
                                       "move", m,
                                       "probs", pmi->arEvalMove[0], pmi->arEvalMove[1],
-                                      pmi->arEvalMove[2], pmi->arEvalMove[3], pmi->arEvalMove[4], "score", pmi->rScore);
+                                      pmi->arEvalMove[2], pmi->arEvalMove[3], pmi->arEvalMove[4],
+                                      "score", pmi->rScore, "cmark", pmi->cmark);
                     Py_DECREF(m);
 
                     {
@@ -2272,7 +2273,7 @@ PyMoveAnalysis(const movelist * pml, PyMatchState * ms)
                     const float *s = pmi->arEvalStdDev;
 
                     v = Py_BuildValue("{s:s,s:O,s:i,s:(fffff),s:f,s:f"
-                                      ",s:(fffff),s:f,s:f}",
+                                      ",s:(fffff),s:f,s:f,s:i}",
                                       "type", "rollout",
                                       "move", m,
                                       "trials", pes->rc.nGamesDone,
@@ -2280,7 +2281,8 @@ PyMoveAnalysis(const movelist * pml, PyMatchState * ms)
                                       "match-eq", p[OUTPUT_EQUITY],
                                       "cubeful-eq", p[OUTPUT_CUBEFUL_EQUITY],
                                       "probs-std", s[0], s[1], s[2], s[3], s[4],
-                                      "match-eq-std", s[OUTPUT_EQUITY], "cubeful-eq-std", s[OUTPUT_CUBEFUL_EQUITY]);
+                                      "match-eq-std", s[OUTPUT_EQUITY], "cubeful-eq-std", s[OUTPUT_CUBEFUL_EQUITY],
+                                      "cmark", pmi->cmark);
                     Py_DECREF(m);
 
                     {
@@ -2313,6 +2315,7 @@ SIMD_STACKALIGN static PyObject *
 PyDoubleAnalysis(const evalsetup * pes,
                  float aarOutput[][NUM_ROLLOUT_OUTPUTS],
                  float aarStdDev[][NUM_ROLLOUT_OUTPUTS],
+                 CMark cmark,
                  PyMatchState * ms, const int verbose)
 {
     PyObject *dict = 0;
@@ -2323,8 +2326,8 @@ PyDoubleAnalysis(const evalsetup * pes,
             const float *p = aarOutput[0];
 
             dict =
-                Py_BuildValue("{s:s,s:(fffff),s:f,s:f}",
-                              "type", "eval",
+                Py_BuildValue("{s:s,s:i,s:(fffff),s:f,s:f}",
+                              "type", "eval", "cmark", cmark,
                               "probs", p[0], p[1], p[2], p[3], p[4],
                               "nd-cubeful-eq", p[OUTPUT_CUBEFUL_EQUITY],
                               "dt-cubeful-eq", aarOutput[1][OUTPUT_CUBEFUL_EQUITY]);
@@ -2350,12 +2353,12 @@ PyDoubleAnalysis(const evalsetup * pes,
             const float *dts = aarStdDev[1];
 
             dict =
-                Py_BuildValue("{s:s,s:i,"
+                Py_BuildValue("{s:s,s:i,s:i,"
                               "s:(fffff),s:f,s:f,"
                               "s:(fffff),s:f,s:f,"
                               "s:(fffff),s:f,s:f,"
                               "s:(fffff),s:f,s:f}",
-                              "type", "rollout",
+                              "type", "rollout", "cmark", cmark,
                               "trials", pes->rc.nGamesDone,
                               "nd-probs", nd[0], nd[1], nd[2], nd[3], nd[4],
                               "nd-match-eq", nd[OUTPUT_EQUITY],
@@ -2704,7 +2707,7 @@ PythonGame(const listOLD * plGame,
                             PyObject *d = PyDoubleAnalysis(&pmr->CubeDecPtr->esDouble,
                                                            pmr->CubeDecPtr->aarOutput,
                                                            pmr->CubeDecPtr->aarStdDev,
-                                                           ms, verbose);
+                                                           pmr->CubeDecPtr->cmark, ms, verbose);
                             {
                                 int s = PyDict_Merge(analysis, d, 1);
                                 g_assert(s != -1);
@@ -2745,7 +2748,7 @@ PythonGame(const listOLD * plGame,
                         cubedecisiondata *c = pmr->CubeDecPtr;
                         if (c->esDouble.et != EVAL_NONE) {
                             PyObject *d = PyDoubleAnalysis(&c->esDouble, c->aarOutput,
-                                                           c->aarStdDev, ms, verbose);
+                                                           c->aarStdDev, c->cmark, ms, verbose);
                             {
                                 int s = PyDict_Merge(analysis, d, 1);
                                 g_assert(s != -1);
