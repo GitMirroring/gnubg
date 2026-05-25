@@ -72,11 +72,25 @@ def PyPostgreConnect(database, user, password, hostname):
     import psycopg
     from psycopg import sql
 
-    postgres_host = hostname.strip() or 'localhost'
+    hostport = hostname.strip().split(':')
+    try:
+        postgres_host = hostport[0]
+    except IndexError:
+        postgres_host = 'localhost'
+
+    try:
+        postgres_portstr = hostport[1]
+        try:
+            postgres_port = int(postgres_portstr)
+        except ValueError:
+            return -1
+    except IndexError:
+        postgres_port = 5432
+
     try:
         connection = psycopg.connect(
-            host=postgres_host, user=user,
-            password=password, dbname=database)
+            host=postgres_host, port=postgres_port,
+            user=user, password=password, dbname=database)
         return 1
     except Exception:
         # See if postgres is there
