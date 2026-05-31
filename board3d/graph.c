@@ -282,7 +282,12 @@ StatGraph(GraphData * pgd)
     GtkWidget *pw;
 
     /* Drawing widget for OpenGL */
+#if GTK_CHECK_VERSION(3,0,0)
+    pw = gtk_drawing_area_new();
+    return pw;
+#else
     pw = GLWidgetCreate(realizeCB, configureCB, exposeCB, pgd);
+#endif
     if (pw == NULL)
         return NULL;
 
