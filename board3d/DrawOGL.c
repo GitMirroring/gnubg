@@ -115,9 +115,12 @@ drawBoard(const BoardData* bd, const BoardData3d* bd3d, const renderdata* prd)
 
     drawPieces(modelHolder, bd, bd3d, prd);
 
+#if !GTK_CHECK_VERSION(3,0,0)
     if (transparentPieces)
         glDisable(GL_BLEND);
+#endif
 
+#if !GTK_CHECK_VERSION(3,0,0)
     if (bd->DragTargetHelp) {   /* highlight target points */
         SetLineDrawingmode(GL_TRUE);
 
@@ -128,16 +131,15 @@ drawBoard(const BoardData* bd, const BoardData3d* bd3d, const renderdata* prd)
             if (target != -1) { /* Make sure texturing is disabled */
                 int separateTop = (prd->ChequerMat[0].pTexture && prd->pieceTextureType == PTT_TOP);
 
-#if !GTK_CHECK_VERSION(3,0,0)
                 if (prd->ChequerMat[0].pTexture)
                     glDisable(GL_TEXTURE_2D);
-#endif
 
                 drawPiece(modelHolder, bd3d, (unsigned int)target, Abs(bd->points[target]) + 1, TRUE, (prd->pieceType == PT_ROUNDED), prd->curveAccuracy, separateTop);
             }
         }
         SetLineDrawingmode(GL_FALSE);
     }
+#endif
 
     if (DiceShowing(bd)) {
         const Material* diceMat = &prd->DiceMat[(bd->turn == 1)];
@@ -541,9 +543,7 @@ void renderPiece(const ModelManager* modelHolder, int separateTop)
     const Material* mat = currentMat;
     if (separateTop)
     {
-        glEnable(GL_TEXTURE_2D);
         OglModelDraw(modelHolder, MT_PIECETOP, mat);
-        glDisable(GL_TEXTURE_2D);
         mat = NULL;
     }
 
@@ -564,8 +564,10 @@ drawSpecialPieces(const ModelManager* modelHolder, const BoardData* bd, const Bo
 
     renderSpecialPieces(modelHolder, bd, bd3d, prd);
 
+#if !GTK_CHECK_VERSION(3,0,0)
     if (transparentPieces)
         glDisable(GL_BLEND);
+#endif
 }
 
 #if !GTK_CHECK_VERSION(3,0,0)
@@ -906,7 +908,9 @@ void renderFlagNumbers(const BoardData3d* bd3d, int resignedValue)
 
     flagfont.scale *= 1.3f;
 
+#if !GTK_CHECK_VERSION(3,0,0)
     glLineWidth(.5f);
+#endif
     glPrintCube(&flagfont, flagValue, /*MAA*/0);
 
 #if !GTK_CHECK_VERSION(3,0,0)
