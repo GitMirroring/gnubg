@@ -132,8 +132,10 @@ void ModelManagerCopyModelToBuffer(ModelManager* modelHolder, int modelNumber)
 {
     glBindBuffer(GL_ARRAY_BUFFER, modelHolder->buffer);	/* this is the VBO that holds the vertex data */
     glBufferSubData(GL_ARRAY_BUFFER, modelHolder->models[modelNumber].dataStart * sizeof(float), modelHolder->models[modelNumber].dataLength * sizeof(float), modelHolder->models[modelNumber].data);
+#if !GTK_CHECK_VERSION(3,0,0)
     g_free(modelHolder->models[modelNumber].data);
     modelHolder->models[modelNumber].data = NULL;
+#endif
 }
 
 void ModelManagerCreate(ModelManager* modelHolder)
