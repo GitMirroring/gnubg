@@ -48,7 +48,7 @@
 #include "sgf.h"
 #include "dice.h"
 #include "drawboard.h"
-#include "gtk/gtkboard.h"
+#include "gtkboard.h"
 #include "gtkchequer.h"
 #include "gtkcube.h"
 #include "gtkgame.h"
