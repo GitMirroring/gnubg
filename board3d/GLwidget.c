@@ -141,6 +141,8 @@ void ModelManagerCopyModelToBuffer(ModelManager* modelHolder, int modelNumber)
 void ModelManagerCreate(ModelManager* modelHolder)
 {
     int model;
+    gboolean need_upload = FALSE;
+
     if (modelHolder->vao == 0 || !glIsVertexArray(modelHolder->vao))
     {
         if (modelHolder->buffer && glIsBuffer(modelHolder->buffer))
@@ -183,6 +185,8 @@ void ModelManagerCreate(ModelManager* modelHolder)
         glVertexAttribPointer(texCoord_index, 2, GL_FLOAT, GL_FALSE, stride, 0);
         glEnableVertexAttribArray(normal_index);
         glVertexAttribPointer(normal_index, 3, GL_FLOAT, GL_FALSE, stride, (GLvoid*)(2 * sizeof(float)));
+
+        need_upload = TRUE;
     }
     if (modelHolder->totalNumVertices > modelHolder->allocNumVertices)
     {
@@ -191,7 +195,12 @@ void ModelManagerCreate(ModelManager* modelHolder)
 
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * modelHolder->totalNumVertices, NULL, GL_STATIC_DRAW);
         modelHolder->allocNumVertices = modelHolder->totalNumVertices;
+
+        need_upload = TRUE;
     }
+
+    if (!need_upload)
+        return;
 
     /* Copy data into gpu buffer */
     int vertexPos = 0;
@@ -214,10 +223,7 @@ void GLWidgetMakeCurrent(GtkWidget* widget)
 
 static gboolean SelectProgram(ShaderDetails* pShader)
 {
-    if (pShader == NULL || pShader->shader == 0 || !glIsProgram(pShader->shader)) {
-        g_warning("Invalid shader program: shader=%u currentShader=%p",
-                  pShader ? pShader->shader : 0,
-                  currentShader);
+    if (pShader == NULL || pShader->shader == 0) {
         currentShader = NULL;
         return FALSE;
     }
@@ -437,12 +443,13 @@ void SetLineDrawingmode(int enable)
 
 void OglModelDraw(const ModelManager* modelManager, int modelNumber, const Material* pMat)
 {
-    if (currentShader == NULL || !glIsProgram(currentShader->shader))
+    if (currentShader == NULL || currentShader->shader == 0)
         return;
 
     if (modelManager == NULL ||
         modelNumber < 0 ||
-        modelNumber >= modelManager->numModels)
+        modelNumber >= modelManager->numModels ||
+        modelManager->vao == 0)
         return;
 
     if (modelManager->vao == 0 || !glIsVertexArray(modelManager->vao)) {
@@ -479,8 +486,6 @@ gboolean GLWidgetRender(GtkWidget* widget, ExposeCB exposeCB, GdkEventExpose* ev
     if (gtk_gl_area_get_error(GTK_GL_AREA(widget)) != NULL)
         return FALSE;
 
-    CheckOpenglError();
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     glEnable(GL_DEPTH_TEST);
@@ -491,16 +496,7 @@ gboolean GLWidgetRender(GtkWidget* widget, ExposeCB exposeCB, GdkEventExpose* ev
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     if (mainShader.shader == 0) {
-        GLWidgetMakeCurrent(widget);
-
-        if (!InitShaderPrograms(widget))
-            return FALSE;
-
-        const GLWidgetData* glwData =
-            g_object_get_data(G_OBJECT(widget), "GLWidgetData");
-
-        if (glwData && glwData->realizeCB)
-            glwData->realizeCB(glwData->cbData);
+        return FALSE;
     }
 
     if (!SelectProgram(&mainShader))
