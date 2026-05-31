@@ -60,6 +60,7 @@ void InitMatStacks(void)
 {
     MatStackInit(&mvMatStack);
     MatStackInit(&txMatStack);
+    MatStackInit(&pjMatStack);
     curMatStack = GL_MODELVIEW;
 }
 
@@ -135,7 +136,7 @@ void SHIMglScalef(GLfloat x, GLfloat y, GLfloat z)
 
 void SHIMglNormal3f(GLfloat nx, GLfloat ny, GLfloat nz)
 {
-    if (curModel->data)
+    if (curModel && curModel->data)
     {
         curNormal[0] = nx;
         curNormal[1] = ny;
@@ -145,7 +146,7 @@ void SHIMglNormal3f(GLfloat nx, GLfloat ny, GLfloat nz)
 
 void SHIMglNormal3fv(const vec3 n)
 {
-    if (curModel->data)
+    if (curModel && curModel->data)
     {
         curNormal[0] = n[0];
         curNormal[1] = n[1];
@@ -155,7 +156,7 @@ void SHIMglNormal3fv(const vec3 n)
 
 void SHIMglTexCoord2f(GLfloat s, GLfloat t)
 {
-    if (curModel->data)
+    if (curModel && curModel->data)
     {
         curTexture[0] = s;
         curTexture[1] = t;
@@ -164,13 +165,15 @@ void SHIMglTexCoord2f(GLfloat s, GLfloat t)
 
 static void AddData(float data)
 {
-    curModel->data[curModel->dataLength] = data;
-    curModel->dataLength++;
+    if (curModel) {
+        curModel->data[curModel->dataLength] = data;
+        curModel->dataLength++;
+    }
 }
 
 static void AddVertex(int offset)
 {
-    if (curModel->data)
+    if (curModel && curModel->data)
     {
         float* curPtr = &curModel->data[curModel->dataLength];
         memcpy(curPtr, curPtr + (offset * VERTEX_STRIDE), VERTEX_STRIDE * sizeof(float));
@@ -186,6 +189,9 @@ void SHIMglVertex3fv(const vec3 vertex)
 
 void SHIMglVertex3f(GLfloat x, GLfloat y, GLfloat z)
 {
+    if (curModel == NULL)
+        return;
+
     modeVerts++;
     switch (curMode)
     {
@@ -241,7 +247,7 @@ void SHIMglVertex3f(GLfloat x, GLfloat y, GLfloat z)
         break;
     }
 
-    if (curModel->data)
+    if (curModel && curModel->data)
     {
         vec3 mv;
 
