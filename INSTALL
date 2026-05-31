@@ -33,7 +33,7 @@ freetype2 (graphics)
 GTK (GUI)		version >= 2.20
 cairo (graphics)
 canberra (sound)
-gtkglext (3d boards)
+libepoxy (3d boards)
 readline (command line editing)
 python (extension)	version >= 2.6
 sqlite3 (database)
