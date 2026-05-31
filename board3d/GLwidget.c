@@ -177,6 +177,7 @@ static void SelectProgram(ShaderDetails* pShader)
 
 	currentShader = pShader;
 	glUseProgram(currentShader->shader);
+    currentMat = NULL;
 }
 
 void SelectPickProgram(void)
@@ -211,6 +212,10 @@ static guint CreateShader(int shader_type, const char* shader_name)
 	g_free(pathname);
 
 	source = LoadFile(filename);
+    if (source == NULL) {
+        g_free(filename);
+        return 0;
+    }
 	g_free(filename);
 
 	guint shader = glCreateShader(shader_type);
@@ -225,6 +230,9 @@ static guint CreateShader(int shader_type, const char* shader_name)
 		char* buffer = g_malloc(log_len + 1);
 		glGetShaderInfoLog(shader, log_len, NULL, buffer);
 		printf(_("Compilation failure in %s shader: %s"), shader_type == GL_VERTEX_SHADER ? "vertex" : "fragment", buffer);
+        g_free((gpointer)source);
+        glDeleteShader(shader);
+
 		g_free(buffer);
 		return 0;
 	}
@@ -238,6 +246,9 @@ init_shaders(const char* shader_name)
 {
 	guint vertex = CreateShader(GL_VERTEX_SHADER, shader_name);
 	guint fragment = CreateShader(GL_FRAGMENT_SHADER, shader_name);
+
+    if (!vertex || !fragment)
+        return 0;
 
 	/* link the vertex and fragment shaders together */
 	guint program = glCreateProgram();
@@ -282,16 +293,25 @@ realize_event(GtkWidget* widget, const GLWidgetData* glwData)
 
 	if (gtk_gl_area_get_error(GTK_GL_AREA(widget)) != NULL)
 		return;
-	gtk_gl_area_set_has_depth_buffer(GTK_GL_AREA(widget), TRUE);
 
 	/* initialize the shaders and retrieve the program data */
 	basicShader.shader = init_shaders("/Shaders/basic");
+	mainShader.shader = init_shaders("/Shaders/main");
+
+    if (!basicShader.shader || !mainShader.shader) {
+        gtk_gl_area_set_error(
+            GTK_GL_AREA(widget),
+            g_error_new_literal(
+                g_quark_from_static_string("gnubg-gl"),
+                1,
+                "Failed to initialize OpenGL shaders"));
+        return;
+    }
+
 	basicShader.projection_location = LookupUniform(&basicShader, "projection");
 	basicShader.modelView_location = LookupUniform(&basicShader, "modelView");
 	basicShader.textureMat_location = GL_INVALID_VALUE;
 	pick_colour_location = LookupUniform(&basicShader, "colour");
-
-	mainShader.shader = init_shaders("/Shaders/main");
 
 	/* get the location of the matrices uniforms */
 	mainShader.projection_location = LookupUniform(&mainShader, "projection");
@@ -337,14 +357,9 @@ resize_event(GtkGLArea* widget, gint UNUSED(width), gint UNUSED(height), const G
 	glwData->configureCB(GTK_WIDGET(widget), glwData->cbData);
 }
 
-static int drawMode = GL_TRIANGLES;
-
 void SetLineDrawingmode(int enable)
 {
-	if (enable == GL_TRUE)
-		drawMode = GL_LINES;
-	else
-		drawMode = GL_TRIANGLES;
+    glPolygonMode(GL_FRONT_AND_BACK, enable == GL_TRUE ? GL_LINE : GL_FILL);
 }
 
 void OglModelDraw(const ModelManager* modelManager, int modelNumber, const Material* pMat)
@@ -365,15 +380,27 @@ void OglModelDraw(const ModelManager* modelManager, int modelNumber, const Mater
 	glBindVertexArray(modelManager->vao);
 
 	/* draw the vertices in the model */
-	glDrawArrays(drawMode, modelManager->models[modelNumber].dataStart / VERTEX_STRIDE, modelManager->models[modelNumber].dataLength / VERTEX_STRIDE);
+	glDrawArrays(
+        GL_TRIANGLES,
+        modelManager->models[modelNumber].dataStart / VERTEX_STRIDE,
+        modelManager->models[modelNumber].dataLength / VERTEX_STRIDE);
 }
 
 gboolean GLWidgetRender(GtkWidget* widget, ExposeCB exposeCB, GdkEventExpose* eventDetails, void* data)
 {
+    if (gtk_gl_area_get_error(GTK_GL_AREA(widget)) != NULL)
+        return FALSE;
+
 	CheckOpenglError();
 
-	glClearColor(0.5, 0.5, 0.5, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	SelectProgram(&mainShader);
 
@@ -396,6 +423,10 @@ GtkWidget* GLWidgetCreate(RealizeCB realizeCB, ConfigureCB configureCB, ExposeCB
 		g_print(_("Can't create OpenGL drawing widget\n"));
 		return NULL;
 	}
+
+    gtk_gl_area_set_has_depth_buffer(GTK_GL_AREA(pw), TRUE);
+    gtk_gl_area_set_has_stencil_buffer(GTK_GL_AREA(pw), TRUE);
+    gtk_gl_area_set_auto_render(GTK_GL_AREA(pw), TRUE);
 
 	GLWidgetData* glwData = g_malloc(sizeof(GLWidgetData));
 
