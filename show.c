@@ -47,7 +47,7 @@
 
 #if defined(USE_GTK)
 #include "gtk/gtkboard.h"
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "gtktheory.h"
 #include "gtkrace.h"
 #include "gtkexport.h"

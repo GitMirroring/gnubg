@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include "gtkwindows.h"
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
 typedef void (*dialog_func_ty) (GtkWidget *, void *);

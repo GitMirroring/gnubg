@@ -31,7 +31,7 @@
 #include "dice.h"
 #include "eval.h"
 #if USE_GTK
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #endif
 #include "analysis.h"
 #include "positionid.h"

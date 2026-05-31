@@ -29,7 +29,7 @@
 #include "backgammon.h"
 #include "gtklocdefs.h"
 #include "gtkfile.h"
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "gtktoolbar.h"
 #include "gtkwindows.h"
 #include "file.h"

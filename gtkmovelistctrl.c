@@ -22,7 +22,7 @@
 #include "config.h"
 #include "gtklocdefs.h"
 
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "gtkmovelistctrl.h"
 #include "format.h"
 #include "drawboard.h"

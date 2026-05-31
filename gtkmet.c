@@ -18,7 +18,7 @@
 
 #include "config.h"
 
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "matchequity.h"
 #include "gtkmet.h"
 #include "gtkwindows.h"

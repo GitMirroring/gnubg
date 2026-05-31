@@ -66,8 +66,8 @@ gtkexport.c
 gtkexport.h
 gtkfile.c
 gtkfile.h
-gtkgame.c
-gtkgame.h
+gtk/gtkgame.c
+gtk/gtkgame.h
 gtklocdefs.c
 gtklocdefs.h
 gtkgamelist.c

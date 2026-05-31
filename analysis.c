@@ -51,7 +51,7 @@ When analyzing in the background, various menus are disabled so the user does no
 #include "drawboard.h"
 #include "eval.h"
 #if defined(USE_GTK)
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #endif
 #include "positionid.h"
 #include "analysis.h"

@@ -22,7 +22,7 @@
 #include "config.h"
 #include <string.h>
 #if defined(USE_GTK)
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #else
 #include "backgammon.h"
 #include <glib.h>

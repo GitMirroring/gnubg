@@ -28,7 +28,7 @@
 #include "eval.h"
 #include "export.h"
 #include "rollout.h"
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "gtkcube.h"
 #include "gtkwindows.h"
 #include "progress.h"

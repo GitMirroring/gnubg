@@ -30,7 +30,7 @@
 #include "backgammon.h"
 #include "gtktoolbar.h"
 #include "gtk/gtkboard.h"
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "gtkfile.h"
 #include "drawboard.h"
 #include "renderprefs.h"

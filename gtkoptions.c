@@ -29,7 +29,7 @@
 #include "backgammon.h"
 #include "eval.h"
 #include "dice.h"
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "gtkfile.h"
 #include "sound.h"
 #include "drawboard.h"

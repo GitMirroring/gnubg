@@ -38,7 +38,7 @@
 #include "lib/simd.h"
 
 #if defined(USE_GTK)
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include <gtk/gtk.h>
 #endif
 

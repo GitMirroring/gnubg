@@ -24,7 +24,7 @@
 #include "backgammon.h"
 #include <string.h>
 #include "gtk/gtkboard.h"
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "gtktoolbar.h"
 #include "positionid.h"
 #if defined(USE_BOARD3D)

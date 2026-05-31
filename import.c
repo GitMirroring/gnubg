@@ -30,7 +30,7 @@
 #include "backgammon.h"
 #include "drawboard.h"
 #if USE_GTK
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #endif
 #include "file.h"
 #include "positionid.h"

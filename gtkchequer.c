@@ -30,7 +30,7 @@
 #include "rollout.h"
 #include "multithread.h"
 #include "gtk/gtkboard.h"
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "gtkchequer.h"
 #include "gtktempmap.h"
 #include "gtkscoremap.h"

@@ -25,7 +25,7 @@
 
 #include "backgammon.h"
 #include "eval.h"
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "export.h"
 #include "gtkexport.h"
 #include "boarddim.h"

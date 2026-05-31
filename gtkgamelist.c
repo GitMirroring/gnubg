@@ -28,7 +28,7 @@
 #include "gtk/gtkboard.h"
 #include "drawboard.h"
 #include "positionid.h"
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "util.h"
 
 static GtkListStore *plsGameList;

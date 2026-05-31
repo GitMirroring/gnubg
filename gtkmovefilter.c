@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "gtkmovefilter.h"
 #include "gtkwindows.h"
 #include "gtklocdefs.h"

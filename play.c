@@ -193,7 +193,7 @@ static int
 CheatDice(unsigned int anDice[2], matchstate * pms, int fBest);
 
 #if defined (USE_GTK)
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 
 static int anLastMove[8], fLastMove, fLastPlayer;
 #endif

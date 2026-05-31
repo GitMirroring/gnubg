@@ -54,7 +54,7 @@
 #include "glib-ext.h"
 
 #if USE_GTK
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #endif
 
 const char *aszRNG[NUM_RNGS] = {

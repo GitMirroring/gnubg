@@ -33,7 +33,7 @@
 #include "backgammon.h"
 #include "eval.h"
 #include "gtktempmap.h"
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "drawboard.h"
 #include "format.h"
 #include "render.h"

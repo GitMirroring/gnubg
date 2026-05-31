@@ -20,7 +20,7 @@
 
 #if USE_GTK
 #include "gtkrelational.h"
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "gtkwindows.h"
 #endif
 #include <stdlib.h>

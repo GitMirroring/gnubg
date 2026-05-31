@@ -24,7 +24,7 @@
 #include "renderprefs.h"
 #include "sound.h"
 #include "export.h"
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "util.h"
 #include <glib/gstdio.h>
 #include "gtklocdefs.h"

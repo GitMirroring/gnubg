@@ -25,7 +25,7 @@
 
 #include "multithread.h"
 
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "drawboard.h"
 #include "format.h"
 #include "gtkwindows.h"

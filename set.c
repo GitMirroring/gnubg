@@ -62,7 +62,7 @@
 
 #if defined(USE_GTK)
 #include "gtklocdefs.h"
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "gtkoptions.h"
 #include "gtkprefs.h"
 #include "gtkchequer.h"

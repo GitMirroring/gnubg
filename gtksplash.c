@@ -21,7 +21,7 @@
 #include "config.h"
 #include "gtklocdefs.h"
 
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "util.h"
 #include "gtksplash.h"
 

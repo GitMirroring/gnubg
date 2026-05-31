@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "gtkrelational.h"
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "gtkwindows.h"
 #include "gtklocdefs.h"
 

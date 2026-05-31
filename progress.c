@@ -33,7 +33,7 @@
 #include "multithread.h"
 
 #if defined(USE_GTK)
-#include "gtkgame.h"
+#include "gtk/gtkgame.h"
 #include "gtkwindows.h"
 #include "gtkutil.h"
 typedef enum {
