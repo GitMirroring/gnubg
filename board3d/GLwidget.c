@@ -111,6 +111,9 @@ static void GetViewPos(float* viewPos)
 
 void SetViewPos(void)
 {
+    if (currentShader != &mainShader)
+        return;
+
     float viewPos[3];
     GetViewPos(viewPos);
     glUniform3fv(light_viewPos_location, 1, viewPos);
@@ -118,6 +121,9 @@ void SetViewPos(void)
 
 void SetLightPos(float* lp)
 {
+    if (currentShader != &mainShader)
+        return;
+
     glUniform3fv(light_lightPos_location, 1, lp);
 }
 
@@ -130,8 +136,14 @@ setMaterialReset(const Material* pMat)
 
 void ModelManagerCopyModelToBuffer(ModelManager* modelHolder, int modelNumber)
 {
+    if (modelHolder->models[modelNumber].data == NULL)
+        return;
     glBindBuffer(GL_ARRAY_BUFFER, modelHolder->buffer);	/* this is the VBO that holds the vertex data */
-    glBufferSubData(GL_ARRAY_BUFFER, modelHolder->models[modelNumber].dataStart * sizeof(float), modelHolder->models[modelNumber].dataLength * sizeof(float), modelHolder->models[modelNumber].data);
+    glBufferSubData(
+        GL_ARRAY_BUFFER,
+        modelHolder->models[modelNumber].dataStart * sizeof(float),
+        modelHolder->models[modelNumber].dataLength * sizeof(float),
+        modelHolder->models[modelNumber].data);
 #if !GTK_CHECK_VERSION(3,0,0)
     g_free(modelHolder->models[modelNumber].data);
     modelHolder->models[modelNumber].data = NULL;
@@ -143,6 +155,11 @@ void ModelManagerCreate(ModelManager* modelHolder)
     int model;
     if (modelHolder->vao == 0 || !glIsVertexArray(modelHolder->vao))
     {
+        if (modelHolder->buffer && glIsBuffer(modelHolder->buffer))
+            glDeleteBuffers(1, &modelHolder->buffer);
+        if (modelHolder->vao && glIsVertexArray(modelHolder->vao))
+            glDeleteVertexArrays(1, &modelHolder->vao);
+
         modelHolder->vao = 0;
         modelHolder->buffer = 0;
         modelHolder->allocNumVertices = 0;
@@ -166,6 +183,8 @@ void ModelManagerCreate(ModelManager* modelHolder)
         if (position_index < 0 || texCoord_index < 0 || normal_index < 0) {
             g_warning("Missing shader attribute: position=%d texCoord=%d normal=%d",
                       position_index, texCoord_index, normal_index);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glBindVertexArray(0);
             return;
         }
 
@@ -208,16 +227,20 @@ void GLWidgetMakeCurrent(GtkWidget* widget)
     gtk_gl_area_make_current(GTK_GL_AREA(widget));
 }
 
-static void SelectProgram(ShaderDetails* pShader)
+static gboolean SelectProgram(ShaderDetails* pShader)
 {
-    if (glIsProgram(pShader->shader) != GL_TRUE) {
-        fprintf(stderr, _("Can't load shader program\n"));
-        return;
+    if (pShader == NULL || pShader->shader == 0 || !glIsProgram(pShader->shader)) {
+        g_warning("Invalid shader program: shader=%u currentShader=%p",
+                  pShader ? pShader->shader : 0,
+                  currentShader);
+        currentShader = NULL;
+        return FALSE;
     }
 
     currentShader = pShader;
     glUseProgram(currentShader->shader);
     currentMat = NULL;
+    return TRUE;
 }
 
 void SelectPickProgram(void)
@@ -326,15 +349,19 @@ LookupUniform(ShaderDetails *pShader, const char* name)
     return loc;
 }
 
-static void
-realize_event(GtkWidget* widget, const GLWidgetData* glwData)
+static gboolean
+InitShaderPrograms(GtkWidget* widget)
 {
-    GLWidgetMakeCurrent(widget);
+    if (glIsProgram(basicShader.shader))
+        glDeleteProgram(basicShader.shader);
+    if (glIsProgram(mainShader.shader))
+        glDeleteProgram(mainShader.shader);
 
-    if (gtk_gl_area_get_error(GTK_GL_AREA(widget)) != NULL)
-        return;
+    basicShader.shader = 0;
+    mainShader.shader = 0;
+    currentShader = NULL;
+    currentMat = NULL;
 
-    /* initialize the shaders and retrieve the program data */
     basicShader.shader = init_shaders("/Shaders/basic");
     mainShader.shader = init_shaders("/Shaders/main");
 
@@ -345,7 +372,7 @@ realize_event(GtkWidget* widget, const GLWidgetData* glwData)
                 g_quark_from_static_string("gnubg-gl"),
                 1,
                 "Failed to initialize OpenGL shaders"));
-        return;
+        return FALSE;
     }
 
     basicShader.projection_location = LookupUniform(&basicShader, "projection");
@@ -353,13 +380,11 @@ realize_event(GtkWidget* widget, const GLWidgetData* glwData)
     basicShader.textureMat_location = GL_INVALID_VALUE;
     pick_colour_location = LookupUniform(&basicShader, "colour");
 
-    /* get the location of the matrices uniforms */
     mainShader.projection_location = LookupUniform(&mainShader, "projection");
     mainShader.modelView_location = LookupUniform(&mainShader, "modelView");
     mainShader.textureMat_location = LookupUniform(&mainShader, "textureMat");
 
     materialDiffuse_location = LookupUniform(&mainShader, "materialDiffuse");
-
     light_ambient_location = LookupUniform(&mainShader, "light.ambient");
     light_diffuse_location = LookupUniform(&mainShader, "light.diffuse");
     light_specular_location = LookupUniform(&mainShader, "light.specular");
@@ -370,7 +395,25 @@ realize_event(GtkWidget* widget, const GLWidgetData* glwData)
     light_lightPos_location = LookupUniform(&mainShader, "light.lightPos");
     light_viewPos_location = LookupUniform(&mainShader, "light.viewPos");
 
-    glUseProgram(mainShader.shader);
+    currentShader = NULL;
+    currentMat = NULL;
+
+    return TRUE;
+}
+
+static void
+realize_event(GtkWidget* widget, const GLWidgetData* glwData)
+{
+    GLWidgetMakeCurrent(widget);
+
+    if (gtk_gl_area_get_error(GTK_GL_AREA(widget)) != NULL)
+        return;
+
+
+    if (!InitShaderPrograms(widget))
+        return;
+
+    SelectProgram(&mainShader);
 
     glwData->realizeCB(glwData->cbData);
 
@@ -384,10 +427,15 @@ unrealize_event(GtkWidget* self, gpointer UNUSED(user_data))
 
     if (glIsProgram(basicShader.shader)) {
         glDeleteProgram(basicShader.shader);
+        basicShader.shader = 0;
     }
     if (glIsProgram(mainShader.shader)) {
         glDeleteProgram(mainShader.shader);
+        mainShader.shader = 0;
     }
+
+    currentShader = NULL;
+    currentMat = NULL;
 }
 
 static void
@@ -463,7 +511,21 @@ gboolean GLWidgetRender(GtkWidget* widget, ExposeCB exposeCB, GdkEventExpose* ev
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    SelectProgram(&mainShader);
+    if (mainShader.shader == 0) {
+        GLWidgetMakeCurrent(widget);
+
+        if (!InitShaderPrograms(widget))
+            return FALSE;
+
+        const GLWidgetData* glwData =
+            g_object_get_data(G_OBJECT(widget), "GLWidgetData");
+
+        if (glwData && glwData->realizeCB)
+            glwData->realizeCB(glwData->cbData);
+    }
+
+    if (!SelectProgram(&mainShader))
+        return FALSE;
 
     exposeCB(widget, eventDetails, data);
 
