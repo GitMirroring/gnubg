@@ -412,12 +412,6 @@ void OglModelDraw(const ModelManager* modelManager, int modelNumber, const Mater
         modelNumber >= modelManager->numModels)
         return;
 
-    g_warning("OglModelDraw: vao=%u model=%d numModels=%d shader=%u",
-          modelManager->vao,
-          modelNumber,
-          modelManager->numModels,
-          currentShader ? currentShader->shader : 0);
-
     if (modelManager->vao == 0 || !glIsVertexArray(modelManager->vao)) {
         g_warning("Invalid VAO %u in current context", modelManager->vao);
         return;
