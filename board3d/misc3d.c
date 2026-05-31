@@ -56,6 +56,9 @@ Flag3d flag;                    /* Only one flag */
 static gboolean
 idle(BoardData3d * bd3d)
 {
+    if (!pIdleFun)
+        return FALSE;
+
     if (pIdleFun(bd3d))
         DrawScene3d(bd3d);
 
