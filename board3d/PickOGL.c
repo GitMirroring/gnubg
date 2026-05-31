@@ -68,14 +68,17 @@ void drawPickObjects(const BoardData* bd, void* UNUSED(data))
 
         /* Dice */
         if (DiceShowing(bd)) {
+            int diceCol = (bd->turn == 1) ? 1 : 0;
+            const Material* diceMat = &prd->DiceMat[diceCol];
+
             SetPickObject(POINT_DICE);
-            drawDie(&bd3d->modelHolder, bd, bd3d, prd, GetCurrentMaterial(), 0, FALSE);
-            drawDie(&bd3d->modelHolder, bd, bd3d, prd, GetCurrentMaterial(), 1, FALSE);
+            drawDie(&bd3d->modelHolder, bd, bd3d, prd, diceMat, 0, FALSE);
+            drawDie(&bd3d->modelHolder, bd, bd3d, prd, diceMat, 1, FALSE);
         }
 
         /* Double Cube */
         SetPickObject(POINT_CUBE);
-        drawDC(&bd3d->modelHolder, bd, bd3d, GetCurrentMaterial(), 0);
+        drawDC(&bd3d->modelHolder, bd, bd3d, &prd->CubeMat, 0);
     }
 }
 

@@ -3376,6 +3376,12 @@ drawDie(const ModelManager* modelHolder, const BoardData* bd, const BoardData3d*
     int rotDice[6][2] = { {0, 0}, {0, 1}, {3, 0}, {1, 0}, {0, 3}, {2, 0} };
     unsigned int value = bd->diceRoll[num];
     int diceCol = (bd->turn == 1);
+
+    if (diceMat == NULL) {
+        int diceCol = (bd->turn == 1) ? 1 : 0;
+        diceMat = &prd->DiceMat[diceCol];
+    }
+
     /* During program startup value may be zero, if so don't draw */
     if (!value)
         return;
@@ -3404,7 +3410,7 @@ drawDie(const ModelManager* modelHolder, const BoardData* bd, const BoardData3d*
     glRotatef(90.0f * (float)rotDice[value][0], 1.f, 0.f, 0.f);
     glRotatef(90.0f * (float)rotDice[value][1], 0.f, 1.f, 0.f);
 
-    if (diceMat->alphaBlend) { /* Draw back of dice separately */
+    if (diceMat && diceMat->alphaBlend) { /* Draw back of dice separately */
         DrawBackDice(modelHolder, bd3d, prd, &dt, diceCol);
     }
     /* Draw dice */
