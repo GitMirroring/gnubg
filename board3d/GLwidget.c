@@ -55,26 +55,33 @@ static guint light_dirLight_location, light_lightDirection_location, light_light
 void
 setMaterial(const Material* pMat)
 {
-    if (pMat != NULL && pMat != currentMat)
-    {
-        currentMat = pMat;
-        glUniform3fv(light_ambient_location, 1, pMat->ambientColour);
-        glUniform3fv(light_diffuse_location, 1, pMat->diffuseColour);
-        glUniform3fv(light_specular_location, 1, pMat->specularColour);
-        glUniform1f(light_shininess_location, (float)pMat->shine);
-        glUniform1i(light_specModel_location, 1);
-        glUniform1i(light_dirLight_location, 0);
+    if (pMat == NULL || pMat == currentMat)
+        return;
 
-        if (pMat->pTexture) {
-            glActiveTexture(GL_TEXTURE0);
-            glUniform1i(materialDiffuse_location, 0);
-            glBindTexture(GL_TEXTURE_2D, pMat->pTexture->texID);
-        }
+    currentMat = pMat;
+
+    if (currentShader != &mainShader)
+        return;
+
+    glUniform3fv(light_ambient_location, 1, pMat->ambientColour);
+    glUniform3fv(light_diffuse_location, 1, pMat->diffuseColour);
+    glUniform3fv(light_specular_location, 1, pMat->specularColour);
+    glUniform1f(light_shininess_location, (float)pMat->shine);
+    glUniform1i(light_specModel_location, 1);
+    glUniform1i(light_dirLight_location, 0);
+
+    if (pMat->pTexture) {
+        glActiveTexture(GL_TEXTURE0);
+        glUniform1i(materialDiffuse_location, 0);
+        glBindTexture(GL_TEXTURE_2D, pMat->pTexture->texID);
     }
 }
 
 void SetPickColour(float colour)
 {
+    if (currentShader != &basicShader)
+        return;
+
     float value[3] = { 0 };
     value[0] = colour;
     glUniform3fv(pick_colour_location, 1, value);
@@ -134,6 +141,12 @@ void ModelManagerCreate(ModelManager* modelHolder)
         guint position_index = glGetAttribLocation(mainShader.shader, "positionAttrib");
         guint texCoord_index = glGetAttribLocation(mainShader.shader, "texCoordAttrib");
         guint normal_index = glGetAttribLocation(mainShader.shader, "normalAttrib");
+
+        if (position_index < 0 || texCoord_index < 0 || normal_index < 0) {
+            g_warning("Missing shader attribute: position=%d texCoord=%d normal=%d",
+                      position_index, texCoord_index, normal_index);
+            return;
+        }
 
         int stride = VERTEX_STRIDE * sizeof(float);
         /* enable and set the attributes */
@@ -360,11 +373,22 @@ resize_event(GtkGLArea* widget, gint UNUSED(width), gint UNUSED(height), const G
 
 void SetLineDrawingmode(int enable)
 {
-    glPolygonMode(GL_FRONT_AND_BACK, enable == GL_TRUE ? GL_LINE : GL_FILL);
+    (void)enable;
 }
 
 void OglModelDraw(const ModelManager* modelManager, int modelNumber, const Material* pMat)
 {
+    if (currentShader == NULL || !glIsProgram(currentShader->shader))
+        return;
+
+    if (modelManager == NULL ||
+        modelNumber < 0 ||
+        modelNumber >= modelManager->numModels)
+        return;
+
+    if (modelManager->vao == 0 || modelManager->vao == GL_INVALID_VALUE)
+        return;
+
     setMaterial(pMat);
 
     /* update the projection matrices we use in the shader */
