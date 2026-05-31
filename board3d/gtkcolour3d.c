@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2003-2019 Jon Kinsey <jonkinsey@gmail.com>
- * Copyright (C) 2006-2022 the AUTHORS
+ * Copyright (C) 2006-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -220,7 +220,7 @@ TextureChange(GtkComboBoxText * combo, gpointer UNUSED(data))
 static gboolean
 exposePreviewCB(GtkWidget* UNUSED(widget), GdkEventExpose* UNUSED(eventData), void* data)
 {
-	Material* pMat = (Material*)data;
+    Material* pMat = (Material*)data;
     SetupLight();
     Draw(pMat);
     return TRUE;
@@ -235,8 +235,8 @@ realizePreviewCB(void *UNUSED(data))
 static GtkWidget *
 CreateGLPreviewWidget(Material * pMat)
 {
-	GtkWidget* p3dWidget = GLWidgetCreate(realizePreviewCB, NULL, exposePreviewCB, pMat);
-	if (p3dWidget == NULL)
+    GtkWidget* p3dWidget = GLWidgetCreate(realizePreviewCB, NULL, exposePreviewCB, pMat);
+    if (p3dWidget == NULL)
         return NULL;
 
     return p3dWidget;
