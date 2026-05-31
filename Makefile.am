@@ -156,7 +156,7 @@ gnubg_SOURCES = \
 		util.c 
 
 if USE_GTK
-gnubg_SOURCES += gtkboard.c gtkboard.h gtkgame.c gtkgame.h gtkfile.c gtkfile.h \
+gnubg_SOURCES += gtk/gtkboard.c gtk/gtkboard.h gtkgame.c gtkgame.h gtkfile.c gtkfile.h \
 		 gtkprefs.c gtkprefs.h gtk-multiview.c gtk-multiview.h gtktheory.c \
 		 gtktheory.h gtkexport.c gtkexport.h gtkcube.c gtkcube.h \
 		 gtkchequer.c gtkchequer.h gtkrace.c gtkrace.h gtkmovefilter.c \

@@ -29,7 +29,7 @@
 #include "positionid.h"
 #include "rollout.h"
 #include "multithread.h"
-#include "gtkboard.h"
+#include "gtk/gtkboard.h"
 #include "gtkgame.h"
 #include "gtkchequer.h"
 #include "gtktempmap.h"

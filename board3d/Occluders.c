@@ -22,7 +22,7 @@
 #include "legacyGLinc.h"
 #include "fun3d.h"
 #include "BoardDimensions.h"
-#include "gtkboard.h"
+#include "gtk/gtkboard.h"
 
 enum OcculderType { OCC_BOARD, OCC_CUBE, OCC_DICE1, OCC_DICE2, OCC_FLAG, OCC_HINGE1, OCC_HINGE2, OCC_PIECE };
 #define FIRST_PIECE (int)OCC_PIECE

@@ -67,7 +67,7 @@ today to correct the title manually.
 #include "lib/simd.h"
 
 #if defined (USE_GTK)
-#include "gtkboard.h"
+#include "gtk/gtkboard.h"
 #include "gtkwindows.h"
 #endif
 #if defined(USE_BOARD3D)

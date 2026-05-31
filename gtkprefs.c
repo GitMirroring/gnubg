@@ -30,7 +30,7 @@
 #include <string.h>
 
 #include "drawboard.h"
-#include "gtkboard.h"
+#include "gtk/gtkboard.h"
 #include "gtkgame.h"
 #include "gtkfile.h"
 #include "gtkprefs.h"

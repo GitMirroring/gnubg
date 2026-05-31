@@ -46,7 +46,7 @@
 #include "multithread.h"
 
 #if defined(USE_GTK)
-#include "gtkboard.h"
+#include "gtk/gtkboard.h"
 #include "gtkgame.h"
 #include "gtktheory.h"
 #include "gtkrace.h"

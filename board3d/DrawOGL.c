@@ -21,7 +21,7 @@
 
 #include "fun3d.h"
 #include "BoardDimensions.h"
-#include "gtkboard.h"
+#include "gtk/gtkboard.h"
 
 #include <cglm/affine.h>
 #include <cglm/cam.h>

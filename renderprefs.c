@@ -27,7 +27,7 @@
 #include "render.h"
 #include "renderprefs.h"
 #if defined(USE_GTK)
-#include "gtkboard.h"
+#include "gtk/gtkboard.h"
 #include "gtkgame.h"
 #endif
 #if defined(USE_BOARD3D)

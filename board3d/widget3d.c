@@ -23,7 +23,7 @@
 #include "fun3d.h"
 #include "tr.h"
 #include "gtklocdefs.h"
-#include "gtkboard.h"
+#include "gtk/gtkboard.h"
 
 static void
 configure_3dCB(GtkWidget * widget, void* data)

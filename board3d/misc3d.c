@@ -28,7 +28,7 @@
 #include "util.h"
 #include <glib/gstdio.h>
 #include "gtklocdefs.h"
-#include "gtkboard.h"
+#include "gtk/gtkboard.h"
 
 #define MAX_FRAMES 10
 #define DOT_SIZE 32

@@ -56,8 +56,8 @@ gnubgmodule.c
 gnubgmodule.h
 gnubgstock.c
 gnubgstock.h
-gtkboard.c
-gtkboard.h
+gtk/gtkboard.c
+gtk/gtkboard.h
 gtkchequer.c
 gtkchequer.h
 gtkcube.c

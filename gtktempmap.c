@@ -38,7 +38,7 @@
 #include "format.h"
 #include "render.h"
 #include "renderprefs.h"
-#include "gtkboard.h"
+#include "gtk/gtkboard.h"
 #include "gtkwindows.h"
 #include "gtkcube.h"
 

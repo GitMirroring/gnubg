@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1998-2003 Gary Wong <gtw@gnu.org>
- * Copyright (C) 1999-2025 the AUTHORS
+ * Copyright (C) 1999-2026 the AUTHORS
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -110,7 +110,7 @@ static char szCommandSeparators[] = " \t\n\r\v\f";
 
 #if defined(USE_GTK)
 #include <gtk/gtk.h>
-#include "gtkboard.h"
+#include "gtk/gtkboard.h"
 #include "gtkgame.h"
 #include "gtkprefs.h"
 #include "gtksplash.h"

@@ -35,7 +35,7 @@
 #include "drawboard.h"
 #include "matchequity.h"
 #include "format.h"
-#include "gtkboard.h"
+#include "gtk/gtkboard.h"
 #include "renderprefs.h"
 #include "gtkwindows.h"
 #include "openurl.h"

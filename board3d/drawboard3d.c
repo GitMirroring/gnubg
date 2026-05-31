@@ -23,7 +23,7 @@
 #include "gtklocdefs.h"
 #include "BoardDimensions.h"
 #include "ShimOGL.h"
-#include "gtkboard.h"
+#include "gtk/gtkboard.h"
 
 // Basic shapes
 static void

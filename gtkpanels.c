@@ -23,7 +23,7 @@
 #include <ctype.h>
 #include "backgammon.h"
 #include <string.h>
-#include "gtkboard.h"
+#include "gtk/gtkboard.h"
 #include "gtkgame.h"
 #include "gtktoolbar.h"
 #include "positionid.h"

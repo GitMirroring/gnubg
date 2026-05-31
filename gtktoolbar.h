@@ -19,7 +19,7 @@
 #ifndef GTKTOOLBAR_H
 #define GTKTOOLBAR_H
 
-#include "gtkboard.h"
+#include "gtk/gtkboard.h"
 
 typedef enum {
     C_NONE,

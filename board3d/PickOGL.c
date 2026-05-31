@@ -21,7 +21,7 @@
 #include "fun3d.h"
 #include "BoardDimensions.h"
 #include "boardpos.h"
-#include "gtkboard.h"
+#include "gtk/gtkboard.h"
 
 typedef void (*PickDrawFun) (const BoardData* bd, void* data);
 

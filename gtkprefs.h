@@ -21,7 +21,7 @@
 #ifndef GTKPREFS_H
 #define GTKPREFS_H
 
-#include "gtkboard.h"
+#include "gtk/gtkboard.h"
 
 extern void BoardPreferences(GtkWidget * pwBoard);
 extern void SetBoardPreferences(GtkWidget * pwBoard, char *sz);
