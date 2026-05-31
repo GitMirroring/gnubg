@@ -52,6 +52,18 @@ static gint materialDiffuse_location;
 static guint light_ambient_location, light_diffuse_location, light_specModel_location, light_specular_location, light_shininess_location;
 static guint light_dirLight_location, light_lightDirection_location, light_lightPos_location, light_viewPos_location;
 
+static void
+CheckGLErrorAt(const char* file, int line, const char* tag)
+{
+    GLenum err;
+
+    while ((err = glGetError()) != GL_NO_ERROR) {
+        g_warning("OpenGL error 0x%x after %s at %s:%d", err, tag, file, line);
+    }
+}
+
+#define GL_CHECK(tag) CheckGLErrorAt(__FILE__, __LINE__, tag)
+
 void
 setMaterial(const Material* pMat)
 {
@@ -127,20 +139,27 @@ void ModelManagerCopyModelToBuffer(ModelManager* modelHolder, int modelNumber)
 void ModelManagerCreate(ModelManager* modelHolder)
 {
     int model;
-    if (modelHolder->vao == GL_INVALID_VALUE)
+    if (modelHolder->vao == 0 || !glIsVertexArray(modelHolder->vao))
     {
+        modelHolder->vao = 0;
+        modelHolder->buffer = 0;
+        modelHolder->allocNumVertices = 0;
+
         /* we need to create a VAO to store the other buffers */
         glGenVertexArrays(1, &modelHolder->vao);
+        GL_CHECK("glGenVertexArrays");
+
         glBindVertexArray(modelHolder->vao);
+        GL_CHECK("glBindVertexArray create");
 
         /* this is the VBO that holds the vertex data */
         glGenBuffers(1, &modelHolder->buffer);
         glBindBuffer(GL_ARRAY_BUFFER, modelHolder->buffer);
 
         /* get the location of the "position" and "color" attributes */
-        guint position_index = glGetAttribLocation(mainShader.shader, "positionAttrib");
-        guint texCoord_index = glGetAttribLocation(mainShader.shader, "texCoordAttrib");
-        guint normal_index = glGetAttribLocation(mainShader.shader, "normalAttrib");
+        GLint position_index = glGetAttribLocation(mainShader.shader, "positionAttrib");
+        GLint texCoord_index = glGetAttribLocation(mainShader.shader, "texCoordAttrib");
+        GLint normal_index = glGetAttribLocation(mainShader.shader, "normalAttrib");
 
         if (position_index < 0 || texCoord_index < 0 || normal_index < 0) {
             g_warning("Missing shader attribute: position=%d texCoord=%d normal=%d",
@@ -151,6 +170,8 @@ void ModelManagerCreate(ModelManager* modelHolder)
         int stride = VERTEX_STRIDE * sizeof(float);
         /* enable and set the attributes */
         glEnableVertexAttribArray(position_index);
+        GL_CHECK("enable position attrib");
+
         glVertexAttribPointer(position_index, 3, GL_FLOAT, GL_FALSE, stride, (GLvoid*)(5 * sizeof(float)));
         glEnableVertexAttribArray(texCoord_index);
         glVertexAttribPointer(texCoord_index, 2, GL_FLOAT, GL_FALSE, stride, 0);
@@ -159,6 +180,9 @@ void ModelManagerCreate(ModelManager* modelHolder)
     }
     if (modelHolder->totalNumVertices > modelHolder->allocNumVertices)
     {
+        glBindVertexArray(modelHolder->vao);
+        glBindBuffer(GL_ARRAY_BUFFER, modelHolder->buffer);
+
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * modelHolder->totalNumVertices, NULL, GL_STATIC_DRAW);
         modelHolder->allocNumVertices = modelHolder->totalNumVertices;
     }
@@ -386,14 +410,27 @@ void OglModelDraw(const ModelManager* modelManager, int modelNumber, const Mater
         modelNumber >= modelManager->numModels)
         return;
 
-    if (modelManager->vao == 0 || modelManager->vao == GL_INVALID_VALUE)
+    g_warning("OglModelDraw: vao=%u model=%d numModels=%d shader=%u",
+          modelManager->vao,
+          modelNumber,
+          modelManager->numModels,
+          currentShader ? currentShader->shader : 0);
+
+    if (modelManager->vao == 0 || !glIsVertexArray(modelManager->vao)) {
+        g_warning("Invalid VAO %u in current context", modelManager->vao);
         return;
+    }
 
     setMaterial(pMat);
+    GL_CHECK("setMaterial");
 
     /* update the projection matrices we use in the shader */
     glUniformMatrix4fv(currentShader->projection_location, 1, GL_FALSE, GetProjectionMatrix());
+    GL_CHECK("projection uniform");
+
     glUniformMatrix4fv(currentShader->modelView_location, 1, GL_FALSE, GetModelViewMatrix());
+    GL_CHECK("modelView uniform");
+
     if (currentShader->textureMat_location != GL_INVALID_VALUE)
     {
         mat3 textureMat;
@@ -402,13 +439,16 @@ void OglModelDraw(const ModelManager* modelManager, int modelNumber, const Mater
     }
 
     /* use the buffers in the VAO */
+    GL_CHECK("before glBindVertexArray");
     glBindVertexArray(modelManager->vao);
+    GL_CHECK("after glBindVertexArray");
 
     /* draw the vertices in the model */
     glDrawArrays(
         GL_TRIANGLES,
         modelManager->models[modelNumber].dataStart / VERTEX_STRIDE,
         modelManager->models[modelNumber].dataLength / VERTEX_STRIDE);
+    GL_CHECK("glDrawArrays");
 }
 
 gboolean GLWidgetRender(GtkWidget* widget, ExposeCB exposeCB, GdkEventExpose* eventDetails, void* data)

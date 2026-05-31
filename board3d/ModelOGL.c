@@ -45,7 +45,8 @@ void ModelManagerInit(ModelManager* modelHolder)
     modelHolder->vertexData = NULL;
 
 #if GTK_CHECK_VERSION(3,0,0)
-    modelHolder->vao = GL_INVALID_VALUE;
+    modelHolder->vao = 0;
+    modelHolder->buffer = 0;
 #endif
 }
 
