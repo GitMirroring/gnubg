@@ -1,3 +1,9 @@
+2026-06-07  Philippe Michel  <philippe.michel7@free.fr>
+
+	* INSTALL, Makefile.am, configure.ac, dbprovider.c, gnubg.c:
+	* gnubgmodule.c, gnubgmodule.h, pylocdefs.h(-):
+        Remove support for Python 2.
+
 2026-05-31  Nikolas Nyby  <nikolas@gnu.org>
 
 	* Fixes for 3D board in gtk3.

@@ -35,7 +35,7 @@ cairo (graphics)
 canberra (sound)
 libepoxy, libcglm (3d boards)
 readline (command line editing)
-python (extension)	version >= 2.6
+python (extension)	version >= 3.6
 sqlite3 (database)
 gmp (additional random numbers generator)
 curl (Internet random numbers generator)

@@ -431,7 +431,7 @@ AS_HELP_STRING([--with-python=program],
     ])
 
 if test "x$with_python" != "xno"; then
-    AM_PATH_PYTHON(2.6)
+    AM_PATH_PYTHON(3.6)
     AX_PYTHON_DEVEL([], [true])
     if test "x$ax_python_devel_found" != "xno"; then
         AC_DEFINE(USE_PYTHON,1,[Define if you want to use Python inside GNUbg])

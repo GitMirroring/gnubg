@@ -127,7 +127,6 @@ gnubg_SOURCES = \
 		positionid.h \
 		progress.c \
 		progress.h \
-		pylocdefs.h \
 		randomorg.h \
 		randomorg.c \
 		relational.c \
