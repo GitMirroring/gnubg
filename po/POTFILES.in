@@ -78,8 +78,8 @@ gtkmovefilter.h
 gtkmovelist.c
 gtkmovelistctrl.c
 gtkmovelistctrl.h
-gtk-multiview.c
-gtk-multiview.h
+gtk/gtk-multiview.c
+gtk/gtk-multiview.h
 gtkoptions.c
 gtkoptions.h
 gtkpanels.c
