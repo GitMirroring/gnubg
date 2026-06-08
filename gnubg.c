@@ -114,7 +114,7 @@ static char szCommandSeparators[] = " \t\n\r\v\f";
 #include "gtk/gtkgame.h"
 #include "gtkprefs.h"
 #include "gtksplash.h"
-#include "gtkchequer.h"
+#include "gtk/gtkchequer.h"
 #include "gtkwindows.h"
 #include "gtkscoremap.h"
 #endif

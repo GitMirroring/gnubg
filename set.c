@@ -65,7 +65,7 @@
 #include "gtk/gtkgame.h"
 #include "gtkoptions.h"
 #include "gtkprefs.h"
-#include "gtkchequer.h"
+#include "gtk/gtkchequer.h"
 #include "gtkwindows.h"
 #include "gtkscoremap.h"
 #endif                          /* USE_GTK */

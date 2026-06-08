@@ -58,8 +58,8 @@ gnubgstock.c
 gnubgstock.h
 gtk/gtkboard.c
 gtk/gtkboard.h
-gtkchequer.c
-gtkchequer.h
+gtk/gtkchequer.c
+gtk/gtkchequer.h
 gtkcube.c
 gtkcube.h
 gtkexport.c
