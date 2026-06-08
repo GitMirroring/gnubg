@@ -1748,6 +1748,9 @@ SwitchDisplayMode(gpointer UNUSED(p), guint UNUSED(n), GtkWidget * UNUSED(pw))
 
     if (display_is_2d(prd)) {
         prd->fDisplayType = DT_3D;
+
+        DisplayCorrectBoardType(bd, bd3d, prd);
+
         /* Reset 3d settings */
         MakeCurrent3d(bd3d);
         preDraw3d(bd, bd3d, prd);
@@ -1766,9 +1769,10 @@ SwitchDisplayMode(gpointer UNUSED(p), guint UNUSED(n), GtkWidget * UNUSED(pw))
         /* Make sure dice are visible if rolled */
         if (bd->diceShown == DICE_ON_BOARD && bd->x_dice[0] <= 0)
             RollDice2d(bd);
+
+        DisplayCorrectBoardType(bd, bd3d, prd);
     }
 
-    DisplayCorrectBoardType(bd, bd3d, prd);
     SetSwitchModeMenuText();
     /* Make sure chequers correct below board */
     gtk_widget_queue_draw(bd->table);
