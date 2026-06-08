@@ -82,8 +82,8 @@ gtk/gtk-multiview.c
 gtk/gtk-multiview.h
 gtkoptions.c
 gtkoptions.h
-gtkpanels.c
-gtkpanels.h
+gtk/gtkpanels.c
+gtk/gtkpanels.h
 gtkprefs.c
 gtkprefs.h
 gtkrace.c
