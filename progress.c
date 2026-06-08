@@ -35,7 +35,7 @@
 #if defined(USE_GTK)
 #include "gtk/gtkgame.h"
 #include "gtkwindows.h"
-#include "gtkutil.h"
+#include "gtk/gtkutil.h"
 typedef enum {
     TITLE_C, RANK_C, TRIALS_C, WIN_C, WIN_G_C, WIN_BG_C, LOSE_G_C, LOSE_BG_C, CLESS_C, CFUL_C, CFUL_S_C, JSD_C,
     N_ROLLOUT_COLS
