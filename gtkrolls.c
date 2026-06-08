@@ -28,7 +28,7 @@
 #include "gtk/gtkgame.h"
 #include "drawboard.h"
 #include "format.h"
-#include "gtkwindows.h"
+#include "gtk/gtkwindows.h"
 #include "gtkrolls.h"
 
 typedef struct {

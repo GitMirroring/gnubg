@@ -21,7 +21,7 @@
 #include "gtk/gtkgame.h"
 #include "matchequity.h"
 #include "gtkmet.h"
-#include "gtkwindows.h"
+#include "gtk/gtkwindows.h"
 #include "gtklocdefs.h"
 
 typedef struct {

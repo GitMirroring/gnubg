@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include "gtkrelational.h"
 #include "gtk/gtkgame.h"
-#include "gtkwindows.h"
+#include "gtk/gtkwindows.h"
 #include "gtklocdefs.h"
 
 enum {

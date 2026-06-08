@@ -129,7 +129,7 @@ and come back, it works again. It may be a movelist construction issue.
 #include "gtkscoremap.h"
 #include "drawboard.h"
 #include "format.h"
-#include "gtkwindows.h"
+#include "gtk/gtkwindows.h"
 //#include "gtkoptions.h"
 
 

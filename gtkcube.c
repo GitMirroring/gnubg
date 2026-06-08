@@ -30,7 +30,7 @@
 #include "rollout.h"
 #include "gtk/gtkgame.h"
 #include "gtkcube.h"
-#include "gtkwindows.h"
+#include "gtk/gtkwindows.h"
 #include "progress.h"
 #include "format.h"
 #include "gtklocdefs.h"

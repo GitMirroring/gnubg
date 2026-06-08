@@ -30,7 +30,7 @@
 #include "gtktheory.h"
 #include "matchequity.h"
 #include "multithread.h"
-#include "gtkwindows.h"
+#include "gtk/gtkwindows.h"
 
 #define MAXPLY 4
 

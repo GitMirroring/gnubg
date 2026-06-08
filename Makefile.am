@@ -164,7 +164,7 @@ gnubg_SOURCES += gtk/gtkboard.c gtk/gtkboard.h gtk/gtkgame.c gtk/gtkgame.h gtkfi
 		 gtksplash.h gtkrolls.c gtkrolls.h gtktempmap.c gtktempmap.h \
 		 gtkoptions.h gtkoptions.c gtktoolbar.h gtktoolbar.c \
 		 gtkgamelist.c gtkpanels.c gtkpanels.h gtkmovelist.c gtkmovelistctrl.c gtkmovelistctrl.h \
-		 gtkwindows.c gtkwindows.h gtkrelational.c gtkrelational.h gnubgstock.c gnubgstock.h \
+		 gtk/gtkwindows.c gtk/gtkwindows.h gtkrelational.c gtkrelational.h gnubgstock.c gnubgstock.h \
 		 gtkuidefs.h gtklocdefs.c gtklocdefs.h \
 		 gtkscoremap.h gtkscoremap.c gtk/gtkutil.c gtk/gtkutil.h
 endif

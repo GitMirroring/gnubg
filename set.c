@@ -66,7 +66,7 @@
 #include "gtkoptions.h"
 #include "gtkprefs.h"
 #include "gtk/gtkchequer.h"
-#include "gtkwindows.h"
+#include "gtk/gtkwindows.h"
 #include "gtkscoremap.h"
 #endif                          /* USE_GTK */
 

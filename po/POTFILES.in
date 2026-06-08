@@ -102,8 +102,8 @@ gtktheory.c
 gtktheory.h
 gtktoolbar.c
 gtktoolbar.h
-gtkwindows.c
-gtkwindows.h
+gtk/gtkwindows.c
+gtk/gtkwindows.h
 html.c
 htmlimages.c
 import.c

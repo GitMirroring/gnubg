@@ -29,7 +29,7 @@
 #include "export.h"
 #include "gtkexport.h"
 #include "boarddim.h"
-#include "gtkwindows.h"
+#include "gtk/gtkwindows.h"
 #include "gtklocdefs.h"
 
 static char *aszInclude[] = {

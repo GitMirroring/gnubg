@@ -21,7 +21,7 @@
 #if USE_GTK
 #include "gtkrelational.h"
 #include "gtk/gtkgame.h"
-#include "gtkwindows.h"
+#include "gtk/gtkwindows.h"
 #endif
 #include <stdlib.h>
 #include <string.h>

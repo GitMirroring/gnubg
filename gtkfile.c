@@ -31,7 +31,7 @@
 #include "gtkfile.h"
 #include "gtk/gtkgame.h"
 #include "gtktoolbar.h"
-#include "gtkwindows.h"
+#include "gtk/gtkwindows.h"
 #include "file.h"
 #include "util.h"
 #include "multithread.h"

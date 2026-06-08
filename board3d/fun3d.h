@@ -33,7 +33,7 @@
 #include "common.h"
 #include "inc3d.h"
 #include "matrix.h"
-#include "gtkwindows.h"
+#include "gtk/gtkwindows.h"
 
 #include "types3d.h"
 

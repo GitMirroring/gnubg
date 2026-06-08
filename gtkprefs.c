@@ -37,7 +37,7 @@
 #include "render.h"
 #include "renderprefs.h"
 #include "boarddim.h"
-#include "gtkwindows.h"
+#include "gtk/gtkwindows.h"
 #include "util.h"
 
 #if defined(USE_BOARD3D)

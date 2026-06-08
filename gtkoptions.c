@@ -37,7 +37,7 @@
 #include "format.h"
 #include "gtk/gtkboard.h"
 #include "renderprefs.h"
-#include "gtkwindows.h"
+#include "gtk/gtkwindows.h"
 #include "openurl.h"
 #include "set.h"
 #if defined(USE_BOARD3D)

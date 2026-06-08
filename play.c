@@ -68,7 +68,7 @@ today to correct the title manually.
 
 #if defined (USE_GTK)
 #include "gtk/gtkboard.h"
-#include "gtkwindows.h"
+#include "gtk/gtkwindows.h"
 #endif
 #if defined(USE_BOARD3D)
 #include "inc3d.h"
