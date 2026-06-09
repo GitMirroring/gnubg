@@ -2545,10 +2545,12 @@ PromptForExit(void)
     write_history(gnubg_histfile);
 #endif                          /* HAVE_LIB_READLINE */
 
-#if defined(USE_GTK) && !GTK_CHECK_VERSION(4,0,0)
+#if defined(USE_GTK)
+#if !GTK_CHECK_VERSION(4,0,0)
     if (gtk_main_level() == 1)
         gtk_main_quit();
     else
+#endif
 #endif
     {
         Shutdown();
@@ -4644,8 +4646,10 @@ main(int argc, char *argv[])
     /* parse command-line options */
     context = g_option_context_new("[file.sgf]");
     g_option_context_add_main_entries(context, ao, PACKAGE);
-#if defined(USE_GTK) && !GTK_CHECK_VERSION(4,0,0)
+#if defined(USE_GTK)
+#if !GTK_CHECK_VERSION(4,0,0)
     g_option_context_add_group(context, gtk_get_option_group(FALSE));
+#endif
 #endif
 
     g_option_context_parse(context, &argc, &argv, &error);
