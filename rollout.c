@@ -1257,7 +1257,7 @@ RolloutLoopMT(void *UNUSED(unused))
         multi_debug("exclusive release: rollout cycle update");
         MT_Release();
     }
-    g_free(rngctxMTRollout);
+    free_rngctx(rngctxMTRollout);
 }
 
 static rolloutprogressfunc *ro_pfProgress;

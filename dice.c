@@ -708,6 +708,12 @@ extern void
 free_rngctx(rngcontext * rngctx)
 {
 #if defined(HAVE_LIBGMP)
+    if (rngctx->fZInit) {
+        mpz_clear(rngctx->zModulus);
+        mpz_clear(rngctx->zSeed);
+        mpz_clear(rngctx->zZero);
+        mpz_clear(rngctx->zOne);
+    }
     mpz_clear(rngctx->nz);
 #endif
     g_free(rngctx);
@@ -891,7 +897,28 @@ GetDiceFileName(rngcontext * rngctx)
 rngcontext *
 CopyRNGContext(rngcontext * rngctx)
 {
-    rngcontext *newCtx = (rngcontext *) g_malloc(sizeof(rngcontext));
-    *newCtx = *rngctx;
+    rngcontext *newCtx = g_new0(rngcontext, 1);
+
+    newCtx->fDice = rngctx->fDice;
+    newCtx->szDiceFilename = rngctx->szDiceFilename;
+    newCtx->rc = rngctx->rc;
+    newCtx->nMD5 = rngctx->nMD5;
+    newCtx->sfmt = rngctx->sfmt;
+
+#if defined(HAVE_LIBGMP)
+    mpz_init_set(newCtx->nz, rngctx->nz);
+
+    if (rngctx->fZInit) {
+        InitRNGBBS(newCtx);
+        mpz_set(newCtx->zModulus, rngctx->zModulus);
+        mpz_set(newCtx->zSeed, rngctx->zSeed);
+        mpz_set(newCtx->zZero, rngctx->zZero);
+        mpz_set(newCtx->zOne, rngctx->zOne);
+    }
+#endif
+
+    newCtx->c = rngctx->c;
+    newCtx->n = rngctx->n;
+
     return newCtx;
 }
