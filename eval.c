@@ -2804,8 +2804,21 @@ extern int
 CompareMoves(const move * pm0, const move * pm1)
 {
 
-    /*high score first */
-    return (pm1->rScore > pm0->rScore || (pm1->rScore == pm0->rScore && pm1->rScore2 > pm0->rScore2)) ? 1 : -1;
+    /* return (pm1->rScore > pm0->rScore || (pm1->rScore == pm0->rScore && pm1->rScore2 > pm0->rScore2)) ? 1 : -1; */
+    /* high score first */
+    if (pm0->rScore > pm1->rScore)
+        return -1;
+    if (pm0->rScore < pm1->rScore)
+        return 1;
+
+    if (pm0->rScore2 > pm1->rScore2)
+        return -1;
+    if (pm0->rScore2 < pm1->rScore2)
+        return 1;
+
+    /* (pm0->rScore == pm1->rScore) && (pm0->rScore2 == pm1->rScore2)
+     * when it is used directly as a qsort() comparator */
+    return 0;
 }
 
 static int
@@ -2841,9 +2854,9 @@ CompareMovesGeneral(const move * pm0, const move * pm1)
      * always be chosen. */
 
     /* Winning now is always at least as good as winning later */
-    if (back[0] == -1)
+    if (back[0] == -1 && back[1] != -1)
         return -1;
-    if (back[1] == -1)
+    if (back[1] == -1 && back[0] != -1)
         return 1;
 
     if (pm0->rScore != pm1->rScore || pm0->rScore2 != pm1->rScore2)
@@ -2856,7 +2869,12 @@ CompareMovesGeneral(const move * pm0, const move * pm1)
         return -1;
 
     /* If everything else is equal "back" chequer at high point bad */
-    return (back[0] > back[1] ? 1 : -1);
+    if (back[0] > back[1])
+        return 1;
+    if (back[0] < back[1])
+        return -1;
+
+    return 0;
 }
 
 extern int
