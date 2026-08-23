@@ -3238,8 +3238,15 @@ GetCacheMB(int size)
 extern int
 EvalCacheResize(unsigned int cNew)
 {
-    cCache = CacheResize(&cEval, cNew);
-    return cCache;
+    int cActual = CacheResize(&cEval, cNew);
+
+    if (cActual < 0) {
+        outputerrf(_("Evaluation cache resize failed; keeping the previous size\n"));
+        return -1;
+    }
+
+    cCache = (unsigned int) cActual;
+    return cActual;
 }
 
 #if CACHE_STATS

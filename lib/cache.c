@@ -274,11 +274,16 @@ CacheFlush(const evalCache * pc)
 int
 CacheResize(evalCache * pc, unsigned int cNew)
 {
-    if (cNew != pc->size) {
-        CacheDestroy(pc);
-        if (CacheCreate(pc, cNew) != 0)
-            return -1;
-    }
+    evalCache newCache = { 0 };
+
+    if (cNew == pc->size)
+        return (int) pc->size;
+
+    if (CacheCreate(&newCache, cNew) != 0)
+        return -1;
+
+    CacheDestroy(pc);
+    *pc = newCache;
 
     return (int) pc->size;
 }
