@@ -308,13 +308,16 @@ BBSCheckInitialSeed(rngcontext * rngctx)
     if (mpz_sgn(rngctx->zSeed) < 1)
         return BBSInitialSeedFailure(rngctx);
 
+    mpz_init(z);
+    mpz_init(zCycle);
+
     for (iAttempt = 0; iAttempt < 32; iAttempt++) {
-        mpz_init_set(z, rngctx->zSeed);
+        mpz_set(z, rngctx->zSeed);
 
         for (i = 0; i < 8; i++)
             mpz_powm_ui(z, z, 2, rngctx->zModulus);
 
-        mpz_init_set(zCycle, z);
+        mpz_set(zCycle, z);
 
         for (i = 0; i < 16; i++) {
             mpz_powm_ui(z, z, 2, rngctx->zModulus);
