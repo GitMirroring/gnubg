@@ -863,6 +863,7 @@ ReadDiceFile(rngcontext * rngctx)
 
     unsigned char uch;
     size_t n;
+    int fRewound = FALSE;
 
     if (rngctx->fDice == NULL)
         return (unsigned int) (-1);
@@ -874,9 +875,13 @@ ReadDiceFile(rngcontext * rngctx)
 
         if (feof(rngctx->fDice)) {
             /* end of file */
+            if (fRewound)
+                return (unsigned int) (-1);
+
             g_print(_("Rewinding dice file (%s)"), rngctx->szDiceFilename);
             g_printf("\n");
             fseek(rngctx->fDice, 0, SEEK_SET);
+            fRewound = TRUE;
         } else if (n != 1) {
             g_printerr("%s", rngctx->szDiceFilename);
             return (unsigned int) (-1);
