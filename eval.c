@@ -3081,21 +3081,18 @@ StatusNeuralNet(neuralnet * pnn, char *szTitle, char *sz)
 static void
 StatusRace(char *sz)
 {
-
     StatusNeuralNet(&nnRace, _("Race"), sz);
 }
 
 static void
 StatusCrashed(char *sz)
 {
-
-    StatusNeuralNet(&nnContact, _("Crashed"), sz);
+    StatusNeuralNet(&nnCrashed, _("Crashed"), sz);
 }
 
 static void
 StatusContact(char *sz)
 {
-
     StatusNeuralNet(&nnContact, _("Contact"), sz);
 }
 
