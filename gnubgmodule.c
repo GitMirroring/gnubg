@@ -1888,7 +1888,7 @@ PythonPositionFromBearoff(PyObject * UNUSED(self), PyObject * args)
     int nPoints = 6;
     int n;
 
-    if (!PyArg_ParseTuple(args, "|iii:positionfrombearoff", &iPos, nChequers, &nPoints))
+    if (!PyArg_ParseTuple(args, "|iii:positionfrombearoff", &iPos, &nChequers, &nPoints))
         return NULL;
 
     if (nChequers < 1 || nChequers > 15 || nPoints < 1 || nPoints > 25) {
