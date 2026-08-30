@@ -3312,16 +3312,17 @@ SetCubeInfoMatch(cubeinfo * pci, const int nCube, const int fCubeOwner,
 
         int nAway0 = pci->nMatchTo - pci->anScore[0] - 1;
         int nAway1 = pci->nMatchTo - pci->anScore[1] - 1;
+        int nCubeIndex = MIN(LogCube(pci->nCube), MAXCUBELEVEL - 1);
 
         if ((!nAway0 || !nAway1) && !fCrawford) {
             if (!nAway0)
-                memcpy(pci->arGammonPrice, aaaafGammonPricesPostCrawford[LogCube(pci->nCube)]
+                memcpy(pci->arGammonPrice, aaaafGammonPricesPostCrawford[nCubeIndex]
                        [nAway1][0], 4 * sizeof(float));
             else
-                memcpy(pci->arGammonPrice, aaaafGammonPricesPostCrawford[LogCube(pci->nCube)]
+                memcpy(pci->arGammonPrice, aaaafGammonPricesPostCrawford[nCubeIndex]
                        [nAway0][1], 4 * sizeof(float));
         } else
-            memcpy(pci->arGammonPrice, aaaafGammonPrices[LogCube(pci->nCube)]
+            memcpy(pci->arGammonPrice, aaaafGammonPrices[nCubeIndex]
                    [nAway0][nAway1], 4 * sizeof(float));
 
     }
