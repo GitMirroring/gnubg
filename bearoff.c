@@ -761,7 +761,10 @@ ReadIntoMemory(bearoffcontext * pbc)
 static inline unsigned int
 MakeInt(unsigned char a, unsigned char b, unsigned char c, unsigned char d)
 {
-    return (a | b << 8 | c << 16 | d << 24);
+    return ((unsigned int) a |
+            (unsigned int) b << 8 |
+            (unsigned int) c << 16 |
+            (unsigned int) d << 24);
 }
 
 static void

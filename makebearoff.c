@@ -194,7 +194,10 @@ OSLookup(const unsigned int iPos,
             exit(-1);
         }
 
-        iOffset = ac[0] | ac[1] << 8 | ac[2] << 16 | ac[3] << 24;
+        iOffset = ((unsigned int) ac[0] |
+                   (unsigned int) ac[1] << 8 |
+                   (unsigned int) ac[2] << 16 |
+                   (unsigned int) ac[3] << 24);
 
         nz = ac[4];
         ioff = ac[5];

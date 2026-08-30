@@ -1163,7 +1163,7 @@ RolloutLoopMT(void *UNUSED(unused))
 
             /* ... and the RNG */
             if (prc->rngRollout != RNG_MANUAL)
-                InitRNGSeed((unsigned int) (prc->nSeed + (trial << 8)), prc->rngRollout, rngctxMTRollout);
+                InitRNGSeed((unsigned int) (prc->nSeed + ((unsigned int) trial << 8)), prc->rngRollout, rngctxMTRollout);
 
             memcpy(&anBoardEval, ro_apBoard[alt], sizeof(anBoardEval));
 
