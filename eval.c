@@ -3303,13 +3303,7 @@ SetCubeInfoMatch(cubeinfo * pci, const int nCube, const int fCubeOwner,
     pci->fCrawford = fCrawford;
     pci->bgv = bgv;
 
-    /*
-     * FIXME: calculate gammon price when initializing program
-     * instead of recalculating it again and again, or cache it.
-     */
-
     {
-
         int nAway0 = pci->nMatchTo - pci->anScore[0] - 1;
         int nAway1 = pci->nMatchTo - pci->anScore[1] - 1;
         int nCubeIndex = MIN(LogCube(pci->nCube), MAXCUBELEVEL - 1);
@@ -3324,7 +3318,6 @@ SetCubeInfoMatch(cubeinfo * pci, const int nCube, const int fCubeOwner,
         } else
             memcpy(pci->arGammonPrice, aaaafGammonPrices[nCubeIndex]
                    [nAway0][nAway1], 4 * sizeof(float));
-
     }
 
     return 0;
