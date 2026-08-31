@@ -44,13 +44,13 @@ def PyMySQLConnect(database, user, password, hostname):
 
     try:
         connection = MySQLdb.connect(
-            host=mysql_host, port=mysql_port, db=database, user=user, passwd=password)
+            host=mysql_host, port=mysql_port, db=database, user=user, passwd=password, connect_timeout=5)
         return 1
     except Exception:
         # See if mysql is there
         try:
             connection = MySQLdb.connect(
-                host=mysql_host, port=mysql_port, user=user, passwd=password)
+                host=mysql_host, port=mysql_port, user=user, passwd=password, connect_timeout=5)
             # See if database present
             cursor = connection.cursor()
             r = cursor.execute(
@@ -59,7 +59,7 @@ def PyMySQLConnect(database, user, password, hostname):
                 return -2  # failed
             cursor.execute('create database ' + database)
             connection = MySQLdb.connect(
-                host=mysql_host, port=mysql_port, db=database, user=user, passwd=password)
+                host=mysql_host, port=mysql_port, db=database, user=user, passwd=password, connect_timeout=5)
             return 0
         except Exception:
             return -1  # failed
@@ -99,7 +99,8 @@ def PyPostgreConnect(database, user, password, hostname):
         try:
             connection = psycopg.connect(
                 host=postgres_host, port=postgres_port,
-                user=user, password=password, dbname=database, autocommit=True)
+                user=user, password=password, dbname=database,
+                connect_timeout=5, autocommit=True)
             return 1
         except Exception:
             # See if postgres is there
@@ -107,7 +108,7 @@ def PyPostgreConnect(database, user, password, hostname):
                 # See if database present
                 connection = psycopg.connect(
                     host=postgres_host, user=user, password=password,
-                    dbname='postgres', autocommit=True)
+                    dbname='postgres', connect_timeout=5, autocommit=True)
 
                 with connection.cursor() as cursor:
                     cursor.execute(
