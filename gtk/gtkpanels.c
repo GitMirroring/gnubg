@@ -761,7 +761,8 @@ GTKRegenerateGames(void)
 extern void
 GTKSetGame(int i)
 {
-    gtk_combo_box_set_active(GTK_COMBO_BOX(game_select_combo), i);
+    if (fX)
+        gtk_combo_box_set_active(GTK_COMBO_BOX(game_select_combo), i);
 }
 
 static void
