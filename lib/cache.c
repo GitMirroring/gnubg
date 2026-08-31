@@ -90,6 +90,10 @@ CacheCreate(evalCache * pc, unsigned int s)
     if (s > 1u << 31)
         return -1;
 
+    /* A cache size of 1 would allocate zero cache nodes */
+    if (s == 1)
+        s = 2;
+
     pc->size = s;
     /* adjust size to smallest power of 2 GE to s */
     while ((s & (s - 1)) != 0)
