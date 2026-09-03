@@ -294,6 +294,9 @@ movefilter defaultFilters[MAX_FILTER_PLIES][MAX_FILTER_PLIES] = MOVEFILTER_NORMA
 
 /* Random context, for generating non-deterministic noisy evaluations. */
 static randctx rc;
+#if defined(USE_MULTITHREAD)
+static GMutex noiseRNGMutex;
+#endif
 
 /*
  * predefined settings
@@ -2268,11 +2271,17 @@ Noise(const evalcontext * pec, const TanBoard anBoard, int iOutput)
         /* Box-Muller transform of a point in the unit circle. */
         float x, y;
 
+#if defined(USE_MULTITHREAD)
+        g_mutex_lock(&noiseRNGMutex);
+#endif
         do {
             x = (float) irand(&rc) * 2.0f / (float) UB4MAXVAL - 1.0f;
             y = (float) irand(&rc) * 2.0f / (float) UB4MAXVAL - 1.0f;
             r = x * x + y * y;
         } while (r > 1.0f || r == 0.0f);
+#if defined(USE_MULTITHREAD)
+        g_mutex_unlock(&noiseRNGMutex);
+#endif
 
         r = y * sqrtf(-2.0f * logf(r) / r);
         (void) x;
