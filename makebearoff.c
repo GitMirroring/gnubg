@@ -891,11 +891,11 @@ static short int
 CubeEquity(const short int siND, const short int siDT, const short int siDP)
 {
 
-    if (siDT >= (siND / 2) && siDP >= siND) {
+    if (2 * siDT >= siND && siDP >= siND) {
         /* it's a double */
 
-        if (siDT >= (siDP / 2))
-            /* double, pasi */
+        if (2 * siDT >= siDP)
+            /* double, pass */
             return siDP;
         else
             /* double, take */
