@@ -580,7 +580,7 @@ main(int argc, char **argv)
     gchar *szEpsilon = NULL;
     bearoffcontext *pbc = NULL;
     int it;
-    char szFilename[20];
+    char *szCheckpoint = NULL;
     float arNorm[10];
     time_t t0, t1, t2, t3;
     char *szOutput = NULL;
@@ -640,6 +640,9 @@ main(int argc, char **argv)
     if (!szOutput)
         szOutput = g_strdup_printf("hyper%d.bd", nC);
 
+    if (fCheckPoint)
+        szCheckpoint = g_strdup_printf("%s.tmp", szOutput);
+
     /* start calculation */
 
     time(&t2);
@@ -693,11 +696,10 @@ main(int argc, char **argv)
 
         if (fCheckPoint) {
 
-            sprintf(szFilename, "%s.tmp", szOutput);
             if (rNorm > rEpsilon)
-                WriteHyperFile(szFilename, aheEquity, nC);
+                WriteHyperFile(szCheckpoint, aheEquity, nC);
             else
-                unlink(szFilename);
+                unlink(szCheckpoint);
 
         }
 
@@ -717,6 +719,7 @@ main(int argc, char **argv)
     g_print(_("Time for writing final file: %d seconds\n"), (int) (t1 - t0));
 
     g_free(aheEquity);
+    g_free(szCheckpoint);
     g_free(szOutput);
 
     time(&t3);
