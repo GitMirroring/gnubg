@@ -153,7 +153,7 @@ StartGuessHyper(hyperequity ahe[], const int nC, bearoffcontext * UNUSED(pbc))
 #endif
             case HYPER_BEAROFF:
 
-                memset(&ahe[i * nPos + j], 0, sizeof(hyperequity));
+                memset(&ahe[i * nPos + j], 0, sizeof(ahe[i * nPos + j]));
 
                 ahe[i * nPos + j].arOutput[0] = 1.0;
                 ahe[i * nPos + j].arOutput[1] = 1.0;
@@ -168,7 +168,7 @@ StartGuessHyper(hyperequity ahe[], const int nC, bearoffcontext * UNUSED(pbc))
 
             case HYPER_ILLEGAL:
 
-                memset(&ahe[i * nPos + j], 0, sizeof(hyperequity));
+                memset(&ahe[i * nPos + j], 0, sizeof(ahe[i * nPos + j]));
                 ++ai[3];
 
                 break;
@@ -308,7 +308,7 @@ HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, con
 
     /* save old hyper equity */
 
-    memcpy(&heOld, phe, sizeof(hyperequity));
+    memcpy(&heOld, phe, sizeof(heOld));
 
     /* generate board for position */
 
@@ -371,7 +371,7 @@ HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, con
                         r = -phex->arEquity[EQUITY_CUBELESS];
 
                         if (r >= heBest.arEquity[EQUITY_CUBELESS]) {
-                            memcpy(heBest.arOutput, phex->arOutput, NUM_OUTPUTS * sizeof(float));
+                            memcpy(heBest.arOutput, phex->arOutput, sizeof(heBest.arOutput));
                             InvertEvaluation(heBest.arOutput);
                             heBest.arEquity[EQUITY_CUBELESS] = r;
                         }
@@ -412,7 +412,7 @@ HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, con
                     /* no legal moves: equity is minus the equity of the reverse
                      * position, which has the opponent on roll */
 
-                    memcpy(&heBest, &aheOld[nPos * nThem + nUs], sizeof(hyperequity));
+                    memcpy(&heBest, &aheOld[nPos * nThem + nUs], sizeof(heBest));
 
                     InvertEvaluation(heBest.arOutput);
 
@@ -645,7 +645,7 @@ main(int argc, char **argv)
     SetCubeInfo(&ci, 1, -1, 0, 0, NULL, FALSE, FALSE, FALSE, VARIATION_HYPERGAMMON_1 + nC - 1);
     SetCubeInfo(&ciJacoby, 1, -1, 0, 0, NULL, FALSE, TRUE, FALSE, VARIATION_HYPERGAMMON_1 + nC - 1);
 
-    aheEquity = (hyperequity *) g_malloc(nPos * nPos * sizeof(hyperequity));
+    aheEquity = (hyperequity *) g_malloc(nPos * nPos * sizeof(*aheEquity));
 
     if (!szRestart) {
         g_print(_("0-vector start guess\n"));
