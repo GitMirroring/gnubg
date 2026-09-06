@@ -20,6 +20,7 @@
 
 #include <glib.h>
 #include <glib/gstdio.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -639,6 +640,9 @@ main(int argc, char **argv)
     char *szOutput = NULL;
     char *szRestart = NULL;
     int fCheckPoint = TRUE;
+    char *pchEnd;
+    const char *pch;
+    double rParsedEpsilon;
 
     GOptionEntry ao[] = {
         {"chequers", 'c', 0, G_OPTION_ARG_INT, &nC,
@@ -678,11 +682,22 @@ main(int argc, char **argv)
 
     /* parse options */
 
-    if (szEpsilon)
-        rEpsilon = (float) g_strtod(szEpsilon, NULL);
-    if (rEpsilon > 1.0f || rEpsilon < 0.0f) {
-        g_printerr(_("Valid thresholds are 0.0 - 1.0\n"));
-        exit(1);
+    if (szEpsilon) {
+        pch = szEpsilon;
+        while (g_ascii_isspace(*pch))
+            ++pch;
+        if (*pch == '+' || *pch == '-')
+            ++pch;
+
+        errno = 0;
+        rParsedEpsilon = g_strtod(szEpsilon, &pchEnd);
+        if (!g_ascii_strncasecmp(pch, "nan", 3) || !g_ascii_strncasecmp(pch, "inf", 3) ||
+            pchEnd == szEpsilon || *pchEnd || errno == ERANGE ||
+            rParsedEpsilon > 1.0 || rParsedEpsilon < 0.0) {
+            g_printerr(_("Valid thresholds are 0.0 - 1.0\n"));
+            exit(1);
+        }
+        rEpsilon = (float) rParsedEpsilon;
     }
 
     if (nC < 1 || nC > 3) {
