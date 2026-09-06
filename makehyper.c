@@ -534,7 +534,7 @@ WriteProb(FILE * pf, const float r)
 }
 
 
-static void
+static int
 WriteHyperFile(const char *szFilename, const hyperequity ahe[], const int nC)
 {
 
@@ -546,7 +546,7 @@ WriteHyperFile(const char *szFilename, const hyperequity ahe[], const int nC)
 
     if (!(pf = g_fopen(szFilename, "w+b"))) {
         perror(szFilename);
-        return;
+        return FALSE;
     }
 
     sprintf(sz, "gnubg-H%dxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n", nC);
@@ -563,7 +563,18 @@ WriteHyperFile(const char *szFilename, const hyperequity ahe[], const int nC)
 
         }
 
-    fclose(pf);
+    if (ferror(pf)) {
+        perror(szFilename);
+        fclose(pf);
+        return FALSE;
+    }
+
+    if (fclose(pf) == EOF) {
+        perror(szFilename);
+        return FALSE;
+    }
+
+    return TRUE;
 
 }
 
@@ -694,14 +705,8 @@ main(int argc, char **argv)
 
         g_print(_("norm of delta: %f\n"), rNorm);
 
-        if (fCheckPoint) {
-
-            if (rNorm > rEpsilon)
-                WriteHyperFile(szCheckpoint, aheEquity, nC);
-            else
-                unlink(szCheckpoint);
-
-        }
+        if (fCheckPoint && rNorm > rEpsilon)
+            WriteHyperFile(szCheckpoint, aheEquity, nC);
 
         time(&t1);
         g_print(_("Time for iteration %03d: %d seconds\n"), it, (int) (t1 - t0));
@@ -712,7 +717,10 @@ main(int argc, char **argv)
 
     time(&t0);
 
-    WriteHyperFile(szOutput, aheEquity, nC);
+    if (WriteHyperFile(szOutput, aheEquity, nC)) {
+        if (fCheckPoint)
+            unlink(szCheckpoint);
+    }
 
     time(&t1);
 
