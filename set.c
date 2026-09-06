@@ -4352,6 +4352,34 @@ static void
 SetVariation(const bgvariation bgvx)
 {
 
+    switch (bgvx) {
+    case VARIATION_HYPERGAMMON_1:
+        if (apbcHyper[0] == NULL) {
+            outputf(_("Cannot set variation to `%s': %s is not available.\n"),
+                    gettext(aszVariations[bgvx]), "hyper1.bd");
+            return;
+        }
+        break;
+    case VARIATION_HYPERGAMMON_2:
+        if (apbcHyper[1] == NULL) {
+            outputf(_("Cannot set variation to `%s': %s is not available.\n"),
+                    gettext(aszVariations[bgvx]), "hyper2.bd");
+            return;
+        }
+        break;
+    case VARIATION_HYPERGAMMON_3:
+        if (apbcHyper[2] == NULL) {
+            /* TRANSLATORS: The first %s is a translated variation name.
+             * The second %s is a database filename, e.g. "hyper3.bd". */
+            outputf(_("Cannot set variation to `%s': %s is not available.\n"),
+                    gettext(aszVariations[bgvx]), "hyper3.bd");
+            return;
+        }
+        break;
+    default:
+        break;
+    }
+
     bgvDefault = bgvx;
     CommandShowVariation(NULL);
 
