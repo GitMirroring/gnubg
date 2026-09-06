@@ -221,7 +221,7 @@ StartFromDatabase(hyperequity ahe[], const int nC, const char *szFilename)
     int i, j, k;
     float r;
 
-    if (!(pf = g_fopen(szFilename, "r+b"))) {
+    if (!(pf = g_fopen(szFilename, "rb"))) {
         perror(szFilename);
         exit(2);
     }
