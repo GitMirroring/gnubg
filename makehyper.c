@@ -240,14 +240,14 @@ StartFromDatabase(hyperequity ahe[], const int nC, const char *szFilename)
 
             for (k = 0; k < NUM_OUTPUTS; ++k) {
                 us = ac[3 * k] | (ac[3 * k + 1]) << 8 | (ac[3 * k + 2]) << 16;
-                r = (float) us / 16777215.0f;
+                r = (float) ((double) us / 16777215.0);
                 g_assert(r >= 0 && r <= 1);
                 ahe[i * nPos + j].arOutput[k] = r;
             }
 
             for (k = 0; k < 4; ++k) {
                 us = ac[15 + 3 * k] | (ac[15 + 3 * k + 1]) << 8 | (ac[15 + 3 * k + 2]) << 16;
-                r = ((float) us / 16777215.0f - 0.5f) * 6.0f;
+                r = ((float) ((double) us / 16777215.0) - 0.5f) * 6.0f;
                 g_assert(r >= -3 && r <= 3);
                 ahe[i * nPos + j].arEquity[k + 1] = r;
             }

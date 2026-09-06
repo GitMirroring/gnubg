@@ -348,13 +348,13 @@ ReadHypergammon(const bearoffcontext * pbc, const unsigned int iPos, float arOut
     if (arOutput)
         for (i = 0; i < NUM_OUTPUTS; ++i) {
             us = pc[3 * i] | (pc[3 * i + 1]) << 8 | (pc[3 * i + 2]) << 16;
-            arOutput[i] = (float) us / 16777215.0f;
+            arOutput[i] = (float) ((double) us / 16777215.0);
         }
 
     if (arEquity)
         for (i = 0; i < 4; ++i) {
             us = pc[15 + 3 * i] | (pc[15 + 3 * i + 1]) << 8 | (pc[15 + 3 * i + 2]) << 16;
-            arEquity[i] = ((float) us / 16777215.0f - 0.5f) * 6.0f;
+            arEquity[i] = ((float) ((double) us / 16777215.0) - 0.5f) * 6.0f;
         }
 
     return 0;
