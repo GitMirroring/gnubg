@@ -424,6 +424,7 @@ HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, con
                         g_assert(nUsNew >= 0);
                         g_assert(nUsNew < nUs);
                         g_assert(nThemNew >= 0);
+                        g_assert(nThemNew < nPos);
 
                         /* cubeless */
 
@@ -467,6 +468,10 @@ HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, con
                             heBest.arEquity[EQUITY_OPPONENT] = r;
 
                     }
+
+                    /* A best move must have been found for each equity. */
+                    for (k = 0; k < 5; ++k)
+                        g_assert(heBest.arEquity[k] >= -3.0f);
 
                 } else {
 
@@ -553,6 +558,9 @@ WriteEquity(FILE * pf, const float r)
 {
 
     unsigned int us;
+
+    g_assert(r >= -3.0f && r <= 3.0f);
+
     us = (unsigned int) ((r / 6.0f + 0.5f) * 0xFFFFFF);
 
     putc(us & 0xFF, pf);
@@ -567,6 +575,8 @@ WriteProb(FILE * pf, const float r)
 {
 
     unsigned int us;
+
+    g_assert(r >= 0.0f && r <= 1.0f);
 
     us = (unsigned int) (r * 0xFFFFFF);
 
