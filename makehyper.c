@@ -561,7 +561,7 @@ WriteEquity(FILE * pf, const float r)
 
     g_assert(r >= -3.0f && r <= 3.0f);
 
-    us = (unsigned int) ((r / 6.0f + 0.5f) * 0xFFFFFF);
+    us = (unsigned int) (((double) r / 6.0 + 0.5) * 0xFFFFFF + 0.5);
 
     putc(us & 0xFF, pf);
     putc((us >> 8) & 0xFF, pf);
