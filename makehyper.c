@@ -640,6 +640,7 @@ main(int argc, char **argv)
     char *szOutput = NULL;
     char *szRestart = NULL;
     int fCheckPoint = TRUE;
+    int fError = FALSE;
     char *pchEnd;
     const char *pch;
     double rParsedEpsilon;
@@ -777,6 +778,8 @@ main(int argc, char **argv)
     if (WriteHyperFile(szOutput, aheEquity, nC)) {
         if (fCheckPoint)
             unlink(szCheckpoint);
+    } else {
+        fError = TRUE;
     }
 
     time(&t1);
@@ -791,6 +794,8 @@ main(int argc, char **argv)
 
     g_print(_("Total time: %d seconds\n"), (int) (t3 - t2));
 
-    return 0;
+    if (fError)
+        return  EXIT_FAILURE;
 
+    return 0;
 }
