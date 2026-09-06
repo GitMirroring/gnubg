@@ -391,7 +391,7 @@ HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, con
         return;
 
     case HYPER_ILLEGAL:
-
+        memset(phe, 0, sizeof(*phe));
         return;
 
     case HYPER_BEAROFF:
