@@ -104,11 +104,29 @@ ClassifyHyper(TanBoard anBoard)
 
 }
 
+static bgvariation
+HyperVariation(const int nC)
+{
+
+    switch (nC) {
+    case 1:
+        return VARIATION_HYPERGAMMON_1;
+    case 2:
+        return VARIATION_HYPERGAMMON_2;
+    case 3:
+        return VARIATION_HYPERGAMMON_3;
+    }
+
+    g_assert_not_reached();
+    return VARIATION_HYPERGAMMON_1; /* for fussy compilers */
+
+}
+
 static void
 HyperOver(const TanBoard anBoard, float ar[NUM_OUTPUTS], const int nC)
 {
 
-    EvalOver(anBoard, ar, VARIATION_HYPERGAMMON_1 + nC - 1, NULL);
+    EvalOver(anBoard, ar, HyperVariation(nC), NULL);
 
 }
 
@@ -642,8 +660,8 @@ main(int argc, char **argv)
 
     g_print(_("*** Obtain start guess ***\n"));
 
-    SetCubeInfo(&ci, 1, -1, 0, 0, NULL, FALSE, FALSE, FALSE, VARIATION_HYPERGAMMON_1 + nC - 1);
-    SetCubeInfo(&ciJacoby, 1, -1, 0, 0, NULL, FALSE, TRUE, FALSE, VARIATION_HYPERGAMMON_1 + nC - 1);
+    SetCubeInfo(&ci, 1, -1, 0, 0, NULL, FALSE, FALSE, FALSE, HyperVariation(nC));
+    SetCubeInfo(&ciJacoby, 1, -1, 0, 0, NULL, FALSE, TRUE, FALSE, HyperVariation(nC));
 
     aheEquity = (hyperequity *) g_malloc(nPos * nPos * sizeof(*aheEquity));
 
