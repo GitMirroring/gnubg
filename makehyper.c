@@ -217,8 +217,11 @@ StartFromDatabase(hyperequity ahe[], const int nC, const char *szFilename)
     FILE *pf;
     int nPos = Combination(25 + nC, nC);
     unsigned char ac[28];
+    char szHeader[40];
     unsigned int us;
     int i, j, k;
+    long lSize;
+    const long lExpectedSize = (long) sizeof(szHeader) + (long) nPos * nPos * (long) sizeof(ac);
     float r;
 
     if (!(pf = g_fopen(szFilename, "rb"))) {
@@ -226,9 +229,48 @@ StartFromDatabase(hyperequity ahe[], const int nC, const char *szFilename)
         exit(2);
     }
 
-    /* skip header */
+    if (fread(szHeader, 1, sizeof(szHeader), pf) != sizeof(szHeader)) {
+        g_printerr(_("Invalid restart database header: %s\n"), szFilename);
+        fclose(pf);
+        exit(EXIT_FAILURE);
+    }
 
-    fseek(pf, 40, SEEK_SET);
+    if (memcmp(szHeader, "gnubg-H", 7) != 0 || szHeader[39] != '\n') {
+        g_printerr(_("Invalid restart database header: %s\n"), szFilename);
+        fclose(pf);
+        exit(EXIT_FAILURE);
+    }
+
+    if (szHeader[7] != '0' + nC) {
+        g_printerr(_("Restart database has a different number of chequers: %s\n"), szFilename);
+        fclose(pf);
+        exit(EXIT_FAILURE);
+    }
+
+    if (fseek(pf, 0L, SEEK_END) != 0) {
+        perror(szFilename);
+        fclose(pf);
+        exit(EXIT_FAILURE);
+    }
+
+    lSize = ftell(pf);
+    if (lSize < 0) {
+        perror(szFilename);
+        fclose(pf);
+        exit(EXIT_FAILURE);
+    }
+
+    if (lSize != lExpectedSize) {
+        g_printerr(_("Restart database has wrong size: %s\n"), szFilename);
+        fclose(pf);
+        exit(EXIT_FAILURE);
+    }
+
+    if (fseek(pf, (long) sizeof(szHeader), SEEK_SET) != 0) {
+        perror(szFilename);
+        fclose(pf);
+        exit(EXIT_FAILURE);
+    }
 
     for (i = 0; i < nPos; ++i)
         for (j = 0; j < nPos; ++j) {
