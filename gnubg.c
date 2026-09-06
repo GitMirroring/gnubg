@@ -4548,10 +4548,6 @@ main(int argc, char *argv[])
     GError *error = NULL;
     GOptionContext *context;
 
-#if ! GLIB_CHECK_VERSION(2,36,0)
-    g_type_init();
-#endif
-
 #if defined(LIBCURL_PROTOCOL_HTTPS)
     curl_global_init(CURL_GLOBAL_ALL);
 #endif
