@@ -578,7 +578,7 @@ WriteProb(FILE * pf, const float r)
 
     g_assert(r >= 0.0f && r <= 1.0f);
 
-    us = (unsigned int) (r * 0xFFFFFF);
+    us = (unsigned int) ((double) r * 0xFFFFFF + 0.5);
 
     putc(us & 0xFF, pf);
     putc((us >> 8) & 0xFF, pf);
