@@ -156,20 +156,8 @@ LoadCollection(char *sz)
 static void
 CopyName(int i, char *sz)
 {
-
-    char *pc;
-
     /* FIXME sanity check the name as in CommandSetPlayerName */
-
-    pc = g_strdup(sz);
-
-    if (strlen(pc) > 31)
-        pc[31] = 0;
-
-    strcpy(ap[i].szName, pc);
-
-    g_free(pc);
-
+    g_strlcpy(ap[i].szName, sz, sizeof(ap[i].szName));
 }
 
 static void
