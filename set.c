@@ -1565,8 +1565,8 @@ CommandSetPlayerName(char *sz)
         return;
     }
 
-    if (strlen(sz) > 31)
-        sz[31] = 0;
+    if (strlen(sz) >= MAX_NAME_LEN)
+        sz[MAX_NAME_LEN - 1] = 0;
 
     if ((*sz == '0' || *sz == '1') && !sz[1]) {
         outputf(_("`%c' is not a valid name.\n"), *sz);
