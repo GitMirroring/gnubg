@@ -367,6 +367,10 @@ HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, con
     const hyperequity *phex;
     float r;
 
+    g_assert(nC >= 1 && nC <= 3);
+    g_assert(nUs >= 0 && nUs < nPos);
+    g_assert(nThem >= 0 && nThem < nPos);
+
     /* save old hyper equity */
 
     memcpy(&heOld, phe, sizeof(heOld));
