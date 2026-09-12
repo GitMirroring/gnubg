@@ -988,9 +988,13 @@ GtkRelationalShowStats(void)
 }
 
 extern void
-GtkRelationalAddMatch(gpointer UNUSED(p), guint UNUSED(n), GtkWidget * pw)
+GtkRelationalAddMatch(gpointer p, guint UNUSED(n), GtkWidget * UNUSED(pw))
 {
-    GTKSetCurrentParent(pw);
+    if (GTK_IS_ACTION(p))
+        ;	/* called from the Add match or session... menu entry */
+    else
+        GTKSetCurrentParent(p);
+
     CommandRelationalAddMatch(NULL);
     outputx();
 }
