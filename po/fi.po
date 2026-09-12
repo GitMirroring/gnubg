@@ -12051,7 +12051,8 @@ msgid "Valid thresholds are 0.0 - 1.0\n"
 msgstr "Kelvolliset kynnysarvot ovat 0,0 - 1,0\n"
 
 #: makehyper.c:620
-msgid "Illegal options. Try `makehyper --help' for usage information\n"
+#, fuzzy
+msgid "Invalid number of chequers. Try `makehyper --help' for usage information\n"
 msgstr "Laittomia valintoja. Kokeile 'makehyper --help' saadaksesi ohjeita\n"
 
 #: makehyper.c:631

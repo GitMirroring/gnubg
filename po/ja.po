@@ -11863,7 +11863,8 @@ msgid "Valid thresholds are 0.0 - 1.0\n"
 msgstr "有効な閾値は 0.0 - 1.0\n"
 
 #: makehyper.c:620
-msgid "Illegal options. Try `makehyper --help' for usage information\n"
+#, fuzzy
+msgid "Invalid number of chequers. Try `makehyper --help' for usage information\n"
 msgstr "無効なオプションです。 Try `makehyper --help' for usage information\n"
 
 #: makehyper.c:631

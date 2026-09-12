@@ -716,7 +716,7 @@ main(int argc, char **argv)
     }
 
     if (nC < 1 || nC > 3) {
-        g_printerr(_("Illegal options. Try `makehyper --help' for usage information\n"));
+        g_printerr(_("Invalid number of chequers. Try `makehyper --help' for usage information\n"));
         exit(1);
     }
 
