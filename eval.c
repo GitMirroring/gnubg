@@ -5356,6 +5356,7 @@ FindBestMoveInEval(NNState * nnStates, int const nDice0, int const nDice1, const
     }
 
     pci->fMove = !pci->fMove;
+    bmovesi[0] = 0;
 
     for (i = 0; i < ml.cMoves; i++) {
         positionclass pc;
