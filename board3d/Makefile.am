@@ -14,23 +14,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#
-# $Id: Makefile.am,v 1.41 2021/02/21 08:45:52 plm Exp $
-# 
-
 ##
 ## All targets have been declared "noinst" for inclusion with gnubg.  As
 ## a standalone library, it would be better for them to be installed.
 ##
 
-AM_CPPFLAGS = -I$(srcdir)/.. -I$(srcdir)/../lib \
+if USE_BUNDLED_CGLM
+CGLM_CPPFLAGS = -I$(top_builddir)
+else
+CGLM_CPPFLAGS =
+endif
+
+AM_CPPFLAGS = $(CGLM_CPPFLAGS) -I$(srcdir)/.. -I$(srcdir)/../lib \
 	-DLOCALEDIR=\"$(localedir)\" \
 	-DAC_DATADIR='"$(datadir)"' -DAC_PKGDATADIR=='"$(datadir)/gnubg"'\
 	@FREETYPE2_CFLAGS@ @GTK_CFLAGS@ @GTKGLEXT_CFLAGS@ $(GLU_CFLAGS)
 
 if USE_BOARD3D
 noinst_LTLIBRARIES = libboard3d.la
-libboard3d_la_LIBADD = @FREETYPE2_LIBS@ 
+libboard3d_la_LIBADD = @FREETYPE2_LIBS@
 endif
 
 libboard3d_la_SOURCES = DrawOGL.c font3dOGL.c ModelOGL.c Occluders.c PickOGL.c \
@@ -39,7 +41,7 @@ libboard3d_la_SOURCES = DrawOGL.c font3dOGL.c ModelOGL.c Occluders.c PickOGL.c \
 			drawboard3d.c font3d.c fun3d.h graph.c gtkcolour3d.c \
 			matrix.c matrix.h misc3d.c model.c model.h \
 			shadow.c widget3d.c tr.c tr.h types3d.h
-			
+
 libboard3d_la_CFLAGS = $(AM_CFLAGS)
 
 noinst_HEADERS = fun3d.h matrix.h model.h

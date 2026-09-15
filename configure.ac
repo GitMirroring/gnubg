@@ -300,10 +300,7 @@ dnl
 dnl Check for cglm
 dnl
 have_cglm="no"
-CPPFLAGS_bak="$CPPFLAGS"
-CPPFLAGS="-I. $CPPFLAGS"
 AC_CHECK_HEADER([cglm/version.h],[have_cglm="yes"])
-CPPFLAGS="$CPPFLAGS_bak"
 
 dnl
 dnl Checks for header files.
@@ -397,6 +394,7 @@ if test "$with_board3d" != "no" && test "$have_cglm" = "no"; then
 	AC_CONFIG_COMMANDS([cglm], [echo 'Extract cglm headers'; sh "$ac_top_srcdir/non-src/cglm.shar" > /dev/null])
 fi
 
+AM_CONDITIONAL(USE_BUNDLED_CGLM, test "$with_board3d" != "no" && test "$have_cglm" = "no" )
 AM_CONDITIONAL(USE_GTK, test "$no_gtk" != "yes" )
 AM_CONDITIONAL(USE_BOARD3D, test "$no_board3d" != "yes" )
 
