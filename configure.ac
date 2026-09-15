@@ -23,7 +23,7 @@ AC_INIT([GNU Backgammon],m4_esyscmd(echo 1.08.003$VERSION_EXT | tr -d '\n'),[bug
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_CONFIG_SRCDIR(gnubg.c)
-AM_INIT_AUTOMAKE([subdir-objects dist-xz no-dist-gzip])
+AM_INIT_AUTOMAKE([1.11.2 subdir-objects dist-xz no-dist-gzip])
 AC_CONFIG_HEADERS([config.h])
 AC_USE_SYSTEM_EXTENSIONS
 
@@ -105,6 +105,7 @@ dnl Setup libtool
 dnl
 
 AC_CONFIG_MACRO_DIR([m4])
+AM_PROG_AR
 LT_INIT([disable-shared])
 
 dnl

@@ -9,7 +9,7 @@ obtained the distribution from the git repository, run ``./autogen.sh'' first.
 You are likely to want or need the following tools
 
 autoconf		version >= 2.60
-automake
+automake		version >= 2.11.2
 libtool
 GNU make
 bison			version >= 2.4
