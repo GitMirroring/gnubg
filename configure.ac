@@ -78,6 +78,8 @@ dnl Compiler setup
 dnl
 
 AC_PROG_CC
+dnl AM_PROG_CC_C_O is rquired for Automake < 1.14
+dnl Remove when the minimum Automake version is raised to 1.14
 AM_PROG_CC_C_O
 
 AM_CONDITIONAL(CROSS_COMPILING, test "x$cross_compiling" = "xyes")
