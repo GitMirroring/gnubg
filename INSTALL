@@ -57,7 +57,7 @@ docbook2x
 Building from the Git repository
 --------------------------------
 
-Before running ``./configure'', run ``./autogen.sh''.
+Run ``./autogen.sh'' before running the ``configure'' script.
 
 This additionally requires
 
