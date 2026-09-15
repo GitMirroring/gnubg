@@ -119,14 +119,14 @@ html_node: gnubg.texi
 
 install-data-hook:
 	(cd $(DESTDIR)$(mandir)/man6; \
-	for file in *.6; do \
-		GZIP=$(GZIP_ENV) gzip -f $${file}; \
+	for manpage in $(notrans_man_MANS); do \
+		GZIP=$(GZIP_ENV) gzip -f $${manpage}; \
 	done)
 
 uninstall-hook:
 	(cd $(DESTDIR)$(mandir)/man6; \
-	for file in *.gz; do \
-		rm -f $${file}; \
+	for manpage in $(notrans_man_MANS); do \
+		rm -f $${manpage}.gz; \
 	done)
 
 MOSTLYCLEANFILES=gnubg.html allabout.html gnubg.6 gnubg.info gnubg.texi manpage.links manpage.refs
