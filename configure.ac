@@ -112,7 +112,7 @@ dnl yacc and lex setup
 dnl
 
 # Sometimes Flex is installed as Lex, e.g., NetBSD.
-AC_CHECK_PROG([FLEX], [flex lex], [flex])
+AC_CHECK_PROGS([FLEX], [flex lex])
 # Force the use of `missing' to wrap Flex invocations.
 AM_MISSING_PROG([LEX], [$FLEX])
 
