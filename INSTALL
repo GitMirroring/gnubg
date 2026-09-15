@@ -1,16 +1,17 @@
 Installation
 ============
 
-Installing GNUbg is rather painless through the use of the GNU autoconf
-package.  Simply untar the GNUbg distribution, and run the ``configure''
-script. Then ``make´´ and then, as root, ``make install´´.  If you have
-obtained the distribution from the git repository, run ``./autogen.sh'' first.
+Building from a source distribution
+-----------------------------------
+
+Unpack the GNUbg source distribution and run the ``configure'' script.
+Then run ``make´´ and, as root, ``make install´´.
+
+Build requirements
+------------------
 
 You are likely to want or need the following tools
 
-autoconf		version >= 2.60
-automake		version >= 2.11.2
-libtool
 GNU make
 bison			version >= 2.4
 flex			version >= 2.5.9
@@ -52,6 +53,17 @@ from sources needs
 
 texinfo
 docbook2x
+
+Building from the Git repository
+--------------------------------
+
+Before running ``./configure'', run ``./autogen.sh''.
+
+This additionally requires
+
+autoconf		version >= 2.60
+automake		version >= 1.11.2
+libtool			version >= 2.2
 
 
 In most cases, configure will automatically determine everything it needs to
