@@ -120,7 +120,7 @@ AC_CHECK_PROGS([FLEX], [flex lex])
 AM_MISSING_PROG([LEX], [$FLEX])
 
 AC_PROG_LEX([noyywrap])
-AX_PROG_FLEX_VERSION([2.5.9],,AC_MSG_ERROR([flex 2.5.9 or higher is needed to build GNU Backgammon]))
+AX_PROG_FLEX_VERSION([2.5.20],,AC_MSG_ERROR([flex 2.5.20 or higher is needed to build GNU Backgammon]))
 AC_PROG_YACC
 AM_YFLAGS='-d'
 AC_SUBST(AM_YFLAGS)
