@@ -383,8 +383,8 @@ DrawHistoryPlot (GtkWidget *widget, GdkEventExpose *event, gpointer UNUSED(user_
          /* x axis*/
         // for (int i = 10; i < numRecords; i=i+10) {
         // for (int j = 1; j <=10; j++) {
-        double xLabel=ceil(0.11*((double)matchCumMoves[0]));
-        for (double i = xLabel; i <(double)matchCumMoves[0]; i+=xLabel) {
+        int xLabel = (int)ceil(0.11 * ((double)matchCumMoves[0]));
+        for (int i = xLabel; i < matchCumMoves[0]; i += xLabel) {
             /* grid lines*/
             cairo_set_line_width (cr, dy/3);
             cairo_set_dash(cr, dashed2, len2, 1);
@@ -404,14 +404,15 @@ DrawHistoryPlot (GtkWidget *widget, GdkEventExpose *event, gpointer UNUSED(user_
             // cairo_move_to (cr, xToX(((double)i)/(numRecords-1)), trueHistY(0.0));
             // cairo_line_to (cr, xToX(((double)i)/(numRecords-1)), trueHistY(1.0));
             cairo_move_to(cr, xToX(i/ ((double)matchCumMoves[0]))-4*dx, trueHistY(0.0)+1.25*fontSize);
-            sprintf(strTemp, "%d", (int)i);
+            sprintf(strTemp, "%d", i);
             cairo_show_text(cr, strTemp);
         }
             cairo_move_to(cr, xToX(0.5)-10*dx, trueHistY(0.0)+2.5*fontSize);
             cairo_show_text(cr, _("decisions (cube or move)"));
 
-         /* y axis*/
-        for (double j = 0.0; j <1.0; j+=0.1) {
+        /* y axis*/
+        double j = 0.0;
+        for (int i = 0; i < 10; i++, j += 0.1) {
             /*grid lines*/
             if (j>0.0) {
                 cairo_set_source_rgb (cr, 0.6, 0.6, 0.6);
