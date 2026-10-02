@@ -25,7 +25,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <unistd.h>
 #include <math.h>
 #include <locale.h>
 
@@ -830,7 +829,7 @@ main(int argc, char **argv)
 
     if (WriteHyperFile(szOutput, aheEquity, nC)) {
         if (fCheckPoint)
-            unlink(szCheckpoint);
+            g_unlink(szCheckpoint);
     } else {
         fError = TRUE;
     }
