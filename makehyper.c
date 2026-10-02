@@ -56,8 +56,8 @@ enum {
 
 typedef struct {
 
-    float arOutput[NUM_OUTPUTS];
-    float arEquity[5];
+    double arOutput[NUM_OUTPUTS];
+    double arEquity[5];
 
 } hyperequity;
 
@@ -124,10 +124,46 @@ HyperVariation(const int nC)
 }
 
 static void
-HyperOver(const TanBoard anBoard, float ar[NUM_OUTPUTS], const int nC)
+HyperOver(const TanBoard anBoard, double ar[NUM_OUTPUTS], const int nC)
 {
 
-    EvalOver(anBoard, ar, HyperVariation(nC), NULL);
+    float arOutput[NUM_OUTPUTS];
+    unsigned int i;
+
+    EvalOver(anBoard, arOutput, HyperVariation(nC), NULL);
+
+    for (i = 0; i < NUM_OUTPUTS; ++i)
+        ar[i] = arOutput[i];
+
+}
+
+
+static double
+HyperUtility(const double ar[NUM_OUTPUTS], const cubeinfo * pci)
+{
+
+    g_assert(!pci->nMatchTo);
+
+    return ar[OUTPUT_WIN] * 2.0 - 1.0 +
+        (ar[OUTPUT_WINGAMMON] - ar[OUTPUT_LOSEGAMMON]) * pci->arGammonPrice[0] +
+        (ar[OUTPUT_WINBACKGAMMON] - ar[OUTPUT_LOSEBACKGAMMON]) * pci->arGammonPrice[1];
+
+}
+
+
+static void
+InvertHyperEvaluation(double ar[NUM_OUTPUTS])
+{
+
+    double r;
+
+    ar[OUTPUT_WIN] = 1.0 - ar[OUTPUT_WIN];
+    r = ar[OUTPUT_WINGAMMON];
+    ar[OUTPUT_WINGAMMON] = ar[OUTPUT_LOSEGAMMON];
+    ar[OUTPUT_LOSEGAMMON] = r;
+    r = ar[OUTPUT_WINBACKGAMMON];
+    ar[OUTPUT_WINBACKGAMMON] = ar[OUTPUT_LOSEBACKGAMMON];
+    ar[OUTPUT_LOSEBACKGAMMON] = r;
 
 }
 
@@ -154,11 +190,11 @@ StartGuessHyper(hyperequity ahe[], const int nC, bearoffcontext * UNUSED(pbc))
                 HyperOver((ConstTanBoard) anBoard, ahe[i * nPos + j].arOutput, nC);
 
                 for (k = 0; k < 5; ++k)
-                    ahe[i * nPos + j].arEquity[k] = Utility(ahe[i * nPos + j].arOutput, &ci);
+                    ahe[i * nPos + j].arEquity[k] = HyperUtility(ahe[i * nPos + j].arOutput, &ci);
 
                 /* special calc for Jacoby rule */
 
-                ahe[i * nPos + j].arEquity[EQUITY_CENTER_JACOBY] = Utility(ahe[i * nPos + j].arOutput, &ciJacoby);
+                ahe[i * nPos + j].arEquity[EQUITY_CENTER_JACOBY] = HyperUtility(ahe[i * nPos + j].arOutput, &ciJacoby);
 
                 ++ai[0];
 
@@ -179,7 +215,7 @@ StartGuessHyper(hyperequity ahe[], const int nC, bearoffcontext * UNUSED(pbc))
                 ahe[i * nPos + j].arOutput[2] = 0.0;
                 ahe[i * nPos + j].arOutput[3] = 0.0;
                 ahe[i * nPos + j].arOutput[4] = 0.0;
-                ahe[i * nPos + j].arEquity[0] = Utility(ahe[i * nPos + j].arOutput, &ci);
+                ahe[i * nPos + j].arEquity[0] = HyperUtility(ahe[i * nPos + j].arOutput, &ci);
 
                 ++ai[2];
 
@@ -223,7 +259,7 @@ StartFromDatabase(hyperequity ahe[], const int nC, const char *szFilename)
     int i, j, k;
     long lSize;
     const long lExpectedSize = (long) sizeof(szHeader) + (long) nPos * nPos * (long) sizeof(ac);
-    float r;
+    double r;
 
     if (!(pf = g_fopen(szFilename, "rb"))) {
         perror(szFilename);
@@ -283,19 +319,19 @@ StartFromDatabase(hyperequity ahe[], const int nC, const char *szFilename)
 
             for (k = 0; k < NUM_OUTPUTS; ++k) {
                 us = ac[3 * k] | (ac[3 * k + 1]) << 8 | (ac[3 * k + 2]) << 16;
-                r = (float) ((double) us / 16777215.0);
+                r = (double) us / 16777215.0;
                 g_assert(r >= 0 && r <= 1);
                 ahe[i * nPos + j].arOutput[k] = r;
             }
 
             for (k = 0; k < 4; ++k) {
                 us = ac[15 + 3 * k] | (ac[15 + 3 * k + 1]) << 8 | (ac[15 + 3 * k + 2]) << 16;
-                r = ((float) ((double) us / 16777215.0) - 0.5f) * 6.0f;
+                r = ((double) us / 16777215.0 - 0.5) * 6.0;
                 g_assert(r >= -3 && r <= 3);
                 ahe[i * nPos + j].arEquity[k + 1] = r;
             }
 
-            ahe[i * nPos + j].arEquity[0] = Utility(ahe[i * nPos + j].arOutput, &ci);
+            ahe[i * nPos + j].arEquity[0] = HyperUtility(ahe[i * nPos + j].arOutput, &ci);
 
         }
 
@@ -312,12 +348,12 @@ StartFromDatabase(hyperequity ahe[], const int nC, const char *szFilename)
  *
  */
 
-static float
-NormOO(const float ar[], const int n)
+static double
+NormOO(const double ar[], const int n)
 {
 
     int i;
-    float r = 0;
+    double r = 0;
 
     for (i = 0; i < n; ++i)
         if (r < ar[i])
@@ -328,19 +364,19 @@ NormOO(const float ar[], const int n)
 }
 
 
-static float
-CubeEquity(const float rND, const float rDT, const float rDP)
+static double
+CubeEquity(const double rND, const double rDT, const double rDP)
 {
 
-    if ((2.0f * rDT) >= rND && rDP >= rND) {
+    if ((2.0 * rDT) >= rND && rDP >= rND) {
         /* it's a double */
 
-        if ((2.0f * rDT) >= rDP)
+        if ((2.0 * rDT) >= rDP)
             /* double, pass */
             return rDP;
         else
             /* double, take */
-            return 2.0f * rDT;
+            return 2.0 * rDT;
 
     } else
         /* no double */
@@ -351,7 +387,7 @@ CubeEquity(const float rND, const float rDT, const float rDP)
 
 
 static void
-HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, const hyperequity aheOld[], float arNorm[])
+HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, const hyperequity aheOld[], double arNorm[])
 {
 
     TanBoard anBoard;
@@ -365,7 +401,7 @@ HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, con
     hyperequity heNew;
     int nPos = Combination(25 + nC, nC);
     const hyperequity *phex;
-    float r;
+    double r;
 
     g_assert(nC >= 1 && nC <= 3);
     g_assert(nUs >= 0 && nUs < nPos);
@@ -386,11 +422,11 @@ HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, con
         HyperOver((ConstTanBoard) anBoard, phe->arOutput, nC);
 
         for (k = 0; k < 5; ++k)
-            phe->arEquity[k] = Utility(phe->arOutput, &ci);
+            phe->arEquity[k] = HyperUtility(phe->arOutput, &ci);
 
         /* special calc for Jacoby rule */
 
-        phe->arEquity[EQUITY_CENTER_JACOBY] = Utility(phe->arOutput, &ciJacoby);
+        phe->arEquity[EQUITY_CENTER_JACOBY] = HyperUtility(phe->arOutput, &ciJacoby);
 
         return;
 
@@ -402,9 +438,9 @@ HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, con
     case HYPER_CONTACT:
 
         for (k = 0; k < NUM_OUTPUTS; ++k)
-            heNew.arOutput[k] = 0.0f;
+            heNew.arOutput[k] = 0.0;
         for (k = 0; k < 5; ++k)
-            heNew.arEquity[k] = 0.0f;
+            heNew.arEquity[k] = 0.0;
 
         for (i = 1; i <= 6; ++i)
             for (j = 1; j <= i; ++j) {
@@ -416,7 +452,7 @@ HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, con
                     /* at least one legal move: find the equity of the best move */
 
                     for (k = 0; k < 5; ++k)
-                        heBest.arEquity[k] = -10000.0f;
+                        heBest.arEquity[k] = -10000.0;
 
                     for (k = 0; k < ml.cMoves; ++k) {
 
@@ -438,7 +474,7 @@ HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, con
 
                         if (r >= heBest.arEquity[EQUITY_CUBELESS]) {
                             memcpy(heBest.arOutput, phex->arOutput, sizeof(heBest.arOutput));
-                            InvertEvaluation(heBest.arOutput);
+                            InvertHyperEvaluation(heBest.arOutput);
                             heBest.arEquity[EQUITY_CUBELESS] = r;
                         }
 
@@ -475,7 +511,7 @@ HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, con
 
                     /* A best move must have been found for each equity. */
                     for (k = 0; k < 5; ++k)
-                        g_assert(heBest.arEquity[k] >= -3.0f);
+                        g_assert(heBest.arEquity[k] >= -3.0);
 
                 } else {
 
@@ -484,7 +520,7 @@ HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, con
 
                     memcpy(&heBest, &aheOld[nPos * nThem + nUs], sizeof(heBest));
 
-                    InvertEvaluation(heBest.arOutput);
+                    InvertHyperEvaluation(heBest.arOutput);
 
                     for (k = 0; k < 5; ++k)
                         heBest.arEquity[k] = -heBest.arEquity[k];
@@ -494,18 +530,18 @@ HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, con
                 /* sum up equities */
 
                 for (k = 0; k < NUM_OUTPUTS; ++k)
-                    heNew.arOutput[k] += (i == j) ? heBest.arOutput[k] : 2.0f * heBest.arOutput[k];
+                    heNew.arOutput[k] += (i == j) ? heBest.arOutput[k] : 2.0 * heBest.arOutput[k];
                 for (k = 0; k < 5; ++k)
-                    heNew.arEquity[k] += (i == j) ? heBest.arEquity[k] : 2.0f * heBest.arEquity[k];
+                    heNew.arEquity[k] += (i == j) ? heBest.arEquity[k] : 2.0 * heBest.arEquity[k];
 
             }
 
         /* normalise */
 
         for (k = 0; k < NUM_OUTPUTS; ++k)
-            phe->arOutput[k] = heNew.arOutput[k] / 36.0f;
+            phe->arOutput[k] = heNew.arOutput[k] / 36.0;
         for (k = 0; k < 5; ++k)
-            phe->arEquity[k] = heNew.arEquity[k] / 36.0f;
+            phe->arEquity[k] = heNew.arEquity[k] / 36.0;
 
         break;
 
@@ -514,13 +550,13 @@ HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, con
     /* calculate contribution to norm */
 
     for (k = 0; k < NUM_OUTPUTS; ++k) {
-        r = fabsf(phe->arOutput[k] - heOld.arOutput[k]);
+        r = fabs(phe->arOutput[k] - heOld.arOutput[k]);
         if (r > arNorm[k]) {
             arNorm[k] = r;
         }
     }
     for (k = 0; k < 5; ++k) {
-        r = fabsf(phe->arEquity[k] - heOld.arEquity[k]);
+        r = fabs(phe->arEquity[k] - heOld.arEquity[k]);
         if (r > arNorm[5 + k]) {
             arNorm[5 + k] = r;
         }
@@ -531,14 +567,14 @@ HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, con
 
 
 static void
-CalcNewEquity(hyperequity ahe[], const int nC, float arNorm[])
+CalcNewEquity(hyperequity ahe[], const int nC, double arNorm[])
 {
 
     int i, j;
     int nPos = Combination(25 + nC, nC);
 
     for (i = 0; i < 10; ++i)
-        arNorm[i] = 0.0f;
+        arNorm[i] = 0.0;
 
     for (i = 0; i < nPos; ++i) {
 
@@ -558,14 +594,14 @@ CalcNewEquity(hyperequity ahe[], const int nC, float arNorm[])
 }
 
 static void
-WriteEquity(FILE * pf, const float r)
+WriteEquity(FILE * pf, const double r)
 {
 
     unsigned int us;
 
-    g_assert(r >= -3.0f && r <= 3.0f);
+    g_assert(r >= -3.0 && r <= 3.0);
 
-    us = (unsigned int) (((double) r / 6.0 + 0.5) * 0xFFFFFF + 0.5);
+    us = (unsigned int) ((r / 6.0 + 0.5) * 0xFFFFFF + 0.5);
 
     putc(us & 0xFF, pf);
     putc((us >> 8) & 0xFF, pf);
@@ -575,14 +611,14 @@ WriteEquity(FILE * pf, const float r)
 }
 
 static void
-WriteProb(FILE * pf, const float r)
+WriteProb(FILE * pf, const double r)
 {
 
     unsigned int us;
 
-    g_assert(r >= 0.0f && r <= 1.0f);
+    g_assert(r >= 0.0 && r <= 1.0);
 
-    us = (unsigned int) ((double) r * 0xFFFFFF + 0.5);
+    us = (unsigned int) (r * 0xFFFFFF + 0.5);
 
     putc(us & 0xFF, pf);
     putc((us >> 8) & 0xFF, pf);
@@ -643,13 +679,13 @@ main(int argc, char **argv)
     int nC = 3;
     hyperequity *aheEquity;
     int nPos;
-    float rNorm;
-    float rEpsilon = 1.0e-5f;
+    double rNorm;
+    double rEpsilon = 1.0e-5;
     gchar *szEpsilon = NULL;
     bearoffcontext *pbc = NULL;
     int it;
     char *szCheckpoint = NULL;
-    float arNorm[10];
+    double arNorm[10];
     time_t t0, t1, t2, t3;
     char *szOutput = NULL;
     char *szRestart = NULL;
@@ -712,7 +748,7 @@ main(int argc, char **argv)
             g_printerr(_("Valid thresholds are 0.0 - 1.0\n"));
             exit(1);
         }
-        rEpsilon = (float) rParsedEpsilon;
+        rEpsilon = rParsedEpsilon;
     }
 
     if (nC < 1 || nC > 3) {
@@ -775,7 +811,7 @@ main(int argc, char **argv)
 
         rNorm = NormOO(arNorm, 10);
 
-        g_print(_("norm of delta: %f\n"), rNorm);
+        g_print(_("norm of delta: %g\n"), rNorm);
 
         if (fCheckPoint && rNorm > rEpsilon)
             WriteHyperFile(szCheckpoint, aheEquity, nC);
