@@ -219,6 +219,7 @@ makebearoff_SOURCES = makebearoff.c $(UTILSOURCES)
 makebearoff_LDADD = -Llib lib/libevent.la @GLIB_LIBS@ @GTHREAD_LIBS@ @GOBJECT_LIBS@
 
 makehyper_SOURCES = makehyper.c $(UTILSOURCES)
+makehyper_CFLAGS = $(AM_CFLAGS) $(NO_FAST_MATH_CFLAGS)
 makehyper_LDADD =  -Llib lib/libevent.la @GLIB_LIBS@ @GTHREAD_LIBS@ @GOBJECT_LIBS@
 
 bearoffdump_SOURCES = bearoffdump.c drawboard.c $(UTILSOURCES)

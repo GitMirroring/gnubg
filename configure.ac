@@ -590,8 +590,10 @@ dnl -O2             1:23
 dnl -O3             1:14
 dnl -O3 -ffast-math 1:11
 AM_CFLAGS="$AM_CFLAGS -g -O3"
+NO_FAST_MATH_CFLAGS=""
 if test x"$GCC" = "xyes"; then
     AM_CFLAGS="$AM_CFLAGS -ffast-math"
+    NO_FAST_MATH_CFLAGS="-fno-fast-math"
 fi
 
 # Don't let automake's default override the above settings
@@ -601,6 +603,7 @@ if test x"$CFLAGS" = "x-g -O2"; then
 fi
 
 AC_SUBST(AM_CFLAGS)
+AC_SUBST(NO_FAST_MATH_CFLAGS)
 
 dnl *************
 dnl Misc. settings
