@@ -617,7 +617,7 @@ RenderBorder(unsigned char *puch, int nStride, int x0, int y0,
 {
 
 #define COLOURS( ipix, edge, icol ) \
-	( *( colours + ( (ipix) * 4 + (edge) ) * 3 + (icol) ) )
+    ( *( colours + ( (ipix) * 4 + (edge) ) * 3 + (icol) ) )
 
     int i, x, y, iCol;
 
@@ -1305,11 +1305,11 @@ RenderHinges(renderdata * prd, unsigned char *puch, int nStride)
             xNorm = (float) (x - s) / (float) s * (1.0f - yNorm * yNorm);
 
             HingePixel(prd, xNorm, yNorm,
-				(float)((s - x) / (40 * s)), (float)((y - 20 * s) / (40 * s)),
+                                (float)((s - x) / (40 * s)), (float)((y - 20 * s) / (40 * s)),
                        puch + (y + HINGE_BOT_Y * s) * nStride + (x + (BOARD_WIDTH / 2 - 1) * s) * 3);
 
             HingePixel(prd, xNorm, yNorm,
-				(float)((s - x) / (40 * s)), (float)((y + 20 * s) / (40 * s)),
+                                (float)((s - x) / (40 * s)), (float)((y + 20 * s) / (40 * s)),
                        puch + (y + HINGE_TOP_Y * s) * nStride + (x + (BOARD_WIDTH / 2 - 1) * s) * 3);
         }
 }
@@ -1329,8 +1329,8 @@ RenderBasicGlyph(unsigned char *puch, int nStride,
     y2 = yOff - nSize;
 
 #define PUT( x, y ) { puch[ (y) * nStride + (x) * 3 + 0 ] = r; \
-		      puch[ (y) * nStride + (x) * 3 + 1 ] = g; \
-    		      puch[ (y) * nStride + (x) * 3 + 2 ] = b; }
+                      puch[ (y) * nStride + (x) * 3 + 1 ] = g; \
+                      puch[ (y) * nStride + (x) * 3 + 2 ] = b; }
 
     if (n == 0 || n == 2 || n == 3 || n == 5 || n == 6 || n == 7 || n == 8 || n == 9)
         /* top */
@@ -2890,13 +2890,13 @@ static int diceRollingSave;
 void
 SuspendDiceRolling(renderdata* prd)
 {
-	diceRollingSave = prd->animateRoll;
-	prd->animateRoll = FALSE;
+    diceRollingSave = prd->animateRoll;
+    prd->animateRoll = FALSE;
 }
 
 void
 ResumeDiceRolling(renderdata* prd)
 {
-	prd->animateRoll = diceRollingSave;
+    prd->animateRoll = diceRollingSave;
 }
 #endif
