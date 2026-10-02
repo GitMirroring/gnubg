@@ -127,13 +127,13 @@ static void
 HyperOver(const TanBoard anBoard, double ar[NUM_OUTPUTS], const int nC)
 {
 
-    float arOutput[NUM_OUTPUTS];
+    float arTemp[NUM_OUTPUTS];
     unsigned int i;
 
-    EvalOver(anBoard, arOutput, HyperVariation(nC), NULL);
+    EvalOver(anBoard, arTemp, HyperVariation(nC), NULL);
 
     for (i = 0; i < NUM_OUTPUTS; ++i)
-        ar[i] = arOutput[i];
+        ar[i] = arTemp[i];
 
 }
 
