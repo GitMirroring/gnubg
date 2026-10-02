@@ -354,9 +354,13 @@ NormOO(const double ar[], const int n)
     int i;
     double r = 0;
 
-    for (i = 0; i < n; ++i)
+    g_assert(n > 0);
+
+    for (i = 0; i < n; ++i) {
+        g_assert(ar[i] >= 0.0);
         if (r < ar[i])
             r = ar[i];
+    }
 
     return r;
 
