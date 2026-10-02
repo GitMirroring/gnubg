@@ -399,11 +399,14 @@ HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, con
     hyperequity heBest;
     hyperequity heOld;
     hyperequity heNew;
-    int nPos = Combination(25 + nC, nC);
+    int nPos;
     const hyperequity *phex;
     double r;
 
     g_assert(nC >= 1 && nC <= 3);
+
+    nPos = Combination(25 + nC, nC);
+
     g_assert(nUs >= 0 && nUs < nPos);
     g_assert(nThem >= 0 && nThem < nPos);
 
