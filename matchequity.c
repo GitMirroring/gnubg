@@ -652,7 +652,7 @@ GetDoublePointDeadCube(float arOutput[5], cubeinfo * pci)
         rRisk = rNDL - rDTL;
         rGain = rDTW - rNDW;
 
-        return rRisk / (rRisk + rGain);
+        return (rRisk == 0.0f) ? 0.0f : rRisk / (rRisk + rGain);
 
     }
 

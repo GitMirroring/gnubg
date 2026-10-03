@@ -1722,7 +1722,7 @@ CommandShowMarketWindow(char *sz)
             rRisk = rNDL - rDTL;
             rGain = rDTW - rNDW;
 
-            arDP1[i] = rRisk / (rRisk + rGain);
+            arDP1[i] = (rRisk == 0.0f) ? 0.0f : rRisk / (rRisk + rGain);
             arDP2[i] = arDP1[i];
 
             /* Dead cube take point without redouble */
@@ -1768,7 +1768,7 @@ CommandShowMarketWindow(char *sz)
                 rRisk = rNDL - rDTL;
                 rGain = rDTW - rNDW;
 
-                arDP2[i] = rRisk / (rRisk + rGain);
+                arDP2[i] = (rRisk == 0.0f) ? 0.0f : rRisk / (rRisk + rGain);
 
             }
         }
