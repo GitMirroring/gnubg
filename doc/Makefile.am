@@ -108,11 +108,13 @@ allabout.html: allabout.xml
 
 gnubg.texi: gnubgdb.xml
 	$(DOCBOOK2TEXI) --encoding=UTF-8 --string-param prefer-textobjects=1 $< || \
-	cp $(srcdir)/gnubg/gnubg.texi .
+	cp $(srcdir)/gnubg/gnubg.texi $@
+	sed '/^@appendix GNU Free Documentation License$$/,/^@bye$$/ s/^@unnumberedsubsec\([[:space:]][[:space:]]*\)/@unnumberedsec\1/' \
+	    $@ > $@.tmp && mv $@.tmp $@
 
 gnubg.info: gnubg.texi
-	makeinfo --force $< -o $@ || \
-	cp $(srcdir)/gnubg/gnubg.info .
+	makeinfo $< -o $@ || \
+	cp $(srcdir)/gnubg/gnubg.info $@
 
 html_node: gnubg.texi
 	makeinfo --html $< -o $@
