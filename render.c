@@ -2647,7 +2647,7 @@ RenderBoardLabels(renderdata * prd, unsigned char *achLo, unsigned char *achHi, 
 
     /* 12 11 10 9 8 7 - 6 5 4 3 2 1 */
 
-    memset(achTemp, 0, BOARD_WIDTH * prd->nSize * 3 * prd->nSize * 3);
+    memset(achTemp, 0, BOARD_WIDTH * prd->nSize * 5 * prd->nSize * 5);
     RenderLabels(prd, achTemp, prd->nSize * BOARD_WIDTH * 3, 1, 12, 1);
 
     Copy_RGB_to_RGBA(achLo, prd->nSize * BOARD_WIDTH * 4,
@@ -2655,7 +2655,7 @@ RenderBoardLabels(renderdata * prd, unsigned char *achLo, unsigned char *achHi, 
 
     /* 13 14 15 16 17 18 - 19 20 21 22 24 24 */
 
-    memset(achTemp, 0, BOARD_WIDTH * prd->nSize * 3 * prd->nSize * 3);
+    memset(achTemp, 0, BOARD_WIDTH * prd->nSize * 5 * prd->nSize * 5);
     RenderLabels(prd, achTemp, prd->nSize * BOARD_WIDTH * 3, 24, 13, -1);
 
     Copy_RGB_to_RGBA(achHi, prd->nSize * BOARD_WIDTH * 4,
