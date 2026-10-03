@@ -49,6 +49,8 @@ typedef struct {
     /* gammon/backgammon rate adjustments */
 
     GtkAdjustment *aapadjRates[2][2];
+    GtkWidget *aapwRates[2][2];
+    GtkWidget *pwIgnoreGammonRates;
 
     /* score */
 
@@ -132,6 +134,8 @@ ResetTheory(GtkWidget * UNUSED(pw), theorywidget * ptw)
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ptw->pwJacoby), ptw->ci.fJacoby);
 
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ptw->pwBeavers), ptw->ci.fBeavers);
+
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ptw->pwIgnoreGammonRates), FALSE);
 
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ptw->apwPly[ec.nPlies]), TRUE);
 
@@ -337,6 +341,7 @@ TheoryUpdated(GtkWidget * UNUSED(pw), theorywidget * ptw)
     float aarRates[2][2];
 
     int i, j;
+    int fIgnoreGammonRates;
     gchar *pch;
     GtkTextBuffer *buffer;
     GtkTextIter iter;
@@ -358,6 +363,11 @@ TheoryUpdated(GtkWidget * UNUSED(pw), theorywidget * ptw)
     /* get values */
 
     TheoryGetValues(ptw, &ci, aarRates);
+
+    fIgnoreGammonRates = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ptw->pwIgnoreGammonRates));
+    for (i = 0; i < 2; i++)
+        for (j = 0; j < 2; j++)
+            gtk_widget_set_sensitive(ptw->aapwRates[i][j], !fIgnoreGammonRates);
 
     SetCubeInfo(&ci, ci.nCube, 0, 0, ci.nMatchTo, ci.anScore, ci.fCrawford, ci.fJacoby, ci.fBeavers, ms.bgv);
 
@@ -407,6 +417,9 @@ TheoryUpdated(GtkWidget * UNUSED(pw), theorywidget * ptw)
     /*
      * update market window widgets
      */
+
+    if (fIgnoreGammonRates)
+        memset(aarRates, 0, sizeof(aarRates));
 
     remove_mw_rows(ptw);
     if (ci.nMatchTo)
@@ -989,6 +1002,7 @@ GTKShowTheory(const int fActivePage)
 
             ptw->aapadjRates[i][j] = GTK_ADJUSTMENT(gtk_adjustment_new(0.0, 0.0, 100.0, 1.0, 10.0, 0));
             pwsb = gtk_spin_button_new(ptw->aapadjRates[i][j], 1.0, 2);
+            ptw->aapwRates[i][j] = pwsb;
 
 #if GTK_CHECK_VERSION(3,0,0)
             gtk_grid_attach(GTK_GRID(pwGrid), pwsb, j + 1, i + 1, 1, 1);
@@ -1011,6 +1025,10 @@ GTKShowTheory(const int fActivePage)
         }
 
     }
+
+    ptw->pwIgnoreGammonRates = gtk_check_button_new_with_label(_("Ignore gammon and backgammon rates"));
+    gtk_box_pack_start(GTK_BOX(pwx), ptw->pwIgnoreGammonRates, FALSE, FALSE, 4);
+    g_signal_connect(G_OBJECT(ptw->pwIgnoreGammonRates), "toggled", G_CALLBACK(TheoryUpdated), ptw);
 
     /* radio buttons with plies */
 
