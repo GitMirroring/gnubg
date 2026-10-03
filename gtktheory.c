@@ -418,8 +418,11 @@ TheoryUpdated(GtkWidget * UNUSED(pw), theorywidget * ptw)
      * update market window widgets
      */
 
-    if (fIgnoreGammonRates)
-        memset(aarRates, 0, sizeof(aarRates));
+    if (fIgnoreGammonRates) {
+        for (i = 0; i < 2; ++i)
+            for (j = 0; j < 2; ++j)
+                aarRates[i][j] = 0.0f;
+    }
 
     remove_mw_rows(ptw);
     if (ci.nMatchTo)
