@@ -341,14 +341,23 @@ TheoryUpdated(GtkWidget * UNUSED(pw), theorywidget * ptw)
     GtkTextBuffer *buffer;
     GtkTextIter iter;
 
+    /* set max on the backgammon spinners */
+
+    for (i = 0; i < 2; ++i) {
+        GtkAdjustment *padj = ptw->aapadjRates[i][1];
+        gdouble upper = 100.0 - gtk_adjustment_get_value(ptw->aapadjRates[i][0]);
+
+        gtk_adjustment_set_upper(padj, upper);
+        if (gtk_adjustment_get_value(padj) > upper) {
+            g_signal_handlers_block_by_func(G_OBJECT(padj), (gpointer) G_CALLBACK(TheoryUpdated), ptw);
+            gtk_adjustment_set_value(padj, upper);
+            g_signal_handlers_unblock_by_func(G_OBJECT(padj), (gpointer) G_CALLBACK(TheoryUpdated), ptw);
+        }
+    }
+
     /* get values */
 
     TheoryGetValues(ptw, &ci, aarRates);
-
-    /* set max on the gammon spinners */
-
-    for (i = 0; i < 2; ++i)
-        gtk_adjustment_set_upper(ptw->aapadjRates[i][1], 100.0 - gtk_adjustment_get_value(ptw->aapadjRates[i][0]));
 
     SetCubeInfo(&ci, ci.nCube, 0, 0, ci.nMatchTo, ci.anScore, ci.fCrawford, ci.fJacoby, ci.fBeavers, ms.bgv);
 
