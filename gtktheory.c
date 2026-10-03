@@ -987,8 +987,8 @@ GTKShowTheory(const int fActivePage)
 
         for (j = 0; j < 2; j++) {
 
-            ptw->aapadjRates[i][j] = GTK_ADJUSTMENT(gtk_adjustment_new(0.0, 0.0, 100.0, 0.01, 1.0, 0));
-            pwsb = gtk_spin_button_new(ptw->aapadjRates[i][j], 0.01, 2);
+            ptw->aapadjRates[i][j] = GTK_ADJUSTMENT(gtk_adjustment_new(0.0, 0.0, 100.0, 1.0, 10.0, 0));
+            pwsb = gtk_spin_button_new(ptw->aapadjRates[i][j], 1.0, 2);
 
 #if GTK_CHECK_VERSION(3,0,0)
             gtk_grid_attach(GTK_GRID(pwGrid), pwsb, j + 1, i + 1, 1, 1);
