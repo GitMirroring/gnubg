@@ -313,10 +313,12 @@ add_mw_match_rows(theorywidget * ptw, const cubeinfo * pci, float aarRates[2][2]
         for (j = 0; j < 4; j++) {
             asz[0] = g_strdup(gettext(aszMatchPlayLabel[j]));
             for (k = 0; k < 2; k++) {
+                int iDoubler = j ? i : !i;
                 int f = ((!k) || (!afDead[i])) &&
                     !(k && afAutoRedouble[i] && !j) && !(k && afAutoRedouble[i] && j == 3);
                 f = f || (k && afAutoRedouble[!i] && !j);
-                f = f && (!pci->nMatchTo || (pci->anScore[i] + pci->nCube < pci->nMatchTo));
+                f = f && (!pci->nMatchTo ||
+                          (pci->anScore[iDoubler] + pci->nCube < pci->nMatchTo));
                 if (f)
                     asz[1 + k] = g_strdup_printf("%7.3f%%", 100.0f * aaarPointsMatch[i][j][k]);
                 else
