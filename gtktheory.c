@@ -46,9 +46,9 @@ typedef struct {
 
     GtkWidget *apwFrame[2];
 
-    /* gammon/backgammon rates widgets */
+    /* gammon/backgammon rate adjustments */
 
-    GtkAdjustment *aapwRates[2][2];
+    GtkAdjustment *aapadjRates[2][2];
 
     /* score */
 
@@ -145,7 +145,7 @@ ResetTheory(GtkWidget * UNUSED(pw), theorywidget * ptw)
 
         for (j = 0; j < 2; j++)
             /* gammon/backgammon rates */
-            gtk_adjustment_set_value(GTK_ADJUSTMENT(ptw->aapwRates[i][j]), aarRates[i][j] * 100.0f);
+            gtk_adjustment_set_value(GTK_ADJUSTMENT(ptw->aapadjRates[i][j]), aarRates[i][j] * 100.0f);
 
     }
 
@@ -163,7 +163,7 @@ TheoryGetValues(theorywidget * ptw, cubeinfo * pci, float aarRates[2][2])
 
     for (i = 0; i < 2; i++)
         for (j = 0; j < 2; j++)
-            aarRates[i][j] = 0.01f * (float) gtk_adjustment_get_value(ptw->aapwRates[i][j]);
+            aarRates[i][j] = 0.01f * (float) gtk_adjustment_get_value(ptw->aapadjRates[i][j]);
 
 
     /* money game or match play */
@@ -348,7 +348,7 @@ TheoryUpdated(GtkWidget * UNUSED(pw), theorywidget * ptw)
     /* set max on the gammon spinners */
 
     for (i = 0; i < 2; ++i)
-        gtk_adjustment_set_upper(ptw->aapwRates[i][1], 100.0 - gtk_adjustment_get_value(ptw->aapwRates[i][0]));
+        gtk_adjustment_set_upper(ptw->aapadjRates[i][1], 100.0 - gtk_adjustment_get_value(ptw->aapadjRates[i][0]));
 
     SetCubeInfo(&ci, ci.nCube, 0, 0, ci.nMatchTo, ci.anScore, ci.fCrawford, ci.fJacoby, ci.fBeavers, ms.bgv);
 
@@ -644,7 +644,7 @@ PlyClicked(GtkWidget * pw, theorywidget * ptw)
 
     for (i = 0; i < 2; ++i)
         for (j = 0; j < 2; ++j)
-            gtk_adjustment_set_value(GTK_ADJUSTMENT(ptw->aapwRates[i][j]), dd.aarRates[i][j] * 100.0f);
+            gtk_adjustment_set_value(GTK_ADJUSTMENT(ptw->aapadjRates[i][j]), dd.aarRates[i][j] * 100.0f);
 
     TheoryUpdated(NULL, ptw);
 
@@ -978,8 +978,8 @@ GTKShowTheory(const int fActivePage)
 
         for (j = 0; j < 2; j++) {
 
-            ptw->aapwRates[i][j] = GTK_ADJUSTMENT(gtk_adjustment_new(0.0, 0.0, 100.0, 0.01, 1.0, 0));
-            pwsb = gtk_spin_button_new(ptw->aapwRates[i][j], 0.01, 2);
+            ptw->aapadjRates[i][j] = GTK_ADJUSTMENT(gtk_adjustment_new(0.0, 0.0, 100.0, 0.01, 1.0, 0));
+            pwsb = gtk_spin_button_new(ptw->aapadjRates[i][j], 0.01, 2);
 
 #if GTK_CHECK_VERSION(3,0,0)
             gtk_grid_attach(GTK_GRID(pwGrid), pwsb, j + 1, i + 1, 1, 1);
@@ -997,7 +997,7 @@ GTKShowTheory(const int fActivePage)
                              j + 1, j + 2, i + 1, i + 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 4, 0);
 #endif
 
-            g_signal_connect(G_OBJECT(ptw->aapwRates[i][j]), "value-changed", G_CALLBACK(TheoryUpdated), ptw);
+            g_signal_connect(G_OBJECT(ptw->aapadjRates[i][j]), "value-changed", G_CALLBACK(TheoryUpdated), ptw);
 
         }
 
