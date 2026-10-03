@@ -1822,10 +1822,10 @@ ScoreMoveRollout(move ** ppm, cubeinfo ** ppci, int cMoves, rolloutprogressfunc 
     int i;
     int nGamesDone;
 
-    TanBoard *anBoard = g_alloca(cMoves * 2 * 25 * sizeof(int));
-    ConstTanBoard *apBoard = g_alloca(cMoves * sizeof(int *));
-    float (**apOutput)[NUM_ROLLOUT_OUTPUTS] = g_alloca(cMoves * NUM_ROLLOUT_OUTPUTS * sizeof(float));
-    float (**apStdDev)[NUM_ROLLOUT_OUTPUTS] = g_alloca(cMoves * NUM_ROLLOUT_OUTPUTS * sizeof(float));
+    TanBoard *anBoard = g_alloca(cMoves * sizeof(TanBoard));
+    ConstTanBoard *apBoard = g_alloca(cMoves * sizeof(ConstTanBoard));
+    float (**apOutput)[NUM_ROLLOUT_OUTPUTS] = g_alloca(cMoves * NUM_ROLLOUT_OUTPUTS * sizeof(float *));
+    float (**apStdDev)[NUM_ROLLOUT_OUTPUTS] = g_alloca(cMoves * NUM_ROLLOUT_OUTPUTS * sizeof(float *));
     evalsetup(**apes) = g_alloca(cMoves * sizeof(evalsetup *));
     const cubeinfo(**apci) = g_alloca(cMoves * sizeof(cubeinfo *));
     cubeinfo(*aci) = g_alloca(cMoves * sizeof(cubeinfo));
