@@ -207,7 +207,8 @@ StartGuessHyper(hyperequity ahe[], const int nC, bearoffcontext * UNUSED(pbc))
 #endif
             case HYPER_BEAROFF:
 
-                memset(&ahe[i * nPos + j], 0, sizeof(ahe[i * nPos + j]));
+                for (k = 1; k < 5; ++k)
+                    ahe[i * nPos + j].arEquity[k] = 0.0;
 
                 ahe[i * nPos + j].arOutput[0] = 1.0;
                 ahe[i * nPos + j].arOutput[1] = 1.0;
@@ -221,6 +222,8 @@ StartGuessHyper(hyperequity ahe[], const int nC, bearoffcontext * UNUSED(pbc))
                 break;
 
             case HYPER_ILLEGAL:
+
+                /* Illegal-position hyperequity entries must be byte-zeroed. */
 
                 memset(&ahe[i * nPos + j], 0, sizeof(ahe[i * nPos + j]));
                 ++ai[3];
@@ -437,6 +440,9 @@ HyperEquity(const int nUs, const int nThem, hyperequity * phe, const int nC, con
         return;
 
     case HYPER_ILLEGAL:
+
+        /* Keep illegal-position hyperequity entries byte-zeroed across restarts. */
+
         memset(phe, 0, sizeof(*phe));
         return;
 
