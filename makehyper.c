@@ -716,7 +716,7 @@ main(int argc, char **argv)
          N_("The convergence threshold (T). Default is 1e-5"), "T"},
         {"no-checkpoint", 'n', G_OPTION_FLAG_REVERSE, G_OPTION_ARG_NONE, &fCheckPoint,
          N_("Do not write a checkpoint file after each iteration"), NULL},
-        {"outfile", 'f', 0, G_OPTION_ARG_STRING, &szOutput,
+        {"outfile", 'f', 0, G_OPTION_ARG_FILENAME, &szOutput,
          N_("Output filename. Default is hyper<C>.bd"), "filename"},
         {NULL, 0, 0, (GOptionArg) 0, NULL, NULL, NULL}
     };
