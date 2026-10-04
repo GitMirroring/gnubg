@@ -640,7 +640,7 @@ WriteProb(FILE * pf, const double r)
 
 
 static int
-WriteHyperFile(const char *szFilename, const hyperequity ahe[], const int nC)
+WriteHyperFileRaw(const char *szFilename, const hyperequity ahe[], const int nC)
 {
 
     int nPos = Combination(25 + nC, nC);
@@ -680,6 +680,34 @@ WriteHyperFile(const char *szFilename, const hyperequity ahe[], const int nC)
     }
 
     return TRUE;
+
+}
+
+
+static int
+WriteHyperFile(const char *szFilename, const hyperequity ahe[], const int nC)
+{
+
+#if defined(WIN32)
+    return WriteHyperFileRaw(szFilename, ahe, nC);
+#else
+    char *tmpfile = g_strdup_printf("%s.new", szFilename);
+    int fResult = FALSE;
+
+    if (WriteHyperFileRaw(tmpfile, ahe, nC)) {
+        if (!g_rename(tmpfile, szFilename))
+            fResult = TRUE;
+        else
+            perror(szFilename);
+    }
+
+    if (!fResult)
+        g_unlink(tmpfile);
+
+    g_free(tmpfile);
+
+    return fResult;
+#endif
 
 }
 
