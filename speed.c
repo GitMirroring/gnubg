@@ -96,9 +96,6 @@ CommandCalibrate(char *sz)
     void *pcc = NULL;
 #endif
 
-    iCacheSize = GetEvalCacheEntries();
-    EvalCacheResize(0);
-
 #if defined(USE_MULTITHREAD)
     MT_SyncInit();
 #endif
@@ -126,6 +123,9 @@ CommandCalibrate(char *sz)
     if (fX)
         pcc = GTKCalibrationStart();
 #endif
+
+    iCacheSize = GetEvalCacheEntries();
+    EvalCacheResize(0);
 
     timeTaken = 0.0;
     for (iIter = 0; n < 0 || iIter < (unsigned int) n;) {
