@@ -617,7 +617,8 @@ EvalInitialise(char *szWeights, char *szWeightsBinary, int fNoBearoff, void (*pf
         cCache = 0x1 << CACHE_SIZE_DEFAULT;
         if (CacheCreate(&cEval, cCache)) {
             PrintError(_("Evaluation cache allocation failed"));
-            return;
+            CacheCreate(&cEval, 0);
+            cCache = 0;
         }
 
         if (CacheCreate(&cpEval, 0x1 << 16)) {
