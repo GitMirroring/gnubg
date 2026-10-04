@@ -18,6 +18,7 @@
 
 #include "config.h"
 
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -105,8 +106,14 @@ CacheCreate(evalCache * pc, unsigned int s)
         s &= (s - 1);
 
     pc->size = (s < pc->size) ? 2 * s : s;
+
+    /* CacheResize() returns the cache size as an int. */
+    if (pc->size > (unsigned int) INT_MAX)
+        return -1;
+
     pc->hashMask = (pc->size >> 1) - 1;
 
+    /* Ensure the allocation size fits in size_t */
     if ((size_t) (pc->size / 2) > (size_t) -1 / sizeof(*pc->entries))
         return -1;
 
