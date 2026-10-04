@@ -3180,7 +3180,7 @@ To roll the dice the CL version type 'roll'.
           hyper3.bd.tmp) that can be used to restart the calculation if needed
           by using the -r option. You can also change the default convergence
           threshold of 0.00001 if you're happy with less accurate equities. To
-          generate the 3 checker database you need approximately 400 MB of free
+          generate the 3 checker database you need approximately 900 MB of free
           memory. On current (2014) hardware the calculation for the 3-checker
           database will take a few hours (1- and 2-checker are much faster).</para>
         <para>See makehyper --help for the complete set of available options.
