@@ -77,21 +77,13 @@ cache_unlock(evalCache * pc, uint32_t k)
 #endif                          /* USE_MULTITHREAD */
 
 
-int
-CacheCreate(evalCache * pc, unsigned int s)
+static int
+CacheGetSize(unsigned int s)
 {
-#if CACHE_STATS
-    pc->cLookup = 0;
-    pc->cHit = 0;
-    pc->nAdds = 0;
-#endif
+    unsigned int size;
 
-    if (s == 0) {
-        pc->size = 0;
-        pc->hashMask = 0;
-        pc->entries = NULL;
+    if (s == 0)
         return 0;
-    }
 
     if (s > 1u << 31)
         return -1;
@@ -100,16 +92,40 @@ CacheCreate(evalCache * pc, unsigned int s)
     if (s == 1)
         s = 2;
 
-    pc->size = s;
+    size = s;
     /* adjust size to smallest power of 2 GE to s */
     while ((s & (s - 1)) != 0)
         s &= (s - 1);
 
-    pc->size = (s < pc->size) ? 2 * s : s;
+    size = (s < size) ? 2 * s : s;
 
     /* CacheResize() returns the cache size as an int. */
-    if (pc->size > (unsigned int) INT_MAX)
+    if (size > (unsigned int) INT_MAX)
         return -1;
+
+    return (int) size;
+}
+
+int
+CacheCreate(evalCache * pc, unsigned int s)
+{
+    int size = CacheGetSize(s);
+
+    if (size < 0)
+        return -1;
+
+#if CACHE_STATS
+    pc->cLookup = 0;
+    pc->cHit = 0;
+    pc->nAdds = 0;
+#endif
+
+    pc->size = (unsigned int) size;
+    if (pc->size == 0) {
+        pc->hashMask = 0;
+        pc->entries = NULL;
+        return 0;
+    }
 
     pc->hashMask = (pc->size >> 1) - 1;
 
@@ -294,9 +310,13 @@ int
 CacheResize(evalCache * pc, unsigned int cNew)
 {
     evalCache newCache = { 0 };
+    int size = CacheGetSize(cNew);
 
-    if (cNew == pc->size)
-        return (int) pc->size;
+    if (size < 0)
+        return -1;
+
+    if ((unsigned int) size == pc->size)
+        return size;
 
     if (CacheCreate(&newCache, cNew) != 0)
         return -1;
