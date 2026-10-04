@@ -69,8 +69,8 @@ int CacheResize(evalCache * pc, unsigned int cNew);
 #define CACHEHIT ((uint32_t)-1)
 
 /* returns a value which is passed to CacheAdd (if a miss) */
-unsigned int CacheLookupWithLocking(evalCache * pc, const cacheNodeDetail * e, float *arOut, float *arCubeful);
-unsigned int CacheLookupNoLocking(evalCache * pc, const cacheNodeDetail * e, float *arOut, float *arCubeful);
+uint32_t CacheLookupWithLocking(evalCache * pc, const cacheNodeDetail * e, float *arOut, float *arCubeful);
+uint32_t CacheLookupNoLocking(evalCache * pc, const cacheNodeDetail * e, float *arOut, float *arCubeful);
 
 void CacheAddWithLocking(evalCache * pc, const cacheNodeDetail * e, uint32_t l);
 
