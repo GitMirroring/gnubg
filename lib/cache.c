@@ -14,8 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * $Id: cache.c,v 1.50 2022/02/20 16:54:43 plm Exp $
  */
 
 #include "config.h"
@@ -87,6 +85,13 @@ CacheCreate(evalCache * pc, unsigned int s)
     pc->nAdds = 0;
 #endif
 
+    if (s == 0) {
+        pc->size = 0;
+        pc->hashMask = 0;
+        pc->entries = NULL;
+        return 0;
+    }
+
     if (s > 1u << 31)
         return -1;
 
@@ -101,6 +106,9 @@ CacheCreate(evalCache * pc, unsigned int s)
 
     pc->size = (s < pc->size) ? 2 * s : s;
     pc->hashMask = (pc->size >> 1) - 1;
+
+    if ((size_t) (pc->size / 2) > (size_t) -1 / sizeof(*pc->entries))
+        return -1;
 
     pc->entries = (cacheNode *) malloc((pc->size / 2) * sizeof(*pc->entries));
     if (pc->entries == NULL)
