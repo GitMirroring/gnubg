@@ -743,6 +743,11 @@ main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
+    if (argc > 1) {
+        g_printerr(_("Unexpected argument: %s\n"), argv[1]);
+        exit(EXIT_FAILURE);
+    }
+
     /* parse options */
 
     if (szEpsilon) {
