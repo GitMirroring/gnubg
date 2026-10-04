@@ -94,13 +94,13 @@ SetColourSpeckle(const char *sz, unsigned char anColour[], int *pnSpeckle)
 }
 
 static int
-SetColourF(float arColour[4], const char *sz)
+SetColourF(float arColour[4], char *sz)
 {
 
     char *pch;
     unsigned char anColour[3];
 
-    if ((pch = (char *)strchr(sz, ';')))
+    if ((pch = strchr(sz, ';')))
         *pch = 0;
 
     if (!SetColour(sz, anColour)) {
@@ -115,7 +115,7 @@ SetColourF(float arColour[4], const char *sz)
 
 #if defined(USE_BOARD3D)
 static int
-SetMaterialCommon(Material * pMat, const char *sz, const char **arg)
+SetMaterialCommon(Material * pMat, char *sz, const char **arg)
 {
     float opac;
     char *pch = NULL;
@@ -132,7 +132,7 @@ SetMaterialCommon(Material * pMat, const char *sz, const char **arg)
         return -1;
     sz += strlen(sz) + 1;
 
-    if ((pch = (char *)strchr(sz, ';')))
+    if ((pch = strchr(sz, ';')))
         *pch = 0;
 
     if (*sz)
@@ -142,7 +142,7 @@ SetMaterialCommon(Material * pMat, const char *sz, const char **arg)
 
     sz += strlen(sz) + 1;
 
-    if ((pch = (char *)strchr(sz, ';')))
+    if ((pch = strchr(sz, ';')))
         *pch = 0;
 
     if (*sz)
@@ -164,7 +164,7 @@ SetMaterialCommon(Material * pMat, const char *sz, const char **arg)
 }
 
 static int
-SetMaterial(Material * pMat, const char *sz)
+SetMaterial(Material * pMat, char *sz)
 {
     int ret = 0;
     if (fX) {
@@ -181,7 +181,7 @@ SetMaterial(Material * pMat, const char *sz)
 }
 
 static int
-SetMaterialDice(Material * pMat, const char *sz, int *flag)
+SetMaterialDice(Material * pMat, char *sz, int *flag)
 {
     const char *arg;
     int ret = SetMaterialCommon(pMat, sz, &arg);
