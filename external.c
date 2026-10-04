@@ -163,8 +163,7 @@ ExternalSocket(struct sockaddr **ppsa, socklen_t *pcb, char *sz)
                 return -1;
             }
 
-        psin = g_malloc(*pcb = sizeof(struct sockaddr_in));
-        memset(psin, 0, sizeof(*psin));
+        psin = g_malloc0(*pcb = sizeof(struct sockaddr_in));
 
         psin->sin_family = AF_INET;
 

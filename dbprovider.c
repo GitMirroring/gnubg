@@ -169,13 +169,11 @@ MallocRowset(size_t rows, size_t cols)
     size_t i;
     RowSet *pRow = g_malloc(sizeof(RowSet));
 
-    pRow->widths = (size_t *) g_malloc(cols * sizeof(size_t));
-    memset(pRow->widths, 0, cols * sizeof(size_t));
+    pRow->widths = (size_t *) g_malloc0(cols * sizeof(size_t));
 
     pRow->data = g_malloc(rows * sizeof(char **));
     for (i = 0; i < rows; i++) {
-        pRow->data[i] = g_malloc(cols * sizeof(char *));
-        memset(pRow->data[i], 0, cols * sizeof(char *));
+        pRow->data[i] = g_malloc0(cols * sizeof(char *));
     }
 
     pRow->cols = cols;

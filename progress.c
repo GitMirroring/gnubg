@@ -79,10 +79,8 @@ AllocTextList(rolloutprogress * prp)
     prp->pListText = g_malloc(sizeof(char **) * lines * 2);
 
     for (i = 0; i < lines; i++) {
-        prp->pListText[i * 2] = g_malloc(sizeof(char *) * (N_ROLLOUT_COLS));
-        memset(prp->pListText[i * 2], 0, sizeof(char *) * (N_ROLLOUT_COLS));
-        prp->pListText[i * 2 + 1] = g_malloc(sizeof(char *) * (N_ROLLOUT_COLS));
-        memset(prp->pListText[i * 2 + 1], 0, sizeof(char *) * (N_ROLLOUT_COLS));
+        prp->pListText[i * 2] = g_malloc0(sizeof(char *) * (N_ROLLOUT_COLS));
+        prp->pListText[i * 2 + 1] = g_malloc0(sizeof(char *) * (N_ROLLOUT_COLS));
     }
 }
 
