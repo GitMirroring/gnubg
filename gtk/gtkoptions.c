@@ -1694,7 +1694,7 @@ append_other_options(optionswidget * pow)
     gtk_container_add(GTK_CONTAINER(pwev), pwhbox);
 
     gtk_box_pack_start(GTK_BOX(pwhbox), gtk_label_new(_("Eval threads:")), FALSE, FALSE, 0);
-    pow->padjThreads = GTK_ADJUSTMENT(gtk_adjustment_new(MT_GetNumThreads(), 1, MAX_NUMTHREADS, 1, 1, 0));
+    pow->padjThreads = GTK_ADJUSTMENT(gtk_adjustment_new(MT_GetNumThreads(), 1, MIN(MAX_NUMTHREADS, g_get_num_processors()), 1, 1, 0));
     pw = gtk_spin_button_new(GTK_ADJUSTMENT(pow->padjThreads), 1, 0);
     gtk_widget_set_size_request(GTK_WIDGET(pw), 50, -1);
     gtk_box_pack_start(GTK_BOX(pwhbox), pw, FALSE, FALSE, 0);
