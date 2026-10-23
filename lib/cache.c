@@ -129,9 +129,15 @@ CacheCreate(evalCache * pc, unsigned int s)
 
     pc->hashMask = (pc->size >> 1) - 1;
 
+    /* Avoid "comparison is always false due to limited range of data type"
+     * warning on 64bits architectures.
+     * Adapt (or remove the condition) if the involved types are changed.
+     */
+#if (SIZE_MAX / 64 < UINT_MAX)
     /* Ensure the allocation size fits in size_t */
-    if ((size_t) (pc->size / 2) > (size_t) -1 / sizeof(*pc->entries))
+    if ((size_t) (pc->size / 2) > SIZE_MAX / sizeof(*pc->entries))
         return -1;
+#endif
 
     pc->entries = (cacheNode *) malloc((pc->size / 2) * sizeof(*pc->entries));
     if (pc->entries == NULL)
