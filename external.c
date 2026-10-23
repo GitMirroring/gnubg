@@ -184,6 +184,7 @@ ExternalSocket(struct sockaddr **ppsa, socklen_t *pcb, char *sz)
                 errno = EINVAL;
                 outputerr(gai_strerror(error));
                 g_free(psin);
+                close(sock);
                 return -1;
             }
 
