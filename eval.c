@@ -5850,19 +5850,27 @@ FindnSaveBestMoves(movelist * pml, int nDice0, int nDice1, const TanBoard anBoar
 
         do {
             fChanged = 0;
-            for (i = 1; i < pml->cMoves; i++)
+            for (i = 1; i < pml->cMoves; i++) {
                 if (pml->amMoves[i].esMove.ec.nPlies < pml->amMoves[i-1].esMove.ec.nPlies
-                    && pml->amMoves[i].rScore > pml->amMoves[i-1].rScore) {
-                float limit = pml->amMoves[i-1].rScore;
-                fChanged = 1;
-                for (unsigned int j = i; j < pml->cMoves; j++)
-                    if (pml->amMoves[j].rScore > limit) {
-                        ScoreMove(NULL, pml->amMoves + j, pci, pec, pml->amMoves[i-1].esMove.ec.nPlies);
-                        limit = MIN(limit, pml->amMoves[j].rScore);
-                    }
+                    && pml->amMoves[i].rScore >= pml->amMoves[i-1].rScore) {
+                    float limit = pml->amMoves[i-1].rScore;
+                    fChanged = 1;
+                    for (unsigned int j = i; j < pml->cMoves; j++)
+                        if (pml->amMoves[j].rScore >= limit) {
+                            ScoreMove(NULL, pml->amMoves + j, pci, pec, pml->amMoves[i-1].esMove.ec.nPlies);
+                            limit = MIN(limit, pml->amMoves[j].rScore);
+                        }
                 }
-
+                /* Re-evaluation from ply to ply+1 raised the move i-1 among
+                 * those evaluated at ply+2. Evaluate it at ply+2 as well.
+                 */
+                if (pml->amMoves[i].esMove.ec.nPlies > pml->amMoves[i-1].esMove.ec.nPlies) {
+                    fChanged = 1;
+                    ScoreMove(NULL, pml->amMoves + i - 1, pci, pec, pml->amMoves[i].esMove.ec.nPlies);
+                }
+            }
             qsort(pml->amMoves, pml->cMoves, sizeof(move), (cfunc) CompareMoves);
+
         } while (fChanged == 1);
     }
 
