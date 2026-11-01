@@ -689,8 +689,8 @@ CommandSetThreads(char *sz)
 {
     int n;
 
-    if ((n = ParseNumber(&sz)) <= 0) {
-        outputl(_("You must specify the number of threads to use."));
+    if ((n = ParseNumber(&sz)) < 0) {
+        outputl(_("You must specify the number of threads to use (0 to use all available cores)."));
 
         return;
     }
@@ -700,6 +700,9 @@ CommandSetThreads(char *sz)
         output(".\n");
         n = MAX_NUMTHREADS;
     }
+
+    if ( n == 0)
+        n = g_get_num_processors();
 
     MT_SetNumThreads(n);
     outputf(_("The number of threads has been set to %d.\n"), n);

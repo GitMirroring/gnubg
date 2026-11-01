@@ -3233,6 +3233,10 @@ SaveRuleSettings(FILE * pf)
 static void
 SaveEvaluationSettings(FILE * pf)
 {
+#if defined(USE_MULTITHREAD)
+    const unsigned int n = MT_GetNumThreads();
+#endif
+
     fprintf(pf, "set eval sameasanalysis %s\n", fEvalSameAsAnalysis ? "on" : "off");
     SaveEvalSetupSettings(pf, "set evaluation chequerplay", &esEvalChequer);
     SaveEvalSetupSettings(pf, "set evaluation cubedecision", &esEvalCube);
@@ -3241,7 +3245,10 @@ SaveEvaluationSettings(FILE * pf)
     fprintf(pf, "set matchequitytable \"%s\"\n", miCurrent.szFileName);
     fprintf(pf, "set invert matchequitytable %s\n", fInvertMET ? "on" : "off");
 #if defined(USE_MULTITHREAD)
-    fprintf(pf, "set threads %u\n", MT_GetNumThreads());
+    if (n == g_get_num_processors())
+        fprintf(pf, "set threads 0\n");
+    else
+        fprintf(pf, "set threads %u\n", n);
 #endif
 }
 
