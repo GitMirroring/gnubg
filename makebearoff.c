@@ -989,7 +989,6 @@ BearOff2(int nUs, int nThem,
 {
 
     int j, anRoll[2];
-    unsigned int i;
     TanBoard anBoard, anBoardTemp;
     movelist ml;
 #if !defined(G_DISABLE_ASSERT)
@@ -1022,7 +1021,7 @@ BearOff2(int nUs, int nThem,
     PositionFromBearoff(anBoard[0], nThem, nTSP, nTSC);
     PositionFromBearoff(anBoard[1], nUs, nTSP, nTSC);
 
-    for (i = nTSP; i < 25; i++)
+    for (int i = nTSP; i < 25; i++)
         anBoard[1][i] = anBoard[0][i] = 0;
 
     /* look for position in bearoff file */
@@ -1036,7 +1035,7 @@ BearOff2(int nUs, int nThem,
 
         BearoffCubeful(pbc, iPos, NULL, aus);
 
-        for (i = 0; i < 4; ++i)
+        for (int i = 0; i < 4; ++i)
             asiEquity[i] = (short int) (aus[i] - 0x8000);
 
         return;
@@ -1053,7 +1052,7 @@ BearOff2(int nUs, int nThem,
             aiBest[0] = aiBest[1] = aiBest[2] = aiBest[3] = -1;
 #endif
 
-            for (i = 0; i < ml.cMoves; i++) {
+            for (unsigned int i = 0; i < ml.cMoves; i++) {
                 PositionFromKey(anBoardTemp, &ml.amMoves[i].key);
 
                 j = PositionBearoff(anBoardTemp[1], nTSP, nTSC);
@@ -1125,17 +1124,17 @@ BearOff2(int nUs, int nThem,
             g_assert(!fCubeful || aiBest[3] >= 0);
 
             if (anRoll[0] == anRoll[1])
-                for (k = 0; k < (fCubeful ? 4 : 1); ++k)
-                    aiTotal[k] += asiBest[k];
+                for (int i = 0; i < (fCubeful ? 4 : 1); ++i)
+                    aiTotal[i] += asiBest[i];
             else
-                for (k = 0; k < (fCubeful ? 4 : 1); ++k)
-                    aiTotal[k] += 2 * asiBest[k];
+                for (int i = 0; i < (fCubeful ? 4 : 1); ++i)
+                    aiTotal[i] += 2 * asiBest[i];
 
         }
 
     /* final equities */
-    for (k = 0; k < (fCubeful ? 4 : 1); ++k)
-        asiEquity[k] = (short) (aiTotal[k] / 36);
+    for (int i = 0; i < (fCubeful ? 4 : 1); ++i)
+        asiEquity[i] = (short) (aiTotal[i] / 36);
 
 }
 
