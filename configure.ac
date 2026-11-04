@@ -77,7 +77,8 @@ dnl
 dnl Compiler setup
 dnl
 
-AC_PROG_CC
+m4_version_prereq([2.70], [AC_PROG_CC], [AC_PROG_CC_C99])
+
 dnl AM_PROG_CC_C_O is rquired for Automake < 1.14
 dnl Remove when the minimum Automake version is raised to 1.14
 AM_PROG_CC_C_O
