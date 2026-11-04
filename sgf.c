@@ -328,7 +328,7 @@ CopyEscapedString(const char *pchOrig)
 }
 
 static void
-RestoreText(char *sz, char **ppch)
+RestoreText(const char *sz, char **ppch)
 {
 
     if (!sz || !*sz)
@@ -498,9 +498,9 @@ Point(char ch, int f)
 }
 
 static void
-RestoreRolloutScore(move * pm, const char *sz)
+RestoreRolloutScore(move * pm, char *sz)
 {
-    char *pc = (char *)strstr(sz, "Score");
+    char *pc = strstr(sz, "Score");
 
     if (pc) {
         pc += 6;
@@ -530,10 +530,10 @@ RestoreRolloutTrials(unsigned int *piTrials, const char *sz)
 }
 
 static void
-RestoreRolloutOutput(float ar[NUM_ROLLOUT_OUTPUTS], const char *sz, const char *szKeyword)
+RestoreRolloutOutput(float ar[NUM_ROLLOUT_OUTPUTS], char *sz, const char *szKeyword)
 {
 
-    char *pc = (char *)strstr(sz, szKeyword);
+    char *pc = strstr(sz, szKeyword);
     int i;
 
     for (i = 0; i < NUM_ROLLOUT_OUTPUTS; i++)
@@ -585,10 +585,10 @@ RestoreEvalContext(evalcontext * pec, char *pc)
 }
 
 static void
-RestoreRolloutContextEvalContext(evalcontext * pec, const char *sz, const char *szKeyword)
+RestoreRolloutContextEvalContext(evalcontext * pec, char *sz, const char *szKeyword)
 {
 
-    char *pc = (char *)strstr(sz, szKeyword);
+    char *pc = strstr(sz, szKeyword);
 
     InitEvalContext(pec);
 
@@ -606,7 +606,7 @@ RestoreRolloutContextEvalContext(evalcontext * pec, const char *sz, const char *
 
 
 static void
-RestoreRolloutRolloutContext(rolloutcontext * prc, const char *sz)
+RestoreRolloutRolloutContext(rolloutcontext * prc, char *sz)
 {
 
     const char *pc = strstr(sz, "RC");
@@ -654,7 +654,7 @@ RestoreRolloutRolloutContext(rolloutcontext * prc, const char *sz)
 
 
 static void
-RestoreRollout(move * pm, const char *sz)
+RestoreRollout(move * pm, char *sz)
 {
     unsigned int n;
 
@@ -669,10 +669,10 @@ RestoreRollout(move * pm, const char *sz)
 
 
 static void
-RestoreCubeRolloutOutput(float arOutput[], float arStdDev[], const char *sz, const char *szKeyword)
+RestoreCubeRolloutOutput(float arOutput[], float arStdDev[], char *sz, const char *szKeyword)
 {
 
-    const char *pc = strstr(sz, szKeyword);
+    char *pc = strstr(sz, szKeyword);
 
     memset(arOutput, 0, NUM_ROLLOUT_OUTPUTS * sizeof(float));
     memset(arStdDev, 0, NUM_ROLLOUT_OUTPUTS * sizeof(float));
@@ -687,7 +687,7 @@ RestoreCubeRolloutOutput(float arOutput[], float arStdDev[], const char *sz, con
 
 
 static void
-RestoreCubeRollout(const char *sz,
+RestoreCubeRollout(char *sz,
                    float aarOutput[][NUM_ROLLOUT_OUTPUTS], float aarStdDev[][NUM_ROLLOUT_OUTPUTS], evalsetup * pes)
 {
 
@@ -729,10 +729,10 @@ CheckSGFVersion(char **sz)
 }
 
 static void
-RestoreRolloutMoveFilter(const char *sz, char *name, movefilter mf[MAX_FILTER_PLIES][MAX_FILTER_PLIES], int nPlies)
+RestoreRolloutMoveFilter(char *sz, const char *name, movefilter mf[MAX_FILTER_PLIES][MAX_FILTER_PLIES], int nPlies)
 {
 
-    char *pc = (char *)strstr(sz, name);
+    char *pc = strstr(sz, name);
     int i;
 
     if (pc == 0)
@@ -747,7 +747,7 @@ RestoreRolloutMoveFilter(const char *sz, char *name, movefilter mf[MAX_FILTER_PL
 }
 
 static void
-RestoreExtendedRolloutContext(rolloutcontext * prc, const char *sz)
+RestoreExtendedRolloutContext(rolloutcontext * prc, char *sz)
 {
 
     const char *pc = strstr(sz, "RC");
